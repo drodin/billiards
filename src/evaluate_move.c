@@ -726,6 +726,12 @@ void evaluate_last_move_snooker( struct Player * player, int * pact_player, Ball
             player[act_player].winner=0;
             player[other_player].winner=1;
           }
+        // Change of snooker no end problem. Fix from Émeric Dupont
+        if(player[act_player].score==player[other_player].score) {
+            player[act_player].winner=1;
+            player[other_player].winner=1;
+        }
+        // end change
         // game over, clear statusline
         emptyworkstring();
         setst_text();

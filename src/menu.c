@@ -1905,6 +1905,8 @@ void init_menu(void)
     menu_add_entry(language_menu, localeText[471] , MENU_ID_LANG_DE,localeText[470]);
     //English
     menu_add_entry(language_menu, localeText[472], MENU_ID_LANG_EN,localeText[470]);
+    //Russian
+    menu_add_entry(language_menu, localeText[473], MENU_ID_LANG_RU,localeText[470]);
     //Back
     menu_add_exit(language_menu, localeText[63],localeText[266]);
     /********************************************************/

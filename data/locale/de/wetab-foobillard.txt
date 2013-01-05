@@ -471,3 +471,4 @@ Sprachenänderung
 Änderung der Sprache. Neustart erforderlich!
 Deutsch
 Englisch
+Russisch

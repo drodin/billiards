@@ -4277,8 +4277,18 @@ void DisplayFunc( void )
 #endif
              }
              if(!tournament_state.wait_for_next_match && options_gamemode==options_gamemode_tournament && (player[0].winner || player[1].winner)) {
-               tournament_evaluate_last_match( &tournament_state );
-               tournament_state.wait_for_next_match=1;
+               // Change of snooker no end problem. Fix from Émeric Dupont
+               //tournament_evaluate_last_match( &tournament_state );
+               //tournament_state.wait_for_next_match=1;
+               if ( player[0].winner == player[1].winner ) { // Draw
+                  restart_game_common();
+                  player[0].winner=0;
+                  player[1].winner=0;
+               }  else {
+                  tournament_evaluate_last_match( &tournament_state );
+                  tournament_state.wait_for_next_match=1;
+               }
+               // change end
              }
          } else {
              player[act_player].place_cue_ball=1;
@@ -7008,6 +7018,9 @@ void menu_cb( int id, void * arg , VMfloat value)
         break;
     case MENU_ID_LANG_EN:
     	   strncpy(options_language,"en", sizeof(options_language));
+        break;
+    case MENU_ID_LANG_RU:
+           strncpy(options_language,"ru", sizeof(options_language));
         break;
     case MENU_ID_MSHOOT_NEW:
         options_mouseshoot = 1;

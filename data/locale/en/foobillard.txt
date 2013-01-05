@@ -471,3 +471,4 @@ Change language
 Change the language. Reboot required!
 German
 English
+Russian
