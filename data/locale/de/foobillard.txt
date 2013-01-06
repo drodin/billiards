@@ -472,3 +472,6 @@ Sprachenänderung
 Deutsch
 Englisch
 Russisch
+PAUSE aktiv
+Pause nächster Zug an
+Pause nächster Zug aus
