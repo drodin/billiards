@@ -4913,7 +4913,7 @@ void DisplayFunc( void )
                    right = vec_xyz(0.003*(1.0-k*0.23)/0.4*(0.5-zact),0,0);
                    up    = vec_xyz(0,0.003*(1.0-k*0.23)/0.4*(0.5-zact),0);
                }
-               GLfloat VertexData1[11];
+               GLfloat VertexData1[12];
                VertexData1[0] = actpos.x+up.x-right.x;
                VertexData1[1] = actpos.y+up.y-right.y;
                VertexData1[2] = actpos.z+up.z-right.z;
@@ -4964,7 +4964,7 @@ void DisplayFunc( void )
            p=vec_add(p,balls.ball[cue_ball].r);
            glEnable(GL_LINE_STIPPLE);
            glLineStipple(1, 0x3333);
-       GLfloat VertexData2[23];
+       GLfloat VertexData2[24];
            p1=vec_add(p,vec_scale(bx,-0.01));
            p2=vec_add(p,vec_scale(bx,+0.01));
            VertexData2[0] = p.x; VertexData2[1] = p.y; VertexData2[2] = p.z;
