@@ -82,4 +82,6 @@ void DisplayFunc(void);
 void ResizeWindow(int w,int h);
 void save_config(void);
 
+extern int win_width, win_height, native_width, native_height;
+
 #endif

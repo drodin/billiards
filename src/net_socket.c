@@ -28,8 +28,8 @@
 #include <errno.h>
 #include <string.h>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_net.h>
+#include <SDL.h>
+#include <SDL_net.h>
 
 #ifdef USE_WIN //RB
    #include <winsock2.h>

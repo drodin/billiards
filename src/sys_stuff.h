@@ -91,7 +91,6 @@ void sys_exit( int code ) ;
 void sys_fullscreen( int fullscr );
 int filecopy(char *filefrom,char *fileto);
 char *replace(char *st, char *orig, char *repl);
-int vsync_supported(void);
 sysResolution * sys_list_modes(void);
 
 void enter_data_dir();
@@ -100,6 +99,7 @@ const char *get_prog();
 int file_exists(const char *path);
 void error_print(char *error_message, char *error_extend);
 int get_dialogprog(void);
+void try_set_vsync(void);
 
 int launch_command(const char *command);
 

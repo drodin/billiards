@@ -30,8 +30,8 @@
 #define PLAY_NOISE(data,volume) PlayNoise(data,volume);
 #define INIT_SOUND() init_sound()
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL.h>
+#include <SDL_mixer.h>
 #include "vmath.h"
 
 /* Mix_Music actually holds the music information. */

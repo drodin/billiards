@@ -43,9 +43,9 @@
  #include <GL/glext.h>
 #endif
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 #ifdef NETWORKING
-  #include <SDL/SDL_net.h>
+  #include <SDL_net.h>
 #endif
 
 #ifdef USE_WIN //RB
@@ -99,6 +99,8 @@ int control__fov = 0;
    int win_width = 1366; //958 <- game frame spec // specs for fullscreen on WeTab
    int win_height = 768; //750 <- game frame spec
 #endif
+
+int native_width, native_height;
 
 VMfloat scr_dpi = 80.0; // dots per inch for Stereo viewing
 
@@ -368,7 +370,6 @@ static struct option long_options[] = {
     {"mouseshoot",   required_argument, NULL, OPT_MSHOOT},
     {"oldmoving",    required_argument, NULL, OPT_MMOVE},
     {"auto_freemove",required_argument, NULL, OPT_FREEMOVE1},
-    {"fsaa",         required_argument, NULL, OPT_FSAA},
     {"roomtexture",  required_argument, NULL, OPT_ROOM},
     {"furnituretex", required_argument, NULL, OPT_FURNITURE},
 #ifdef NETWORKING
@@ -1687,19 +1688,6 @@ void process_option(enum optionType act_option)
                 break;
           }
           break;
-       case OPT_FSAA:
-             sscanf(optarg,"%u",&options_fsaa_value);
-             switch(options_fsaa_value){
-                case 1: /* ok */
-                case 2:
-                case 4:
-                case 8:
-                  break;
-                default:
-                  options_fsaa_value = 0;
-                  break;
-                }
-             break;
 #ifdef NETWORKING
        case OPT_NET_SPEED:
              sscanf(optarg,"%u",&options_net_speed);
@@ -2127,10 +2115,6 @@ void save_config(void)
        case OPT_AI_BIRDVIEW:
              write_rc(f,opt, options_ai_birdview?"on":"off");
              break;
-       case OPT_FSAA:
-             sprintf(str,"%d",options_fsaa_value);
-             write_rc(f,opt,str);
-          break;
 #ifdef NETWORKING
        case OPT_NET_SPEED:
              sprintf(str,"%d",options_net_speed);
@@ -4362,7 +4346,7 @@ void DisplayFunc( void )
 
    // Begin displaying from here
 
-   glViewport( 0, 0, win_width, win_height);
+   glViewport( 0, 0, native_width, native_height);
 
 #ifdef TIME_INTERPOLATE
    interpolate_balls( &g_lastballs, &balls, &g_drawballs, (VMfloat)g_frametime_fromlast/(VMfloat)g_frametime_laststep );
@@ -5643,11 +5627,13 @@ void DisplayFunc( void )
 
 void ResizeWindow( int width, int height )
 {
-   if(width < 958) width = 958;      // don't resize below this
-   if(height < 750) height = 750;
+   if(height < 750) {
+     width = ceil(750.0/height*width);
+     height = 750;
+   }
    win_width=width;
    win_height=height;
-   glViewport( 0, 0, width, height );
+   glViewport( 0, 0, native_width, native_height );
    glMatrixMode( GL_PROJECTION );
    glLoadIdentity();
 }
@@ -6267,7 +6253,7 @@ void Key( int key, int modifiers ) {
          break;
       case '0':
           //Make a screenshot
-      	   Snapshot(win_width,win_height);
+      	   Snapshot(native_width,native_height);
       	   displaystring(localeText[429]);
          break;
       case '1':
@@ -6981,7 +6967,6 @@ void menu_cb( int id, void * arg , VMfloat value)
 #ifndef WETAB
         if(options_fsaa) {
          glEnable(GL_MULTISAMPLE_ARB);
-        	options_fsaa_value = 8; //this value is set correct with the options_maxfsaa
         }
 #endif
         break;
@@ -6992,7 +6977,6 @@ void menu_cb( int id, void * arg , VMfloat value)
           glDisable(GL_MULTISAMPLE_ARB);
         }
 #endif
-        options_fsaa_value = 0;
         break;
     case MENU_ID_ALIASMAX_1:
         options_maxfsaa = 1;
@@ -7252,23 +7236,12 @@ void menu_cb( int id, void * arg , VMfloat value)
         break;
 #endif
     case MENU_ID_VSYNC_ON:
-    	   //compile without errors, if SDL is < Version 10 at compile time
-#if SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION == 2 && SDL_PATCHLEVEL > 9
-        if(vsync_supported()) {
-     	    options_vsync = 1;
-          if (SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1) < 0) { // since SDL v1.2.10
-            fprintf(stderr, "SDL_GL_SWAP_CONTROL error: %s\n", SDL_GetError());
-          }
-        }
-#endif
-    	break;
+        options_vsync = 1;
+        try_set_vsync();
+        break;
     case MENU_ID_VSYNC_OFF:
-    	   options_vsync = 0;
-#if SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION == 2 && SDL_PATCHLEVEL > 9
-          if (SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0) < 0) { // since SDL v1.2.10
-            fprintf(stderr, "SDL_GL_SWAP_CONTROL error: %s\n", SDL_GetError());
-          }
-#endif
+        options_vsync = 0;
+        try_set_vsync();
         break;
     case MENU_ID_RGSTEREO_ON:
         options_rgstereo_on=1;

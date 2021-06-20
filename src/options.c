@@ -1,4 +1,4 @@
-﻿/* options.c
+/* options.c
 **
 **    global variables for options
 **    Copyright (C) 2001  Florian Berger
@@ -157,7 +157,6 @@ int    options_jump_shots = 1;     // Balls can (1) jump out of the table or not
 int    options_jump_shots_net_bak = 1;   // Balls can (1) jump out of the table or not (0) (network play restore int)
 int    options_antialiasing = 1;   // Antialiasing functions, 0 = off, >0 on
 int    options_fsaa = 0;           // FSAA Test 0 = nothing an 1 is present
-int    options_fsaa_value = 0;     // if options_fsaa !=0, the value for fsaa 2 or 4
 int    options_maxfsaa = 2;        // max. value for fsaa testing (1,2,4,8)
 int    options_show_buttons = 1;   // show the control buttons on the screen = 1, or not = 0
 int    options_mouseshoot = 1;     // mouseshoot with angle = 1, without only up/down = 0

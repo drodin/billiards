@@ -303,7 +303,6 @@ enum optionType {
     OPT_MSHOOT,
     OPT_MMOVE,
     OPT_FREEMOVE1,
-    OPT_FSAA,
     OPT_ROOM,
     OPT_FURNITURE,
     OPT_LANG,
