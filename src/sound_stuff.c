@@ -98,7 +98,7 @@ int strsound ( char s1[] )
    int i = 0;
    char s[10];
    if(strlen(s1) > 4) {
-      strcpy(s,&s[strlen(s)-4]);
+      strcpy(s,&s1[strlen(s1)-4]);
       while (s[i]) {
          s[i] = toupper(s[i]);
          ++i;
