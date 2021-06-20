@@ -1,4 +1,4 @@
-﻿/* font.c
+/* font.c
 **
 **    create pixmaps from text using freetype
 **    Copyright (C) 2001  Florian Berger
@@ -263,11 +263,12 @@ return (FT_ULong)0;
 
 /***********************************************************************/
 
-void my_draw_bitmap( char * src, int w1, int h1, int x0, int y0, char * dst , int w )
+void my_draw_bitmap( char * src, int w1, int h1, int x0, int y0, char * dst , int w, int h )
 {
     int x,y;
     for(y=0;y<h1;y++) {
       for(x=0;x<w1;x++) {
+        if(y+y0<h)
           dst[(y+y0)*w+x+x0]+=src[y*w1+x];
       }
     }
@@ -283,6 +284,7 @@ void getStringPixmapFT(char *str, char *fontname, int font_height, char ** data,
     FT_ULong      realindex, newindex, n;
 
     w1=0; h1=0;
+    int left_most = 0;
     //.. initialise library ..
     if(init_me){
         error = FT_Init_FreeType( &library );
@@ -316,6 +318,7 @@ void getStringPixmapFT(char *str, char *fontname, int font_height, char ** data,
     h=font_height;
     for(i=0;i<2;i++){
         if (i==1){
+            w -= left_most;
             for(w1=w,w=8;w<w1;w*=2);
             for(h1=h,h=8;h<h1;h*=2);
 //            fprintf(stderr,"getStringPixmapFT: allocing  w=%d h=%d\n",w,h);
@@ -348,13 +351,23 @@ void getStringPixmapFT(char *str, char *fontname, int font_height, char ** data,
                 sys_exit(1);
             }
              
+            int blitx = pen_x + face->glyph->bitmap_left; 
+            int blity = pen_y + font_height*face->ascender/(face->ascender-face->descender) - face->glyph->bitmap_top; 
+            int blitw = face->glyph->bitmap.width; 
+            int blith = face->glyph->bitmap.rows; 
+            
+            if (blitx < left_most) left_most = blitx; 
+            
             if(i!=0){
                 // now, draw to our target surface
+                /*
                 my_draw_bitmap( (char *)face->glyph->bitmap.buffer,
                                 face->glyph->bitmap.width, face->glyph->bitmap.rows,
                                 pen_x + face->glyph->bitmap_left,
                                 pen_y + font_height*face->ascender/(face->ascender-face->descender) - face->glyph->bitmap_top,
-                                *data , w);
+                                *data , w, h);
+                */
+                my_draw_bitmap( (char *)face->glyph->bitmap.buffer, blitw, blith, blitx - left_most, blity, *data , w, h);
                 pen_x += (face->glyph->advance.x >> 6);
             } else {
 //                fprintf(stderr,"getStringPixmapFT: w=%d h=%d\n",w,h);
