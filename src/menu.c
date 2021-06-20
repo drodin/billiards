@@ -98,6 +98,7 @@ menuType * menu_new( void (* callback)( int, void *, VMfloat ) )
     menu->textedit_mode = 0;
     menu->callback     = callback;
     menu->parent       = (menuType *)0;
+    menu->parent_entry = 0;
     return menu;
 }
 
