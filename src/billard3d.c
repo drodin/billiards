@@ -2236,6 +2236,10 @@ void set_gametype( int gtype )
           setfunc_ai_get_stroke_dir( ai_get_stroke_dir_snooker );
           player[0].cue_ball=0;
           player[1].cue_ball=0;
+          player[0].snooker_on_red = 1;
+          player[0].snooker_next_color = 0;
+          player[1].snooker_on_red = 1;
+          player[1].snooker_next_color = 0;
           player[act_player].place_cue_ball=1;
           break;
         default:
@@ -2709,6 +2713,41 @@ void create_players_text(void)
     player[1].text = textObj_new(player[1].name, options_player_fontname, 28);
     player[0].score_text = textObj_new("0", options_score_fontname, 20);
     player[1].score_text = textObj_new("0", options_score_fontname, 20);
+}
+
+void set_players_score_text() {
+    int i,j;
+    int minballnr;
+    char str[256];
+    for(i=0;i<2;i++) { // score text
+      switch(gametype){
+        case GAME_8BALL:
+            str[0]= '0';
+            str[1] = 0;
+            break;
+        case GAME_9BALL:
+            minballnr=15;
+            for(j=0;j<balls.nr;j++){
+              if(balls.ball[j].nr<minballnr && balls.ball[j].nr!=0 && balls.ball[j].in_game)
+                  minballnr=balls.ball[j].nr;
+            }
+            player[i].next_9ball = minballnr;
+            // next: %d for the localeText
+            sprintf( str, localeText[176], minballnr );
+            if(minballnr == 15) {
+              str[0]=0;
+              }
+            break;
+        case GAME_CARAMBOL:
+            sprintf( str, "%+04d", player[i].score );
+            break;
+        case GAME_SNOOKER:
+            // col, red, yellow, green, brown, blue, pink, black for localeText
+            snooker_color(str,abs(player[i].score),act_player,i);
+            break;
+      }
+      textObj_setText( player[i].score_text, str );
+    }
 }
 
 /***********************************************************************
@@ -4299,35 +4338,8 @@ void DisplayFunc( void )
          }
          all_balls_free_place(&balls); // no balls should overlap
 
-         for(i=0;i<2;i++) { // score text
-           switch(gametype){
-             case GAME_8BALL:
-                 str[0]= '0';
-                 str[1] = 0;
-                 break;
-             case GAME_9BALL:
-                 minballnr=15;
-                 for(j=0;j<balls.nr;j++){
-                   if(balls.ball[j].nr<minballnr && balls.ball[j].nr!=0 && balls.ball[j].in_game)
-                       minballnr=balls.ball[j].nr;
-                 }
-                 player[i].next_9ball = minballnr;
-                 // next: %d for the localeText
-                 sprintf( str, localeText[176], minballnr );
-                 if(minballnr == 15) {
-                   str[0]=0;
-                   }
-                 break;
-             case GAME_CARAMBOL:
-                 sprintf( str, "%+04d", player[i].score );
-                 break;
-             case GAME_SNOOKER:
-                 // col, red, yellow, green, brown, blue, pink, black for localeText
-                 snooker_color(str,abs(player[i].score),act_player,i);
-                 break;
-           }
-           textObj_setText( player[i].score_text, str );
-         }
+         set_players_score_text();
+
          // after shoot switch back to freeview if set
          if(options_auto_freemove && !queue_view && !balls_moving && !(player[act_player].is_net || player[act_player].is_AI)) {
                if(options_birdview_on) {
@@ -5868,14 +5880,10 @@ void restart_game_common(void)
 #endif
     player[0].half_full=BALL_ANY;
     player[1].half_full=BALL_ANY;
-    player[0].place_cue_ball=0;
-    player[1].place_cue_ball=0;
     player[0].winner=0;
     player[1].winner=0;
     player[0].score=0;
     player[1].score=0;
-    textObj_setText(player[0].score_text,"0");
-    textObj_setText(player[1].score_text,"0");
     create_walls( &walls );
     create_scene( &balls );
     tableinfov();
@@ -5892,12 +5900,9 @@ void restart_game_common(void)
       sprintf(statusstr,localeText[175],options_maxp_carambol);
       concatworkstring(statusstr);
       setst_text();
-      player[0].cue_ball=0;
-      player[1].cue_ball=1;
-    } else {
-      player[0].cue_ball=0;
-      player[1].cue_ball=0;
     }
+    set_gametype(gametype);
+    set_players_score_text();
 
     // switch back to a start position
     Xrot = -70.0;
@@ -7556,10 +7561,7 @@ void menu_cb( int id, void * arg , VMfloat value)
         break;
     case MENU_ID_RESTART:
     	save_config();
-    	SDL_Delay(1000); //wait a second
-    	sdl_exit(); //only quit SDL before new restart!!!
-    	execl(get_prog(),appname_str,(char *)0);
-    	fprintf(stderr,"Return not expected. Must be an execv error.\n");
+      restart_game();
         break;
     case MENU_ID_CONTROL_KIND_ON:
         options_control_kind = 1;

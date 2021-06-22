@@ -1,4 +1,4 @@
-﻿/* evaluate_move.c
+/* evaluate_move.c
 **
 **    evaluate moves for dfferent gametypes
 **    Copyright (C) 2001  Florian Berger
@@ -755,6 +755,7 @@ void evaluate_last_move_snooker( struct Player * player, int * pact_player, Ball
 
 void setfunc_evaluate_last_move(void (* eval_func)( struct Player * player, int * actual_player, BallsType * pballs, int * pqueue_view))
 {
+    st.to_play = SN_PLAY_RED;
     evaluate_last_move=eval_func;
 }
 
