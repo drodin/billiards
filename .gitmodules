@@ -1,0 +1,4 @@
+[submodule "3rdParty/gl4es"]
+	path = 3rdParty/gl4es
+	url = https://github.com/drodin/gl4es.git
+	branch = hunter-1.1.4-8f1cf6e
