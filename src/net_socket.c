@@ -1,4 +1,4 @@
-﻿/* net_socket.c
+/* net_socket.c
 **
 **    code for network-play
 **
@@ -155,6 +155,9 @@ char* get_ip_address(void)
 
  for (ifa = myaddrs; ifa != NULL; ifa = ifa->ifa_next){
    if (NULL == ifa->ifa_addr){
+     continue;
+   }
+   if (ifa->ifa_addr->sa_family == AF_INET6){
      continue;
    }
    if ((ifa->ifa_flags & IFF_UP) == 0) {

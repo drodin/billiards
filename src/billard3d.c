@@ -282,7 +282,7 @@ VMfloat g_motion_ratio=1.0;  /* a shot to be due at the beginning */
   static TCPsocket client=NULL;      // hold a client TCP connection socket
   static TCPsocket g_socket=NULL;    // socket for game-play
   static char *ip_adresses;          // hold the 0 terminated IP-Addresses of the Host/Client
-  static char *ipptr[9];             // pointer to ip_adresses, max. 9
+  static char *ipptr[10];            // pointer to ip_adresses, max. 9
   static VMfloat queue_offs_sik;     // for quick converting double to float and the pointer bug in some gcc
   SDL_TimerID net_id=NULL;           // hold a SDL-Timer Event in network play in initialization
   SDL_TimerID active_net_timer=NULL; // timer on !=NULL, NULL = off for network game
