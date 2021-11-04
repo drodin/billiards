@@ -7560,7 +7560,6 @@ void menu_cb( int id, void * arg , VMfloat value)
         options_lensflare=0;
         break;
     case MENU_ID_RESTART:
-    	save_config();
       restart_game();
         break;
     case MENU_ID_CONTROL_KIND_ON:
@@ -7793,6 +7792,7 @@ void menu_cb( int id, void * arg , VMfloat value)
     case MENU_ID_IDLE:
         break;
     }
+    save_config();
 }
 
 /***********************************************************************
