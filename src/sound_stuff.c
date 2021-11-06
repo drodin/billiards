@@ -229,7 +229,7 @@ void init_sound(void)
       options_use_sound=0;
       options_use_music=0;
     } else {
-    	 Mix_AllocateChannels(20); // max. 20 Channels
+    	 Mix_AllocateChannels(50); // max. 50 Channels
     	 Mix_Volume(-1,MIX_MAX_VOLUME);
 
     	 // Extended Init for Version higher then SDL 1.2.10
@@ -332,11 +332,15 @@ void init_sound(void)
  ***********************************************************************/
 void PlayNoise(Mix_Chunk *chunkdata, int volume)
 {
+     static int channel = -1;
 	   if(options_use_sound) {
 	   	 if (chunkdata != NULL) {
 	   	   //fprintf(stderr,"Volume: %i\n",volume);
 	       Mix_VolumeChunk(chunkdata, volume);
-	       Mix_PlayChannel(-1, chunkdata, 0);
+	       channel = Mix_PlayChannel(-1, chunkdata, 0);
+         if (channel < 0) {
+           //fprintf(stderr,"Not enough mix channels");
+         }
 	   	 }
 	   }
 }
