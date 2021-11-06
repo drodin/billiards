@@ -1,4 +1,4 @@
-﻿/* sys_stuff.h
+/* sys_stuff.h
 **
 **    code for system-behaviour
 **    Copyright (C) 2001  Florian Berger
@@ -26,6 +26,11 @@
 #define SYS_STUFF_H
 
 #include "vmath.h"
+
+#if defined(__APPLE__) && !defined(__MOBILE__)
+#define GL_LINE GL_FILL
+#define GL_LINE_STIPPLE GL_LINE_SMOOTH
+#endif
 
 typedef enum 
 {

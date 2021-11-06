@@ -1045,8 +1045,10 @@ void init_menu(void)
 #endif
     //lensflare
     menu_add_submenu(effects_menu, localeText[103], lensflare_menu, 1, localeText[65-options_lensflare],localeText[373]);
+#if !defined(__APPLE__) || defined(__MOBILE__)
     // Tron mode
     menu_add_entry(effects_menu, localeText[237], MENU_ID_TABLETHEME_TRON,localeText[315]);
+#endif
     // Glass balls
     menu_add_entry(effects_menu, localeText[68], MENU_ID_GLASSBALLS,localeText[287]);
     //< back
