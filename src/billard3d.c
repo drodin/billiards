@@ -5509,10 +5509,10 @@ void DisplayFunc( void )
          }
          // english moving (white ball, cross left and special graphic right corner)
          if(control__english) {
+           glPushMatrix();
            if(english_id == -1) {
              english_id = glGenLists(1);
              glNewList(english_id, GL_COMPILE_AND_EXECUTE);
-             glPushMatrix();
              glTranslatef(-0.95,0.15,0.0);
              glScalef(2.0/win_width,2.0/win_height,1.0);
              glBindTexture(GL_TEXTURE_2D,englishbind); //English Control if set
@@ -5538,11 +5538,11 @@ void DisplayFunc( void )
            //then middle position is 106,100,0.0
            glTranslatef(106.0+(queue_point_x*5300),100.0-(queue_point_y*5300),0.0);
            glBindTexture(GL_TEXTURE_2D,kreuzbind); //English control cross png texture
+           myRect2D_texture();
+           glPopMatrix();
            if(english1_id == -1) {
              english1_id = glGenLists(1);
              glNewList(english1_id, GL_COMPILE_AND_EXECUTE);
-             myRect2D_texture();
-             glPopMatrix();
              glPushMatrix();
              glTranslatef(0.03,-0.94,0.0);
              glScalef(2.0/win_width,2.0/win_height,1.0);
