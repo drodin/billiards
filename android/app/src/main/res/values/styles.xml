@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+	<style name="Theme" parent="android:Theme.Black.NoTitleBar.Fullscreen">
+      <item name="android:windowLayoutInDisplayCutoutMode">
+        shortEdges <!-- default, shortEdges, never -->
+      </item>
+	</style>
+</resources>
