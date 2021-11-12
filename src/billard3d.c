@@ -2412,13 +2412,14 @@ void birdview(void)
       Xrot_offs -= Xoffs;
       Zrot_offs -= Zoffs;
       Xrot = 0.0;
-      Zrot = -90.0;
+      Zrot = 270.0;
       Xrot_offs = 0.0;
       Zrot_offs = 0.0;
       old_queue_view = queue_view;
    } else {
       toggle_queue_view();
       if(queue_view != old_birdview_queue) {
+         Xrot = -70.0;
          toggle_queue_view();
          }
       if(old_options_free_view_on != options_free_view_on) {
@@ -4350,17 +4351,15 @@ void DisplayFunc( void )
             }
 
          // bird-view for AI or net player
-         if(options_ai_birdview) {
-           if((player[act_player].is_AI || player[act_player].is_net) && !(player[0].winner || player[1].winner) && !options_birdview_on) {
+         if(options_ai_birdview && (player[act_player].is_AI || player[act_player].is_net) && !(player[0].winner || player[1].winner) && !options_birdview_on) {
              old_birdview_ai = 1;
              birdview();
-           } else if (!player[act_player].is_AI && !player[act_player].is_net && options_birdview_on && old_birdview_ai) {
+         } else if (!player[act_player].is_AI && !player[act_player].is_net && options_birdview_on && (options_ai_birdview || old_birdview_ai)) {
              old_birdview_ai = queue_view;
              queue_view=0;
              birdview();
              queue_view=old_birdview_ai;
              old_birdview_ai = 0;
-           }
          }
 
          // unset mouseshoot
