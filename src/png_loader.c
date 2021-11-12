@@ -1,4 +1,4 @@
-﻿/* pngloader.c
+/* pngloader.c
 **
 **    load png-textures
 **    Copyright (C) 2001  Florian Berger
@@ -164,10 +164,10 @@ void Snapshot(int width, int height)
 
     /* create file */
 
-    get_history(file_name);
+    sprintf(file_name,"%s\\Desktop",getenv("USERPROFILE"));
     mkdir(file_name);  // every time is not a problem
 
-    sprintf(randomname,"/screen-%i.bmp",rand());
+    sprintf(randomname,"\\screen-%i.bmp",rand());
     strcat(file_name,randomname);
 
 	   temp = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
@@ -199,12 +199,8 @@ void Snapshot(int width, int height)
     png_bytep *row_pointers;
 
     /* create file */
-	   get_history(file_name);
-#ifdef USE_WIN
-    mkdir(file_name);  // every time is not a problem
-#else
+    sprintf(file_name,"%s/Pictures",getenv("HOME"));
     mkdir(file_name,0777);  // every time is not a problem
-#endif
     sprintf(randomname,"/screen-%i.png",rand());
     strcat(file_name,randomname);
 
