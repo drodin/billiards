@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__MOBILE__)
  #include <OpenGL/gl.h>
 #else
  #include <GL/gl.h>
@@ -48,6 +48,9 @@ extern int vline_on;            // dto.
 extern struct Player player[2]; // dto.
 
 void menu_cb( int, void *, VMfloat); // dto.
+
+static int entry_spacer = 32;
+static int font_size = 32;
 
 /***********************************************************************
  *                   check for a valid IPv4 address                    *
@@ -116,7 +119,7 @@ void menu_add_submenu( menuType * menu, char * text, menuType * submenu, int sho
         menu->entry[menu->nr].text_obj = (textObj *)0;
         menu->entry[menu->nr].help_line = help_line;
         menu->entry[menu->nr].fontname = options_menu_fontname;
-        menu->entry[menu->nr].fontsize = 32;
+        menu->entry[menu->nr].fontsize = font_size;
         menu->entry[menu->nr].show_subsetting = show_subsetting;
         menu->entry[menu->nr].arg      = (void *) 0;
         if(submenu!=(menuType *)0){
@@ -149,7 +152,7 @@ void menu_add_entry( menuType * menu, char * text, int id, char * help_line )
         menu->entry[menu->nr].text_obj = (textObj *)0;
         menu->entry[menu->nr].help_line = help_line;
         menu->entry[menu->nr].fontname = options_menu_fontname;
-        menu->entry[menu->nr].fontsize = 32;
+        menu->entry[menu->nr].fontsize = font_size;
         menu->entry[menu->nr].arg      = (void *) 0;
         menu->entry[menu->nr].value    = -1.0f;
         menu->nr++;
@@ -173,7 +176,7 @@ void menu_add_arg_entry( menuType * menu, char * text, int id, void * arg, char 
         menu->entry[menu->nr].text_obj = (textObj *)0;
         menu->entry[menu->nr].help_line = help_line;
         menu->entry[menu->nr].fontname = options_menu_fontname;
-        menu->entry[menu->nr].fontsize = 32;
+        menu->entry[menu->nr].fontsize = font_size;
         menu->entry[menu->nr].arg      = arg;
         menu->entry[menu->nr].value    = -1.0f;
         menu->nr++;
@@ -198,7 +201,7 @@ void menu_add_value_entry( menuType * menu, char * text, int id, VMfloat value, 
         menu->entry[menu->nr].text_obj = (textObj *)0;
         menu->entry[menu->nr].help_line = help_line;
         menu->entry[menu->nr].fontname = options_menu_fontname;
-        menu->entry[menu->nr].fontsize = 32;
+        menu->entry[menu->nr].fontsize = font_size;
         menu->entry[menu->nr].arg      = (void *) 0;
         menu->entry[menu->nr].value    = value;
         menu->nr++;
@@ -222,7 +225,7 @@ void menu_add_textfield( menuType * menu, char * text, int id, int fixedlen, int
         menu->entry[menu->nr].text_obj = (textObj *)0;
         menu->entry[menu->nr].help_line = help_line;
         menu->entry[menu->nr].fontname = options_menu_fontname;
-        menu->entry[menu->nr].fontsize = 32;
+        menu->entry[menu->nr].fontsize = font_size;
         menu->entry[menu->nr].arg      = (void *)0;
         menu->entry[menu->nr].value    = -1.0f;
         menu->entry[menu->nr].fixedlen = fixedlen;
@@ -251,7 +254,7 @@ void menu_add_exit( menuType * menu, char *text, char * help_line)
         menu->entry[menu->nr].text_obj = (textObj *)0;
         menu->entry[menu->nr].help_line = help_line;
         menu->entry[menu->nr].fontname = options_menu_fontname;
-        menu->entry[menu->nr].fontsize = 32;
+        menu->entry[menu->nr].fontsize = font_size;
         menu->entry[menu->nr].arg      = (void *) 0;
         menu->entry[menu->nr].value    = -1.0f;
         menu->nr++;
@@ -309,7 +312,7 @@ void menu_select_by_coord( menuType * menu, int x, int y )
     if(!menu->textedit_mode){
         all_height=0;
         for(i=0;i<menu->nr;i++){
-            all_height+=menu->entry[i].fontsize;
+            all_height+=menu->entry[i].fontsize+entry_spacer;
         }
 
         for(i=0;i<menu->nr;i++){
@@ -318,9 +321,9 @@ void menu_select_by_coord( menuType * menu, int x, int y )
                 menu_create_textobj( &(menu->entry[i]) );
             }
             x1 = -menu->entry[i].text_obj->quad_w/2;
-            y1 = all_height/2-i*menu->entry[i].fontsize-menu->entry[i].text_obj->quad_h/2;
+            y1 = all_height/2-i*menu->entry[i].fontsize-menu->entry[i].text_obj->quad_h/2-i*entry_spacer;
             x2 = +menu->entry[i].text_obj->quad_w/2;
-            y2 = all_height/2-i*menu->entry[i].fontsize+menu->entry[i].text_obj->quad_h/2;
+            y2 = all_height/2-i*menu->entry[i].fontsize+menu->entry[i].text_obj->quad_h/2-i*entry_spacer;
             if( x<=x2 && x>=x1 && y<=y2 && y>=y1 ){
                 menu->select_index=i;
                 *(menu->p_select_id)=menu->entry[i].id;
@@ -341,7 +344,7 @@ int menu_choose_by_coord( menuType * menu, int x, int y )
     if(!menu->textedit_mode){
         all_height=0;
         for(i=0;i<menu->nr;i++){
-            all_height+=menu->entry[i].fontsize;
+            all_height+=menu->entry[i].fontsize+entry_spacer;
         }
 
         for(i=0;i<menu->nr;i++){
@@ -349,9 +352,9 @@ int menu_choose_by_coord( menuType * menu, int x, int y )
                 menu_create_textobj( &(menu->entry[i]) );
             }
             x1 = -menu->entry[i].text_obj->quad_w/2;
-            y1 = all_height/2-i*menu->entry[i].fontsize-menu->entry[i].text_obj->quad_h/2;
+            y1 = all_height/2-i*menu->entry[i].fontsize-menu->entry[i].text_obj->quad_h/2-i*entry_spacer;
             x2 = +menu->entry[i].text_obj->quad_w/2;
-            y2 = all_height/2-i*menu->entry[i].fontsize+menu->entry[i].text_obj->quad_h/2;
+            y2 = all_height/2-i*menu->entry[i].fontsize+menu->entry[i].text_obj->quad_h/2-i*entry_spacer;
             if( x<=x2 && x>=x1 && y<=y2 && y>=y1 ){
                 return(1);
             }
@@ -418,7 +421,9 @@ void menu_choose(menuType ** menu)
         if(!(*menu)->textedit_mode){
             //fprintf(stderr,"menu_choose: ENTRY_TYPE_TEXTFIELD - !textedit_mode\n");
             (*menu)->textedit_mode=1;
-#ifdef WETAB
+#ifdef __MOBILE__
+            SDL_StartTextInput();
+#elif defined(WETAB)
             sys_fullscreen(0);
             SDL_Delay(20);
             launch_command("tiitoo-keyboard-toggle-daemon.sh on");
@@ -456,7 +461,9 @@ void menu_choose(menuType ** menu)
             }
            // check end 
            (*menu)->textedit_mode=0;
-#ifdef WETAB
+#ifdef __MOBILE__
+            SDL_StopTextInput();
+#elif defined(WETAB)
            launch_command("tiitoo-keyboard-toggle-daemon.sh off");
             sys_fullscreen(1);
             SDL_Delay(20);
@@ -494,7 +501,9 @@ void menu_exit(menuType ** menu)
     } else {
         textObj_setText( (*menu)->entry[(*menu)->select_index].text_obj, (*menu)->entry[(*menu)->select_index].text );
         (*menu)->textedit_mode=0;
-#ifdef WETAB
+#ifdef __MOBILE__
+        SDL_StartTextInput();
+#elif defined(WETAB)
         launch_command("tiitoo-keyboard-toggle-daemon.sh off");
         sys_fullscreen(1);
         SDL_Delay(20);
@@ -572,7 +581,7 @@ void menu_draw( menuType * menu )
 
     all_height=0;
     for(i=0;i<menu->nr;i++){
-        all_height+=menu->entry[i].fontsize;
+        all_height+=menu->entry[i].fontsize+entry_spacer;
     }
     glPushMatrix();
     glPushAttrib(GL_CURRENT_BIT);
@@ -621,7 +630,7 @@ void menu_draw( menuType * menu )
             glPopMatrix();
         }
 
-        glTranslatef(0,-menu->entry[i].fontsize,0);
+        glTranslatef(0,-menu->entry[i].fontsize-entry_spacer,0);
     }
     glPopAttrib();
     glPopMatrix();
@@ -697,27 +706,33 @@ void init_menu(void)
     static menuType * netcompatible_menus;
 #endif
     static menuType  *g_options_menu;
+#ifndef __MOBILE__
     static menuType * quit_menu;
+#endif
 #ifdef USE_SOUND
     static menuType * sound_menu;
     static menuType * music_menu;
     static menuType * audio_menu;
 #endif
+#ifndef __MOBILE__
     static menuType * anisotrop_menu;
     static menuType * antialias_menu;
     static menuType * antialias_max;
     static menuType * fullscreen_menu;
     static menuType * resolution_menu;
     static menuType * reflection_menu;
+#endif
     static menuType * render_menu;
     static menuType * light_menu;
     static menuType * view_menu;
     static menuType * game_menu;
     static menuType * language_menu;
     static menuType * vsync_menu;
+#ifndef __MOBILE__
     static menuType * rgstereo_menu;
     static menuType * rgenable_menu;
     static menuType * rgaim_menu;
+#endif
     static menuType * effects_menu;
     static menuType * lensflare_menu;
     static menuType * balldetail_menu;
@@ -796,6 +811,7 @@ void init_menu(void)
     menu_add_exit ( tourfast_menu, localeText[63],localeText[266]);
 #endif
 
+#ifndef __MOBILE__
     /*
      Resolution Menu comes from Graphics/Reflections, Resolution of Antialiasing
      */
@@ -810,6 +826,7 @@ void init_menu(void)
     menu_add_entry(resolution_menu, localeText[72], MENU_RES_REND_VERYHIGH,localeText[284]);
     //back
     menu_add_exit(resolution_menu, localeText[63],localeText[266]);
+#endif
 
     /*
      Render Menu comes from Graphics/Reflections
@@ -819,11 +836,14 @@ void init_menu(void)
     menu_add_entry(render_menu, localeText[448], MENU_ID_REFLECTION_STANDARD,localeText[449]);
     //spheremap
     menu_add_entry(render_menu, localeText[66], MENU_ID_REFLECTION_SPHERE,localeText[285]);
+#ifndef __MOBILE__
     //rendered
     menu_add_entry(render_menu, localeText[67], MENU_ID_REFLECTION_RENDERED,localeText[286]);
+#endif
     //< back
     menu_add_exit(render_menu, localeText[63],localeText[266]);
 
+#ifndef __MOBILE__
     /*
      Reflections Menu comes from Graphics Options
      */
@@ -847,6 +867,7 @@ void init_menu(void)
     menu_add_submenu(reflection_menu, localeText[209],resolution_menu, 1, localeText[neuwert],localeText[289]);
     //< back
     menu_add_exit(reflection_menu, localeText[63],localeText[266]);
+#endif
 
     /*
      Lights Menu comes from Graphics Options
@@ -917,6 +938,7 @@ void init_menu(void)
     }
 #endif
 
+#ifndef __MOBILE__
     /*
      Fullscreen Menu comes from Graphics Options
      */
@@ -1003,6 +1025,7 @@ void init_menu(void)
     menu_add_submenu( rgstereo_menu, localeText[79], rgaim_menu, 1, localeText[75-options_rgaim],localeText[304]);
     //< back
     menu_add_exit ( rgstereo_menu, localeText[63],localeText[266]);
+#endif
 
     /*
     Lensflare come from View Options
@@ -1016,8 +1039,10 @@ void init_menu(void)
     menu_add_exit (lensflare_menu, localeText[63],localeText[266]);
 
     effects_menu = menu_new( menu_cb );
+#ifndef __MOBILE__
     //red/green stereo
     menu_add_submenu(effects_menu, localeText[102], rgstereo_menu, 0, NULL,localeText[372]);
+#endif
     //lensflare
     menu_add_submenu(effects_menu, localeText[103], lensflare_menu, 1, localeText[65-options_lensflare],localeText[373]);
     // Tron mode
@@ -1639,6 +1664,7 @@ void init_menu(void)
     //< back
     menu_add_exit (view_menu, localeText[63],localeText[266]);
 
+#ifndef __MOBILE__
     /*
      Anisotrop menu come from Graphic Options
     */
@@ -1654,18 +1680,21 @@ void init_menu(void)
       //< back
       menu_add_exit (anisotrop_menu, localeText[63],localeText[266]);
     }
+#endif
 
     /********************************************************/
     /*
       Graphic Options come from Main Menu
     */
     g_options_menu = menu_new( menu_cb );
+#ifndef __MOBILE__
     //Anisothropic filter
     if(options_anisotrop && options_maxanisotrop > 0.0) {
       menu_add_submenu(g_options_menu, localeText[217] , anisotrop_menu, 1, NULL,localeText[381]);
       }
     //Antialiasing
     menu_add_submenu(g_options_menu, localeText[218] , antialias_menu, 1, localeText[65-options_antialiasing],localeText[382]);
+#endif
 #ifndef WETAB
     //Resolution
     menu_add_submenu(g_options_menu, localeText[100], videomode_menu,  1, NULL,localeText[383]);
@@ -1673,7 +1702,11 @@ void init_menu(void)
     menu_add_submenu(g_options_menu, localeText[101], fullscreen_menu, 1, NULL,localeText[384]);
 #endif
     //reflections
+#ifndef __MOBILE__
     menu_add_submenu(g_options_menu, localeText[105], reflection_menu, 0, NULL,localeText[385]);
+#else
+    menu_add_submenu(g_options_menu, localeText[105],render_menu, 1, localeText[render_type],localeText[385]);
+#endif
     //ball detail
     switch(options_max_ball_detail) {
       case options_max_ball_detail_LOW:
@@ -1787,6 +1820,7 @@ void init_menu(void)
     menu_add_entry(language_menu, localeText[471] , MENU_ID_LANG_DE,localeText[470]);
     //Back
     menu_add_exit(language_menu, localeText[63],localeText[266]);
+#ifndef __MOBILE__
     /********************************************************/
     /*
       question to quit the whole program come from Main Menu
@@ -1796,6 +1830,7 @@ void init_menu(void)
     menu_add_entry(quit_menu, localeText[110],MENU_ID_MAIN_QUIT,localeText[400]);
     //NO  continue
     menu_add_exit(quit_menu, localeText[111],localeText[401]);
+#endif
 
 
     /********************************************************/
@@ -1823,8 +1858,10 @@ void init_menu(void)
     menu_add_submenu(g_main_menu, localeText[469], language_menu, 0, NULL,localeText[470]);
     //Help
     menu_add_entry(g_main_menu, localeText[148], MENU_ID_MAIN_HELP,localeText[408]);
+#ifndef __MOBILE__
     //Quit
     menu_add_submenu(g_main_menu,localeText[143], quit_menu, 0, NULL,localeText[410]);
+#endif
 
     g_act_menu = (menuType *)0;
 }

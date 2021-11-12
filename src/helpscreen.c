@@ -1,4 +1,4 @@
-﻿/* helpscreen.c
+/* helpscreen.c
 **
 **    helpscreen using textobj
 **    Copyright (C) 2001  Florian Berger
@@ -42,6 +42,7 @@ void create_help_screen(int win_width, int win_height)
 
         *text = textObj_new( localeText[148], options_help_fontname, 21 );
         text++;
+#ifndef __MOBILE__
         *text = textObj_new( localeText[149], options_help_fontname, 16);
         text++;
         *text = textObj_new( localeText[150], options_help_fontname, 16);
@@ -86,6 +87,7 @@ void create_help_screen(int win_width, int win_height)
         text++;
         *text = textObj_new( localeText[170], options_help_fontname, 16);
         text++;
+#endif
         *text = textObj_new( localeText[171], options_help_fontname, 16);
         text++;
         *text = textObj_new( localeText[172], options_help_fontname, 16);

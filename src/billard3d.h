@@ -78,6 +78,9 @@ void Key( int key, int modifiers );
 void KeyUp( int key );
 void MouseEvent(MouseButtonEnum button,MouseButtonState  state, int x, int y);
 void MouseMotion(int x, int y);
+#ifdef __MOBILE__
+void TouchZoom(VMfloat delta);
+#endif
 void DisplayFunc(void);
 void ResizeWindow(int w,int h);
 void save_config(void);

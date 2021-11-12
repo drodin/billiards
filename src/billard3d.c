@@ -1,4 +1,4 @@
-/* billard3d.c
+﻿/* billard3d.c
 **
 **    drawing all with OpenGL
 **    Copyright (C) 2001  Florian Berger
@@ -33,7 +33,7 @@
 #include <math.h>
 #include <unistd.h>
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__MOBILE__)
  #include <OpenGL/gl.h>
  #include <OpenGL/glu.h>
  #include <OpenGL/glext.h>
@@ -1790,10 +1790,10 @@ void load_config( char *** confv, int * confc, char ** argv, int argc )
 
 #ifdef USE_WIN //HS
     sprintf(filename,"%s\\.foobillardrc",getenv("USERPROFILE"));
-#elif defined(__APPLE__)
-    sprintf(filename,"%s/Library/Preferences/org.foobillard.Foobillard--",getenv("HOME"));
+#elif ANDROID
+    sprintf(filename,"%s/.foobillardrc",SDL_AndroidGetInternalStoragePath());
 #else
-    sprintf(filename,"%s/.foobillardrc",getenv("HOME"));
+    sprintf(filename,"%s/Documents/.foobillardrc",getenv("HOME"));
 #endif
     fprintf(stderr,"Use config-file: %s\n",filename);
     if( (f=fopen(filename,"rb")) != NULL ){
@@ -1869,10 +1869,10 @@ void save_config(void)
 
 #ifdef USE_WIN //HS
     sprintf(filename,"%s\\.foobillardrc",getenv("USERPROFILE"));
-#elif defined(__APPLE__)
-    sprintf(filename,"%s/Library/Preferences/org.foobillard.Foobillard--",getenv("HOME"));
+#elif ANDROID
+    sprintf(filename,"%s/.foobillardrc",SDL_AndroidGetInternalStoragePath());
 #else
-    sprintf(filename,"%s/.foobillardrc",getenv("HOME"));
+    sprintf(filename,"%s/Documents/.foobillardrc",getenv("HOME"));
 #endif
     if((f=fopen(filename,"wb"))==NULL){
         //can't write to %s - check rights\n
@@ -2431,7 +2431,7 @@ void init_ai_player_roster(struct PlayerRoster * roster)
     int i;
     char str[256];
 
-    #ifdef WETAB
+    #if defined(WETAB) && !defined(__MOBILE__)
      #define PLAYER1 "Arthur Dent"
      #define PLAYER2 "Ford Prefect"
      #define PLAYER3 "Zaphod Beeblebrox"
@@ -2640,7 +2640,7 @@ void create_players_text(void)
 #ifdef USE_WIN
       if(getenv("USERNAME"))
           strcpy(player0_name,getenv("USERNAME"));
-#elif
+#elif !defined(__MOBILE__)
       if(getenv("USER"))
           strcpy(player0_name,getenv("USER"));
 #endif
@@ -3572,6 +3572,12 @@ void MouseMotion(int x, int y)
     } //end menuselect
 }
 
+#ifdef __MOBILE__
+void TouchZoom(VMfloat delta) {
+  zoom_in_out(-delta*win_width);
+}
+#endif
+
 /***********************************************************************
  *              draw the rectangles for the buttons                    *
  ***********************************************************************/
@@ -4080,7 +4086,7 @@ void DisplayFunc( void )
   VMmatrix4 mv_matr;
   VMmatrix4 prj_matr;
   VMvect dpos,dpos1,actpos,centpos,right,up; // for the Lensflare
-#ifndef WETAB
+#if !defined(WETAB) || defined(__MOBILE__)
   VMvect bx, by, bz, p, p1, p2;  //for the Helpline Cross on the ball
 #endif
   static GLfloat real_dist=0.0;
@@ -4777,7 +4783,7 @@ void DisplayFunc( void )
 
       /* HUD stuff */
        glDisable(GL_DEPTH_TEST);
-#ifndef WETAB
+#if !defined(WETAB) || defined(__MOBILE__)
        // the WeTab is to slow for this !!
        if((vline_on || (control__active && control__english)) && queue_view && !balls_moving){
            bz=vec_unit(vec_diff(cam_pos,balls.ball[cue_ball].r));
@@ -5381,6 +5387,7 @@ void DisplayFunc( void )
            glBindTexture(GL_TEXTURE_2D,kreuzbind); //English control cross png texture
            myRect2D_texture();
            glPopMatrix();
+#ifndef __MOBILE__
            if(english1_id == -1) {
              english1_id = glGenLists(1);
              glNewList(english1_id, GL_COMPILE_AND_EXECUTE);
@@ -5395,7 +5402,9 @@ void DisplayFunc( void )
              //fprintf(stderr,"english move %i\n",english1_id);
              glCallList(english1_id);
            }
+#endif
          }
+#ifndef __MOBILE__
          if(control__mouse_shoot) {
            if(shoot_id == -1) {
              shoot_id = glGenLists(1);
@@ -5460,6 +5469,7 @@ void DisplayFunc( void )
              glCallList(fov_id);
            }
          }
+#endif
        }
        if(options_free_view_on && !options_birdview_on) {    // Freeview png if freeview on
          if(freeview_id == -1) {
@@ -5627,6 +5637,16 @@ void DisplayFunc( void )
 
 void ResizeWindow( int width, int height )
 {
+#ifdef ANDROID
+    float ddpi, hdpi, vdpi;
+    SDL_GetDisplayDPI(0,&ddpi,&hdpi,&vdpi);
+    if(hdpi > 280) {
+        vdpi = floor(hdpi/10)*10;
+        ddpi = 280/vdpi;
+        width *= ddpi;
+        height *= ddpi;
+    }
+#endif
    if(height < 750) {
      width = ceil(750.0/height*width);
      height = 750;
@@ -7562,7 +7582,7 @@ static void Init( void )
     create_png_texbind("cancel.png", &cancelbind, 3, GL_RGBA);
     create_png_texbind("pause.png", &pausebind, 3, GL_RGBA);
     create_png_texbind("start.png", &pausebind1, 3, GL_RGBA);
-#ifdef WETAB
+#if defined(WETAB) && !defined(__MOBILE__)
     create_png_texbind("mright-wetab.png", &mrightbind, 3, GL_RGBA);
 #else
     create_png_texbind("mright.png", &mrightbind, 3, GL_RGBA);

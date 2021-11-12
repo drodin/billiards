@@ -34,12 +34,12 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__MOBILE__)
  #include <OpenGL/gl.h>
  #include <OpenGL/glu.h>
 #else
- #include <GL/gl.h>
  #include <GL/glu.h>
+ #include <GL/gl.h>
 #endif
 #ifdef USE_WIN //HS
 	#include <GL/glext.h>

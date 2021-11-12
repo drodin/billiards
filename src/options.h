@@ -25,10 +25,13 @@
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__MOBILE__)
  #include <OpenGL/gl.h>
 #else
  #include <GL/gl.h>
+#ifdef __MOBILE__
+ #undef USE_MGL_NAMESPACE
+#endif
 #endif
 #include "vmath.h"
 

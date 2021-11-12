@@ -40,21 +40,25 @@
   #include <SDL_net.h>
 #endif
 #include "sound_stuff.h"
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__MOBILE__)
  #include <OpenGL/OpenGL.h>
- #include <OpenGL/gl.h>
  #include <OpenGL/glu.h>
+ #include <OpenGL/gl.h>
  #include <OpenGL/glext.h>
  #include <CoreFoundation/CoreFoundation.h>
 #else
- #include <GL/gl.h>
  #include <GL/glu.h>
+ #include <GL/gl.h>
  #include <GL/glext.h>
 #endif
 #include "sys_stuff.h"
 #include "billard3d.h"
 
 /***********************************************************************/
+
+#ifdef __MOBILE__
+extern void initialize_gl4es();
+#endif
 
 static int fullscreen = 0;
 static int keymodif =0;
@@ -168,7 +172,7 @@ char message[2048];
 #ifdef USE_WIN
   MessageBox(0,message,"Foobillard++ Error",MB_OK);
 #else
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__MOBILE__)
   // needs -framework CoreFoundation
   SInt32 nRes = 0;
   CFUserNotificationRef pDlg = NULL;
@@ -194,7 +198,7 @@ char message[2048];
   // display a dialog window only if fullscreen is not active
   if(dialog>=0 && dialog < 2 && !sys_get_fullscreen()) {
     snprintf(newmessage,sizeof(newmessage),dialog_prog[dialog],message);
-    system(newmessage);
+    //system(newmessage);
   }
 #endif
 #endif
@@ -303,6 +307,15 @@ void sys_create_display(int width,int height,int _fullscreen)
 
   fullscreen = _fullscreen;
 
+// TODO: GLES 2.0
+#ifdef __MOBILE__
+  setenv("LIBGL_ES", "1", 1);
+#endif
+
+#ifdef ANDROID
+  initialize_gl4es();
+#endif
+
   if( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0 ) {
     fprintf( stderr, "Video or Audio initialization failed: %s\n",
 
@@ -317,6 +330,15 @@ void sys_create_display(int width,int height,int _fullscreen)
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+#ifdef __MOBILE__
+  SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+
+  glWindow = SDL_CreateWindow("Foobillard++", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, flags | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN);
+#else
 
   if(options_antialiasing) {
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
@@ -337,14 +359,30 @@ void sys_create_display(int width,int height,int _fullscreen)
         glWindow = SDL_CreateWindow("Foobillard++", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags | SDL_WINDOW_RESIZABLE);
   };
 
+#endif
+
   glContext = SDL_GL_CreateContext(glWindow);
   SDL_GL_MakeCurrent(glWindow, glContext);
   try_set_vsync();
 
+#if defined(__MOBILE__) && defined(__APPLE__)
+  //setenv("LIBGL_TEXCOPY", "1", 1);
+  initialize_gl4es();
+#endif
+
   SDL_SetWindowTitle(glWindow, "Foobillard++");
 
+#ifdef ANDROID
+  SDL_Rect rect;
+  SDL_GetDisplayBounds(0, &rect);
+  native_width = rect.w;
+  native_height = rect.h;
+  win_width = native_width;
+  win_height = native_height;
+#else
   SDL_GetWindowSize(glWindow, &win_width, &win_height);
   SDL_GL_GetDrawableSize(glWindow, &native_width, &native_height);
+#endif
   ResizeWindow(win_width, win_height);
 
   glPolygonMode(GL_FRONT,GL_FILL);  // fill the front of the polygons
@@ -581,12 +619,19 @@ static void handle_key_up(SDL_KeyboardEvent* e)
 
 void sys_resize( int width, int height, int callfrom )
 {
+#ifndef __MOBILE__
     if(width < 958) width = 958;      // don't resize below this
     if(height < 750) height = 750;
 
     SDL_SetWindowSize(glWindow, width,height);
+#endif
+#ifdef ANDROID
+    win_width = native_width;
+    win_height = native_height;
+#else
     SDL_GetWindowSize(glWindow, &win_width, &win_height);
     SDL_GL_GetDrawableSize(glWindow, &native_width, &native_height);
+#endif
     ResizeWindow(win_width, win_height);
 }
 
@@ -620,6 +665,9 @@ static void  process_events( void )
 {
   /* Our SDL event placeholder. */
   SDL_Event event;
+#ifdef __MOBILE__
+  static SDL_FingerID finger_id = 0;
+#endif
 
     /* Grab all the events off the queue. */
   while( SDL_PollEvent( &event ) ) 
@@ -636,6 +684,36 @@ static void  process_events( void )
 	       /* Handle quit requests (like Ctrl-c). */
 	       sys_exit(0);
 	       break;
+
+#ifdef __MOBILE__
+      case SDL_MULTIGESTURE:
+        TouchZoom(event.mgesture.dDist);
+        break;
+      case SDL_FINGERMOTION:
+        if (finger_id != event.tfinger.fingerId)
+          break;
+        event.motion.x = event.tfinger.x * win_width;
+        event.motion.y = event.tfinger.y * win_height;
+        handle_motion_event(&(event.motion));
+        break;
+      case SDL_FINGERDOWN:
+        if (!finger_id)
+          finger_id = event.tfinger.fingerId;
+        else
+          finger_id = 0;
+      case SDL_FINGERUP:
+        if (finger_id != event.tfinger.fingerId)
+          break;
+        else if (event.tfinger.type == SDL_FINGERUP)
+          finger_id = 0;
+        event.button.x = event.tfinger.x * win_width;
+        event.button.y = event.tfinger.y * win_height;
+        event.button.button = SDL_BUTTON_LEFT;
+        event.button.state = (event.tfinger.type == SDL_FINGERDOWN)?SDL_PRESSED:SDL_RELEASED;
+        handle_button_event(&(event.button)) ;
+        break;
+#endif
+
       case SDL_MOUSEMOTION:
         handle_motion_event(&(event.motion)) ;
 	       break ;
@@ -782,14 +860,14 @@ void enter_data_dir() {
 #ifdef USE_WIN
         GetModuleFileName(NULL,exe_prog,sizeof(exe_prog));
 #endif
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__MOBILE__)
         char *get_mac_data_directory();
         char *data_directory = get_mac_data_directory();
 
         strncpy(data_dir, data_directory, sizeof(data_dir));
         strncpy(exe_prog, data_directory, sizeof(exe_prog));
         free(data_directory);
-#elif defined(POSIX)
+#elif defined(POSIX) && !defined(__MOBILE__)
         snprintf(proc_exe, sizeof(proc_exe), "/proc/%d/exe", getpid());
         if (readlink(proc_exe, data_dir, sizeof(data_dir)) < 0) {
             perror("readlink failed");
@@ -807,6 +885,8 @@ void enter_data_dir() {
 
         // Add "/data"
         strncpy(slash_pos, "/data", sizeof(data_dir) - (slash_pos - data_dir));
+#elif ANDROID
+        strncpy(data_dir, SDL_AndroidGetInternalStoragePath(), sizeof(data_dir));
 #else
         /* ### TODO ### Get the working directory of the program
          * Solaris: getexecname()
@@ -883,7 +963,7 @@ int launch_command(const char *command) {
 	   ShellExecute(NULL,"open",command,NULL,NULL,SW_SHOWNORMAL);
 	   return (0);
 #else
-    return system(command);
+    //return system(command);
 #endif
 }
 

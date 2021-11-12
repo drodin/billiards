@@ -42,7 +42,7 @@
 #include "vmath.h"
 #include "options.h"
 
-#if defined(WETAB)
+#if defined(WETAB) && !defined(__MOBILE__)
 enum archType arch = ARCH_WETAB;
 #elif defined(WIN32)
 enum archType arch = ARCH_WIN32;
@@ -130,7 +130,11 @@ int    options_net_speed = 1;        // Speed for network gameplay (*5 = calls p
 int    options_net_speed_bak = 1;    // Speed for network for restoring after a network play
 int    options_net_compatible = 0;   // network very slow compatibility mode
 int    options_net_compatible_bak = 0;   // network very slow compatibility mode restoring after network play
+#ifdef __MOBILE__
+int    options_ball_sphere = 1;      // standard sphere (0) or special (1) sphere blending on balls
+#else
 int    options_ball_sphere = 0;      // standard sphere (0) or special (1) sphere blending on balls
+#endif
 int    options_rgaim = 0;            /* 0=middle 1=right 2=left */
 int    options_balltrace = 0;
 int    options_use_sound = 1;

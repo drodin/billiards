@@ -21,7 +21,7 @@
 */
 
 #include <stdio.h>
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__MOBILE__)
  #include <OpenGL/gl.h>
 #else
  #include <GL/gl.h>

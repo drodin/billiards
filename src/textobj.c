@@ -23,12 +23,12 @@
 */
 
 #include <stdlib.h>
-#ifdef __APPLE__
- #include <OpenGL/gl.h>
+#if defined(__APPLE__) && !defined(__MOBILE__)
  #include <OpenGL/glu.h>
+ #include <OpenGL/gl.h>
 #else
- #include <GL/gl.h>
  #include <GL/glu.h>
+ #include <GL/gl.h>
 #endif
 #include <stdio.h>
 #include <string.h>
