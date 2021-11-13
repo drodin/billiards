@@ -974,7 +974,7 @@ void my_Bande( VMfloat x1, VMfloat y1, VMfloat z1,    /* inside up */
    /* holes-tuch */
 void my_HoleTuch( int xfact, int yfact )
 {
-#define  HOLE1_SEGNR_4 8
+#define  HOLE1_SEGNR_4 6
 
        int i,j,k,l;
        VMfloat x,y,phi;
