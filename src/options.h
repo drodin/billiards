@@ -1,4 +1,4 @@
-﻿/* options.h
+/* options.h
 **
 **    global defines for options
 **    Copyright (C) 2001  Florian Berger
@@ -157,6 +157,7 @@ extern int     options_furniture;       // special for showing furniture, chairs
 extern int     options_pause;           // pause the game with key p (only, if opponent is AI)
 extern GLfloat   options_maxanisotrop;    // max. of anistropic filters
 extern VMfloat   options_value_anisotrop; // the vaule for anisotropic filtering if supported and < maxanisotrop
+extern VMfloat   options_zoom_speed;    // zoom speed
 
 extern int dialog  ;                    // hold the index of the dialog prog, if found with get_dialogprog()
 

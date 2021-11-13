@@ -5839,8 +5839,10 @@ void control_toggle(int * control_param) {
 void zoom_in_out(int direction) {
     VMfloat th, ph;
     VMvect dvec;
+    if(options_birdview_on)
+      return;
     if(!FREE_VIEW){
-        cam_dist_aim += direction*0.005;
+        cam_dist_aim += direction*options_zoom_speed;
         if( cam_dist_aim<0.2 ) cam_dist_aim=0.2;
         if( cam_dist_aim>5.8 ) cam_dist_aim=5.8;
         //fprintf(stderr,"Dist: %f\n",cam_dist_aim);
@@ -5848,7 +5850,7 @@ void zoom_in_out(int direction) {
         th=Xrot/180.0*M_PI;
         ph=Zrot/180.0*M_PI;
         dvec = vec_xyz(MATH_SIN(th)*MATH_SIN(ph),MATH_SIN(th)*MATH_COS(ph),MATH_COS(th));
-        dvec = vec_scale( dvec , direction*0.005 );
+        dvec = vec_scale( dvec , direction*options_zoom_speed );
         free_view_pos_aim = vec_add( free_view_pos_aim, dvec );
         //fprintf(stderr,"x %f y %f z %f\n",free_view_pos_aim.x,free_view_pos_aim.y,free_view_pos_aim.z);
         if( free_view_pos_aim.z < 0.1 ) free_view_pos_aim.z = 0.1;

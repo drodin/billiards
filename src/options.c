@@ -142,9 +142,11 @@ VMfloat options_tourfast = 30.0;
 #ifdef TOUCH
   int   options_control_kind = 1;  // behaviour of some Controlkeys 0 = toggle, 1 = set if pressed and unset if unpressed
   int   options_cuberef = 0;          // reflections on balls with cuberef reflections
+  VMfloat   options_zoom_speed = 0.05;    // zoom speed
 #else
   int   options_control_kind = 0;  // behaviour of some Controlkeys 0 = toggle, 1 = set if pressed and unset if unpressed
   int   options_cuberef = 1;          // reflections on balls with cuberef reflections
+  VMfloat   options_zoom_speed = 0.005;    // zoom speed
 #endif
 int    options_cuberef_res = 128;    // how much resolution
 int    options_oldmove = 0;        // old mouse movement style from original foobillard, default off
