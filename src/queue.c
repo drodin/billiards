@@ -1,4 +1,4 @@
-﻿/* queue.c
+/* queue.c
 **
 **    create the billard-queue display lists
 **    Copyright (C) 2001  Florian Berger
@@ -205,8 +205,6 @@ void draw_queue( VMvect pos0, GLfloat Xrot, GLfloat Zrot, GLfloat zoffs,
     GLfloat queue_col_amb [4];
     int i,depth;
     VMvect dir,nx,ny,hitpoint,pos;
-    VMvect shoulder1, shoulder2, shoulder_dir, hand1, hand2, elbow1, elbow2, xdir, ydir; //Avatar
-    VMfloat x1,x; //Avatar
     //we don't need to optimize sin/cos calculation here, because the cue is only drawn in uncritical program places
     dir = vec_xyz(MATH_SIN(Zrot*M_PI/180.0)*MATH_SIN(Xrot*M_PI/180.0),
                   MATH_COS(Zrot*M_PI/180.0)*MATH_SIN(Xrot*M_PI/180.0),
@@ -344,81 +342,6 @@ void draw_queue( VMvect pos0, GLfloat Xrot, GLfloat Zrot, GLfloat zoffs,
         }
     glDisable(GL_BLEND);
     glDepthMask (GL_TRUE);
-
-    if( options_avatar_on ){
-      #define upperarm_l 0.30
-      #define forearm_l  0.35
-      #define shoulder_l 0.35
-      #define shoulder1_h 0.50
-
-        hand2 = vec_add(pos0,hitpoint);
-        hand2 = vec_add(hand2,vec_scale(dir,0.3));
-        shoulder1 = vec_add(pos0,hitpoint);
-        shoulder1 = vec_add(shoulder1,vec_scale(dir,1.25));
-        shoulder1.z = shoulder1_h;
-        shoulder_dir = vec_unit(vec_add(vec_add(vec_scale(nx,-0.4),vec_scale(ny,0.4)),vec_scale(dir,-0.7)));
-        shoulder2 = vec_add(shoulder1,vec_scale(shoulder_dir,shoulder_l));
-        hand1 = vec_add(pos,vec_scale(dir,1.2));
-
-        xdir = vec_unit(vec_diff(shoulder1,hand1));
-        ydir = vec_unit(vec_cross(nx,xdir));
-        x  = vec_abs(vec_diff(shoulder1,hand1));
-        x1 = x/2.0 + (upperarm_l*upperarm_l - forearm_l*forearm_l)/x;
-        elbow1 = vec_add(vec_scale(xdir,-x1),vec_scale(ydir,sqrt(upperarm_l*upperarm_l-x1*x1)));
-        elbow1 = vec_add(elbow1,shoulder1);
-
-        xdir = vec_unit(vec_diff(shoulder2,hand2));
-        ydir = vec_unit(vec_cross(nx,xdir));
-        x  = vec_abs(vec_diff(shoulder2,hand2));
-        x1 = x/2.0 + (upperarm_l*upperarm_l - forearm_l*forearm_l)/x;
-        elbow2 = vec_add(vec_scale(xdir,-x1),vec_scale(ydir,sqrt(upperarm_l*upperarm_l-x1*x1)));
-        elbow2 = vec_add(elbow2,shoulder2);
-
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
-
-#ifdef WETAB_ALIASING
-        if(options_antialiasing) {
-          glLineWidth(1.5);
-          glEnable(GL_LINE_SMOOTH);
-          glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-        }
-#endif
-        GLfloat VertexData[15];
-        static const GLfloat ColorData[] = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
-        VertexData[0] = hand1.x;
-        VertexData[1] = hand1.y;
-        VertexData[2] = hand1.z;
-        VertexData[3] = elbow1.x;
-        VertexData[4] = elbow1.y;
-        VertexData[5] = elbow1.z;
-        VertexData[6] = shoulder1.x;
-        VertexData[7] = shoulder1.y;
-        VertexData[8] = shoulder1.z;
-        VertexData[9] = shoulder2.x;
-        VertexData[10] = shoulder2.y;
-        VertexData[11] = shoulder2.z;
-        VertexData[12] = hand2.x;
-        VertexData[13] = hand2.y;
-        VertexData[14] = hand2.z;
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_COLOR_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, VertexData);
-        glColorPointer(3, GL_FLOAT, 0, ColorData);
-        glPushMatrix();
-        glDrawArrays(GL_LINE_STRIP, 0, 5);
-        glPopMatrix();
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_COLOR_ARRAY);
-#ifdef WETAB_ALIASING
-        if(options_antialiasing) {
-          glDisable(GL_LINE_SMOOTH);
-          glDisable(GL_BLEND);
-        }
-#endif
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_LIGHTING);
-    }
     glEnable(GL_CULL_FACE);
 
 }

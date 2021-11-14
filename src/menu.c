@@ -731,7 +731,6 @@ void init_menu(void)
     static menuType * balltrace_menu;
     static menuType * status_menu;
     static menuType * control_menu;
-    static menuType * avatar_menu;
     static menuType * jump_shot_menu;
     static menuType * ball8_menu;
     static menuType * ball9_menu;
@@ -1128,17 +1127,6 @@ void init_menu(void)
     //< back
     menu_add_exit (keypressed_menu, localeText[63],localeText[266]);
 #endif
-
-    /*
-     Avatar come from Game Menu
-    */
-    avatar_menu = menu_new( menu_cb );
-    //on
-    menu_add_entry(avatar_menu, localeText[64], MENU_ID_AVATAR_ON,localeText[322]);
-    //off
-    menu_add_entry(avatar_menu, localeText[65], MENU_ID_AVATAR_OFF,localeText[323]);
-    //< back
-    menu_add_exit (avatar_menu, localeText[63],localeText[266]);
 
     /*
      Status Text come from Game Menu
@@ -1691,8 +1679,6 @@ void init_menu(void)
     menu_add_submenu(view_menu, localeText[109], balltrace_menu, 1, localeText[65-options_balltrace],localeText[377]);
     //Statustext
     menu_add_submenu(view_menu, localeText[214], status_menu, 1, localeText[65-options_status_text],localeText[378]);
-    //Avatar
-    menu_add_submenu(view_menu, localeText[215], avatar_menu, 1, localeText[65-options_avatar_on],localeText[379]);
     //< back
     menu_add_exit (view_menu, localeText[63],localeText[266]);
 

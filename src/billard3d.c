@@ -349,7 +349,6 @@ static struct option long_options[] = {
     {"bumpwood",     required_argument, NULL, OPT_BUMPWOOD},
     {"balltraces",   required_argument, NULL, OPT_BALLTRACE},
     {"gamemode",     required_argument, NULL, OPT_GAMEMODE},
-    {"avatar",       required_argument, NULL, OPT_AVATAR},
     {"tourfast",     required_argument, NULL, OPT_TOURFAST},
     {"showbuttons",  required_argument, NULL, OPT_SHOW_BUTTONS},
     {"helpline",     required_argument, NULL, OPT_HELP_LINE},
@@ -1537,16 +1536,6 @@ void process_option(enum optionType act_option)
              options_gamemode=options_gamemode_tournament;
           }
           break;
-       case OPT_AVATAR:
-          switch(optarg[1]){
-             case 'f': /* off */
-                options_avatar_on=0;
-                break;
-             case 'n': /* on  */
-                options_avatar_on=1;
-                break;
-            }
-          break;
        case OPT_MSHOOT:
           switch(optarg[1]){
              case 'f': /* off */
@@ -2110,9 +2099,6 @@ void save_config(void)
                     write_rc(f,opt,"tournament");
                     break;
                 }
-             break;
-        case OPT_AVATAR:
-             write_rc(f,opt, options_avatar_on?"on":"off");
              break;
         case OPT_MSHOOT:
              write_rc(f,opt, options_mouseshoot?"on":"off");
@@ -6995,12 +6981,6 @@ void menu_cb( int id, void * arg , VMfloat value)
     case MENU_ID_MAIN_QUIT:
         save_config();
         sys_exit(0);
-        break;
-    case MENU_ID_AVATAR_ON:
-        options_avatar_on = 1;
-        break;
-    case MENU_ID_AVATAR_OFF:
-        options_avatar_on = 0;
         break;
     case MENU_ID_CONTROLS_ON:
         options_show_buttons = 1;
