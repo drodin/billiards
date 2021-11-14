@@ -450,9 +450,6 @@ void sys_create_display(int width,int height,int _fullscreen)
   vidmode_flags |= SDL_FULLSCREEN;
 #endif
 
-  //Set the window icon
-  SDL_WM_SetIcon(SDL_LoadBMP("icon.bmp"),NULL);
-
 #ifndef WETAB
   if(options_fsaa_value > options_maxfsaa) {
   	options_fsaa_value = options_maxfsaa;
