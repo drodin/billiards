@@ -1,4 +1,4 @@
-﻿/* table.c
+/* table.c
 **
 **    create the billard-table display lists
 **    Copyright (C) 2001  Florian Berger
@@ -40,14 +40,6 @@
 #include "png_loader.h"
 #include "bumpref.h"
 #include "vmath.h"
-
-#ifdef __APPLE__
-	#define glActiveTexture glActiveTextureARB
-#endif
-
-#ifdef USE_WIN
-	extern void ( APIENTRY * glActiveTextureARB)( GLenum );
-#endif
 
 /***********************************************************************/
 
@@ -1112,7 +1104,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
     static BumpRefType bumponly;
     static int table_obj=-1;
     static GLuint frametexbind=-1;
-    static GLuint tabletexbind=-1;
     static GLuint clothtexbind=-1;
     int flip;
     VMfloat balld  = BALL_D;
@@ -1182,15 +1173,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
     create_png_texbind("table-frame.png", &frametexbind, 3, GL_RGB);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    fprintf(stderr,"Initialize table-texture\n");
-    if( tabletexbind > 0 ) glDeleteTextures( 1, &tabletexbind );
-#ifdef WETAB
-    create_png_texbind("tabletex_wetab_256x256.png", &tabletexbind, 1, GL_LUMINANCE);
-#else
-    create_png_texbind("tabletex_fB_256x256.png", &tabletexbind, 1, GL_LUMINANCE);
-#endif
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     fprintf(stderr,"Initialize clothing table texture\n");
     if( clothtexbind > 0 ) glDeleteTextures( 1, &clothtexbind );
@@ -1245,11 +1227,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
    glMaterialfv(GL_FRONT, GL_SPECULAR,  tab_col_spec);
    glMaterialf (GL_FRONT, GL_SHININESS, 0.0 );
 
-   glEnable(GL_TEXTURE_2D);
-   glBindTexture(GL_TEXTURE_2D,tabletexbind);
-   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-   if( extension_multitexture ){
-       glActiveTextureARB(GL_TEXTURE1_ARB);
        glEnable(GL_TEXTURE_2D);
        glEnable(GL_TEXTURE_GEN_S);
        glEnable(GL_TEXTURE_GEN_T);
@@ -1258,9 +1235,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
        glTexGenfv(GL_S, GL_OBJECT_PLANE, vx);
        glTexGenfv(GL_T, GL_OBJECT_PLANE, vy);
        glBindTexture(GL_TEXTURE_2D,clothtexbind);
-       glActiveTextureARB(GL_TEXTURE0_ARB);
-   }
-   //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
    if(carambol){
        tablew=TABLE_W;
@@ -1604,11 +1578,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
        glPopMatrix();
        fprintf(stderr,"\n");
    }
-
-   /* disable 2nd tex unit for cloth texture */
-       glActiveTextureARB(GL_TEXTURE1_ARB);
-       glDisable(GL_TEXTURE_2D);
-       glActiveTextureARB(GL_TEXTURE0_ARB);
 
    /* diamonds */
    fprintf(stderr,"Generate diamonds border objects\n");
