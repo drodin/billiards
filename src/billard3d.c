@@ -76,13 +76,6 @@
 #include "vmath.h"
 #include "billard3d.h"
 #include "fire.h"
-#include "ceilinglamp_high.h"
-#include "fireplace_high.h"
-#include "cartoonguy.h"
-#include "sittingboy.h"
-#include "flower.h"
-#include "bottle.h"
-#include "chess.h"
 #include "getopt_long.h"
 
 static struct TournamentState_ tournament_state;
@@ -1690,15 +1683,14 @@ void process_option(enum optionType act_option)
           }
           break;
        case OPT_FURNITURE:
-          sscanf(optarg,"%d",&options_furniture);
-          switch(options_furniture){
-           case 1: /* ok */
-           case 2:
-             break;
-           default:
-             options_furniture = 0;
-             break;
-           }
+          switch(optarg[1]){
+             case 'f': /* off */
+                options_furniture=0;
+                break;
+             case 'n': /* on  */
+                options_furniture=1;
+                break;
+          }
            break;
        case OPT_FREEMOVE1:
           switch(optarg[1]){
@@ -2209,8 +2201,7 @@ void save_config(void)
           write_rc(f,opt, options_deco?"on":"off");
           break;
        case OPT_FURNITURE:
-          sprintf(str,"%d",options_furniture);
-          write_rc(f,opt,str);
+          write_rc(f,opt, options_furniture?"on":"off");
           break;
        }
     }
@@ -4643,7 +4634,6 @@ void DisplayFunc( void )
      glRotatef(90.0,0.0,0.0,1.0);
      glTranslatef(-4.0,2.4,-0.43);
      glScalef(0.6,0.4,0.45);
-     if(options_furniture == 1) {
          if(Zrot_check<90.0 || Zrot_check>280.0) {
     	    glCallList(camin_id);   // fireplace
          if(next_flame > -0.3 ){  // animation of flames in fireplace
@@ -4657,67 +4647,6 @@ void DisplayFunc( void )
          }
         display_fire(flame_frame);
         }
-     } else {
-       //higher extra-textures
-       glPopMatrix();
-       glPushMatrix();
-       glRotatef(90.0,90.0,0.0,0.0);
-       glDisable(GL_TEXTURE_2D);
-       glEnable(GL_COLOR_MATERIAL);
-       glColor3f(0.2,0.2,0.2);
-       if(Zrot_check<110.0 || Zrot_check>250.0) {
-         display_cartoonguy(); //cartoon guy
-       }
-       if(options_tronmode) {
-         glDisable(GL_COLOR_MATERIAL);
-       }
-       if(Zrot_check>50 && Zrot_check<320) {
-         display_flower(); // flower
-       }
-       if(Zrot_check<190.0) {
-         display_chess(); //chess
-       }
-       if(Zrot_check>170.0) {
-         display_bottle(); //bottle
-         if(options_tronmode) {
-           glEnable(GL_COLOR_MATERIAL);
-         }
-         display_sittingboy(); //sitting boy
-       }
-       glDisable(GL_COLOR_MATERIAL);
-       if(Zrot_check<90.0 || Zrot_check>280.0) {
-       	display_fireplace_high(); // fireplace
-         if(next_flame > -0.3 ){  // animation of flames in fireplace
-           next_flame-=(VMfloat)frametime_ms/120.0;
-         }
-         if(next_flame<-0.2){
-           next_flame=NEXT_FLAME_COUNTER;
-           if((++flame_frame)>MAX_FIRE_TEXTURES-1) {
-         	  flame_frame = 0;
-           }
-         }
-       display_fire_high(flame_frame);
-       }
-       if(!options_birdview_on) {
-        if(Xrot>-55.0) {
-          glDepthMask (GL_FALSE);
-          glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-          glEnable(GL_BLEND);
-        }
-        if(!options_tronmode) {
-          glEnable(GL_COLOR_MATERIAL);
-        } else {
-          glMaterialfv(GL_FRONT,GL_AMBIENT, ambient_torus);
-          glMaterialfv(GL_FRONT,GL_DIFFUSE, diffuse_torus);
-          glMaterialfv(GL_FRONT,GL_SPECULAR, specular_torus);
-          glMaterialf (GL_FRONT, GL_SHININESS, 51);
-        }
-        display_ceilinglamp_high();
-        glDisable(GL_COLOR_MATERIAL);
-        glDepthMask (GL_TRUE);
-        glDisable(GL_BLEND);
-       }
-     } // end higher meshes
      glCullFace(GL_BACK);   // This is a must for blender export models
      glPolygonMode(GL_BACK,GL_LINE);  // fill the back of the polygons
    } // end furniture
@@ -7403,9 +7332,6 @@ void menu_cb( int id, void * arg , VMfloat value)
     case MENU_ID_ROOM_OFF:
         options_deco=0;
         glFogf (GL_FOG_END, 12.5);
-        break;
-    case MENU_ID_FURNITURE_HIGH:
-        options_furniture=2;
         break;
     case MENU_ID_FURNITURE_ON:
         options_furniture=1;

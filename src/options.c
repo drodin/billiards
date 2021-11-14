@@ -168,7 +168,7 @@ int    options_tronmode = 0;       // the special tron game mode
 int    options_glassballs = 0;     // play with glass balls or other to implement ball types
 int    options_deco = 1;           // special for showing deco on walls and so on (1 = on, 0 = off)
 int    options_mus_volume = 10;
-int    options_furniture = 1;      // special for showing furniture, chairs and so on (2 = high, 1 = default, 0 = off)
+int    options_furniture = 1;      // special for showing furniture, chairs and so on (1 = on, 0 = off)
 int    options_pause = 0;          // pause the game with key p (only, if opponent is AI)
 
 #ifdef WETAB

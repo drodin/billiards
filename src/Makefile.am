@@ -61,20 +61,6 @@ foobillardplus_SOURCES = \
    history.c \
    fire.h \
    fire.c \
-   fireplace_high.h \
-   fireplace_high.c \
-   ceilinglamp_high.h \
-   ceilinglamp_high.c \
-   cartoonguy.h \
-   cartoonguy.c \
-   sittingboy.h \
-   sittingboy.c \
-   flower.h \
-   flower.c \
-   bottle.h \
-   bottle.c \
-   chess.h \
-   chess.c \
    getopt_long.h \
    getopt_long.c
 else
@@ -135,20 +121,6 @@ foobillardplus_SOURCES = \
    history.c \
    fire.h \
    fire.c \
-   fireplace_high.h \
-   fireplace_high.c \
-   ceilinglamp_high.h \
-   ceilinglamp_high.c \
-   cartoonguy.h \
-   cartoonguy.c \
-   sittingboy.h \
-   sittingboy.c \
-   flower.h \
-   flower.c \
-   bottle.h \
-   bottle.c \
-   chess.h \
-   chess.c\
    getopt_long.h \
    getopt_long.c
 endif
