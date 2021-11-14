@@ -201,7 +201,6 @@ static GLuint halfsymboltexbind;
 static GLuint fullsymboltexbind;
 static GLuint fullhalfsymboltexbind;
 static GLuint fblogotexbind;
-static GLuint introtexbind;
 static GLuint btexbind;
 static GLuint ntexbind;
 static GLuint stexbind;
@@ -397,7 +396,6 @@ static MATH_ALIGN16 GLfloat diffuse_torus[3] = {0.51, 0.51, 0.51};
 static MATH_ALIGN16 GLfloat specular_torus[3]= {0.51, 0.51, 0.51};
 
 // some for display-lists and the intro animation
-static int introtexture = 0; // show the introtexture until keystroke
 static int floor_obj = -1;   // for the room the floor obj
 static int carpet_obj = -1;  // for the room the carpet obj
 static int wall1_2_obj = -1; // for the room the walls 1 + 2 obj
@@ -3100,7 +3098,6 @@ void MouseEvent(MouseButtonEnum button,MouseButtonState state, int x, int y)
                    tournament_state_setup_next_match(&tournament_state);
                    tournament_state.wait_for_next_match=0;
                 }
-                if(!introtexture) introtexture++;
 #ifndef TOUCH
                 if(b2_hold){
                     b2_b1_hold = 1;
@@ -5639,47 +5636,6 @@ void DisplayFunc( void )
            }*/
        }
 
-    if(!introtexture) {
-        if(next_intro < 0.2 ){  // animation of intro
-          next_intro+=(VMfloat)frametime_ms/120.0;
-        } else {
-          next_intro = 0.0;
-          if((introxanimate+=12) >768) introxanimate = 768;
-          if((introyanimate+=8) >512) introyanimate = 512;
-          if((introblendxanimate-=6) < -384.0) introblendxanimate = -384.0;
-          if((introblendyanimate-=3.22) < -206.0) introblendyanimate = -206.0;
-        }
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_BLEND);
-        glDisable(GL_LIGHTING);
-        glBlendFunc (GL_ONE, GL_ONE);
-        glPushMatrix();
-        glScalef(2.0/win_width,2.0/win_height,1.0);
-        glTranslatef(introblendxanimate,introblendyanimate,0.0);
-        glBindTexture(GL_TEXTURE_2D,introtexbind);
-        // Introsequenz graphic
-        GLshort VertexData9[] = {0,0,0,0,0,0,0,0,0,0,0,0};
-        VertexData9[4] = introyanimate;
-        VertexData9[9] = introxanimate;
-        VertexData9[10] = introyanimate;
-        VertexData9[6] = introxanimate;
-        static const GLshort TexData9[] = {0,1,0,0,1,1,1,0};
-        static const GLfloat ColorData9[] = {0.9,0.9,0.9,1.0,0.9,0.9,0.9,1.0,0.9,0.9,0.9,1.0,0.9,0.9,0.9,1.0};
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_COLOR_ARRAY);
-        glTexCoordPointer(2,GL_SHORT, 0, TexData9);
-        glVertexPointer(3, GL_SHORT, 0, VertexData9);
-        glColorPointer(4, GL_FLOAT, 0, ColorData9);
-        glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_COLOR_ARRAY);
-        glPopMatrix();
-        glDisable(GL_BLEND);
-        glDisable(GL_TEXTURE_2D);
-    }
-
     if( g_act_menu != (menuType *)0 ){
         glColor3f(1.0,1.0,1.0);
         glEnable(GL_TEXTURE_2D);
@@ -6056,7 +6012,6 @@ void Key( int key, int modifiers ) {
    int old_cue_ball;    // only for trainig mode the holder for the state of the old cueball
 
    displaystring(" ");  // the statustext is now empty, display blank lines
-   if(!introtexture) introtexture++;
    if( g_act_menu != (menuType *)0 ){
 #ifdef NETWORKING
        if(wait_key || active_net_game) {
@@ -7823,10 +7778,6 @@ static void Init( void )
     create_png_texbind("full_symbol.png", &fullsymboltexbind, 3, GL_RGBA);
     create_png_texbind("half_symbol.png", &halfsymboltexbind, 3, GL_RGBA);
     create_png_texbind("fullhalf_symbol.png", &fullhalfsymboltexbind, 3, GL_RGBA);
-
-// intro graphic
-
-    create_png_texbind("intro.png", &introtexbind, 3, GL_RGBA);
 
 // graphics for the control under the table
 
