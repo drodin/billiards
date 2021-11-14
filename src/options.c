@@ -179,7 +179,6 @@ int    options_pause = 0;          // pause the game with key p (only, if oppone
 GLfloat  options_maxanisotrop = 0.0;   // max. of anistropic filters
 VMfloat  options_value_anisotrop = 0.0;    // the vaule for anisotropic filtering if supported and < maxanisotrop (default 0.0)
 
-char   options_browser[20] = "firefox";  // the variable to hold the standard Browser for the Manual
 int dialog = -1;                    // hold the index of the dialog prog, if found with get_dialogprog()
 
 /* queries for OpenGL extensions */

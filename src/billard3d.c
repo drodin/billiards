@@ -341,7 +341,6 @@ static struct option long_options[] = {
     {"geometry",     required_argument, NULL, OPT_GEOMETRY},
     {"fullscreen",   no_argument,       NULL, OPT_FULLSCREEN},
 #endif
-    {"browser",      required_argument, NULL, OPT_BROWSER},
     {"freemove",     required_argument, NULL, OPT_FREEMOVE},
     {"cuberef",      required_argument, NULL, OPT_CUBEREF},
     {"cuberes",      required_argument, NULL, OPT_CUBERES},
@@ -1466,9 +1465,6 @@ void process_option(enum optionType act_option)
            fullscreen=1;
            break;
 #endif
-       case OPT_BROWSER:
-           strcpy(options_browser,optarg);
-           break;
        case OPT_FREEMOVE:
           switch(optarg[1]){
              case 'f': /* off */
@@ -2073,9 +2069,6 @@ void save_config(void)
                 }
              break;
 #endif
-        case OPT_BROWSER:
-             write_rc(f,opt,options_browser);
-             break;
         case OPT_FREEMOVE:
              if(options_birdview_on) {
                write_rc(f,opt, old_options_free_view_on?"on":"off");
@@ -7448,11 +7441,6 @@ void menu_cb( int id, void * arg , VMfloat value)
         sys_resize(mode->w, mode->h ,1);
         }
         break;
-    case MENU_ID_BROWSER:
-#ifndef WETAB
-        strcpy(options_browser,(char *)arg);
-#endif
-        break;
 #endif
     case MENU_ID_ANISOTROP:
         options_value_anisotrop = value;
@@ -7799,9 +7787,6 @@ int main( int argc, char *argv[] )
    /* chdir into data directory */
    enter_data_dir();
    fprintf(stderr,"Data dir entry\n");
-   /* Initialize browser to use */
-   init_browser();
-   fprintf(stderr,"Browser initialized for history-functions\n");
    /* Initialize all player variables for two players */
    init_players();
    fprintf(stderr,"Player variables initialized\n");

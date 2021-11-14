@@ -56,7 +56,6 @@
 
 /***********************************************************************/
 
-static char browser[256];
 static int fullscreen = 0;
 static int keymodif =0;
 static int vidmode_bpp=0;
@@ -237,38 +236,6 @@ int filecopy(char *filefrom,char *fileto)
     return(0);
   }
   return(1);
-}
-
-/***********************************************************************
- *                    init internetbrowser in string                   *
- *                    get it from options or os                        *
- * WeTab Standard Browser can't show xml, xsl data. So another         *
- * must be used here..... and have to store in the options             *
- ***********************************************************************/
-
-void init_browser(void) {
-#ifdef USE_WIN
-  char *cp;
-  GetModuleFileName(NULL,browser,sizeof(browser));
-  if((cp = strrchr(browser,'\\'))) { //extract the program name from path
-    cp[0] = 0;
-  }
-  strcat(browser,"\\data\\");
-#else
-  if(!strcmp(options_browser,"browser")) {
-    strcpy(options_browser,"./browser.sh");
-  }
-  sprintf(browser,"%s file://",options_browser);
-#endif
-}
-
-/***********************************************************************
- *                    copy internetbrowser in string                   *
- *                    string length minimum 256                        *
- ***********************************************************************/
-
-void get_browser(char *strpointer) {
-	 strcpy(strpointer,browser);
 }
 
 /***********************************************************************

@@ -241,8 +241,6 @@ enum menu_ID {
     MENU_ID_OLDMOVE_ON,
     MENU_ID_OLDMOVE_OFF,
 
-    MENU_ID_BROWSER,
-
    // The supported languages for changing
 
     MENU_ID_LANG_DE,
@@ -288,7 +286,6 @@ enum optionType {
     OPT_GEOMETRY,
     OPT_FULLSCREEN,
 #endif
-    OPT_BROWSER,
 #ifdef NETWORKING
     OPT_NET_SPEED,
     OPT_NET_COMPATIBLE,

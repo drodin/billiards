@@ -89,8 +89,6 @@ void sys_redisplay(void) ;
 void sdl_exit( void ) ;
 void sys_exit( int code ) ;
 void sys_fullscreen( int fullscr );
-void init_browser(void);
-void get_browser(char *strpointer);
 int filecopy(char *filefrom,char *fileto);
 char *replace(char *st, char *orig, char *repl);
 int vsync_supported(void);

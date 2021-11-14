@@ -24,11 +24,3 @@ char* get_mac_data_directory()
 	else
 		return buffer;
 }
-
-void open_file_with_browser_mac(char *file)
-{
-	NSString *app, *type;
-	NSString *htmlFilePath = [[NSBundle mainBundle] pathForResource:@"index_a" ofType:@"html" inDirectory:@"data/locale/en/"];
-	[[NSWorkspace sharedWorkspace] getInfoForFile:htmlFilePath application:&app type:&type];
-	[[NSWorkspace sharedWorkspace] openFile:[NSString stringWithUTF8String:file] withApplication:app];
-}
