@@ -64,9 +64,9 @@ More >
 < Back
 on
 off
-Spheremap
-Rendered
-Glassball On/Off
+static
+dynamic
+Glass Balls On/Off
 low
 medium
 high
@@ -74,14 +74,14 @@ very high
 middle
 left
 right
-rg on
-rg off
-enable
-aim eye
+on
+off
+Stereo
+Aim Eye
 on
 off
 Fullscreen
-window
+Window
 7 foot
 8 foot
 9 foot
@@ -91,30 +91,30 @@ gold-red
 chrome-blue
 black-white
 black-beige
-8 ball
-9 ball
+8 Ball
+9 Ball
 Carom
 Snooker
-Table size
-Help line
-Game type
+Table Size
+Aiming Line
+Game Type
 Resolution
-View mode
-red/green stereo
+Windowed mode
+R/G Stereo Mode
 Lens flare
-Ball detail
+Ball Detail
 Reflections
 Bump reflections
 Bumpy wood frame
-Table theme
-Ball traces
-YES  out'a here
-NO  continue
-Excellent
-Good
-Medium
-Bad
-Worse
+Table Theme
+Ball Traces
+YES
+NO
+excellent
+good
+medium
+bad
+worse
 P2 Type
 P2 Skill
 Single match + Player options
@@ -127,19 +127,19 @@ Start Game
 IP: %s
 As Host
 Join
-Player1
-Player2
+Player 1
+Player 2
 Start Tournament
 Start Training
 Mode
 Restart Game
-Network game
+Network Game
 Display
 Sound
 Game
 Resume
-Game Menu
-Graphic
+Game Options
+Graphics Settings
 Help
 Quit
 wins
@@ -207,26 +207,26 @@ Colored ball - good.
 %s was required. 
 %s holed - well done. 
 Rendering
-Resolution
-Positional
-Direct
+Dynamic Resolution
+positional
+direct
 1-2 Player Game
 Points: %i
-Status text
+Status Text
 Avatar
 Jump Shots
-Anisothropic filter
+Anisothropic Filter
 Antialiasing
 Lights
-Restart game
-Player
-View options
+Restart Game
+Players
+Visual options
 Sound
 Manual
 NoName
 Keys Toggle S B E M F
-Birdview on AI/Net-Player
-Control buttons (HUD)
+Top View on Opponent Shot
+On-screen controls
 Tournament timelapse
 Normal
 Slow
@@ -235,14 +235,14 @@ Mouseshoot
 new
 classic
 Auto free view
-Toggle Tron Mode
+Tron Mode On/Off
 IP-Addresses Server
 arg=1-5 Network-Speed slow to high
-Network-speed
-Slow
-Normal
-Middle
-High
+Network Speed
+slow
+normal
+middle
+high
 ESC - Cancel
 Network error: received bad packet error
 Network error: wrong packet size sent
@@ -395,9 +395,9 @@ A very vile, extremely poor gamer
 Player is controlled by the computer
 The player are you ......
 Computer or human player
-A player's skill level
-Settings to Player 1
-Settings to player 2
+Computer skill level
+Settings for Player 1
+Settings for Player 2
 This will leave the program - shame ..
 Thank you very much, you want to play more
 Starts the game in progress from scratch
@@ -415,10 +415,10 @@ The function is currently not allowed
 Ball marks are now active
 Ball marks are no longer active
 Computer-shot proposal confirmed by shot
-Room-textures : 
-turn room-textures on or off
-Extra-textures : 
-turn extra-textures on or off
+Room Textures
+Turn room textures on or off
+Furniture Textures
+Turn furniture textures on or off
 Volume 0-128
 Music
 Sound turned on
@@ -446,10 +446,10 @@ Tournament history
 Game No.
 Tournament Date
 Round
-Default
+none
 Default ball rendering
 Vertical Sync on / off (you must restart the program)
-Vertical refresh sync
+Vertical Refresh Sync
 Turn on vertical synchronization
 Vertical synchronization off
 Max. FSAA: 
@@ -467,7 +467,7 @@ Mouse movement new style of movement in the horizontal
 Mouse movement old style of movement in the horizontal
 Maus movement
 Attitude towards the behavior of the mouse movement in the horizontal direction
-Change language
+Change Language
 Change the language. Reboot required!
 German
 English

@@ -64,8 +64,8 @@ Turnier Lauf %d/4
 <<<
 An
 Aus
-Sphärisch
-Gerendert
+statisch
+dynamisch
 Glasball An/Aus
 Wenig
 Mittel
@@ -74,9 +74,9 @@ Sehr hoch
 Mitte
 Links
 Rechts
-R/G Stereo an
-R/G Stereo aus
-Anschalten
+an
+aus
+Stereo
 Augenziel
 An
 Aus
@@ -96,10 +96,10 @@ Schwarz-beige
 Karambol
 Snooker
 Tischlänge
-Hilfslinie
+Ziellinie
 Spielart
 Grafikmodus
-Ansichtsmodus
+Fenstermodus
 Rot/Grün Stereo
 Linsenlichtreflex
 Ball Detail
@@ -108,13 +108,13 @@ Unebenheitsreflektion
 Unebener Holzrand
 Tischthema
 Ballspuren
-Ja, nur raus hier
-Nein, immer weiter
-Hervorragend
-Gut
-Mittel
-Ausreichend
-Schlecht
+JA
+NEIN
+hervorragend
+gut
+mittel
+ausreichend
+schlecht
 Spieler 2 Typ
 Spieler 2 Geschick
 Einzelspiel + Spieleroptionen
@@ -127,8 +127,8 @@ Spiel starten
 IP: %s
 Als Host
 Beitreten
-Spieler1
-Spieler2
+Spieler 1
+Spieler 2
 Turnier starten
 Training starten
 Modus
@@ -207,9 +207,9 @@ Farbige Kugel - gut.
 %s war gefordert. 
 %s eingelocht - gut. 
 Rendering
-Render-Auflösung
-Positionslicht
-Direkt
+Dynamische Auflösung
+positionslicht
+direkt
 1-2 Spieler Start
 Punkte: %i
 Statustext
@@ -226,7 +226,7 @@ Anleitung
 Kein Name
 Einrasten Tasten S B E M F
 Vogelpers. Computer/Netzsp.
-Steuerungsschalter
+Bedienelemente auf dem Bildschirm
 Zeitraffer Turnier
 Normal
 Langsam
@@ -239,10 +239,10 @@ Tron Modus An/Aus
 IP-Adressen des Servers
 arg=1-5 Netzwerkgeschwindigkeit langsam zu schnell
 Netzwerkgeschwindigkeit
-Langsam
-Normal
-Mittel
-Hoch
+langsam
+normal
+mittel
+hoch
 ESC - Abbruch
 Netzwerkfehler: Fehlerhaftes Paket erhalten
 Netzwerkfehler: Falsche Paketgröße versendet
@@ -395,7 +395,7 @@ Ein ganz schnöder, extrem schlechter Computerspieler
 Spieler wird vom Computer gesteuert
 Der Spieler sind sie......
 Computer oder menschlicher Spieler
-Könnerstufe eines Spielers
+Geschick eines Computer
 Einstellungen zu Spieler 1
 Einstellungen zu Spieler 2
 Hiermit wird das Programm endgültig verlassen - Schade..
@@ -415,10 +415,10 @@ Derzeit ist die Funktion nicht zulässig
 Ballspuren sind jetzt aktiv
 Ballspuren sind nicht mehr aktiv
 Computer Schussvorschlag durch Auslösung bestätigen
-Raumtexturen : 
+Raumtexturen
 Raumtexturen an oder ausschalten
-Extratexturen : 
-Extratexturen an oder ausschalten
+Möbeltexturen
+Möbeltexturen an oder ausschalten
 Lautstärke 0-128
 Musik
 Ton eingeschaltet
@@ -446,7 +446,7 @@ Turnierhistorie
 Spiel Nr.
 Turnierdatum
 Runde
-Standard
+ausgeschaltet
 Ball Rendering in Standard
 Vertikale Synchronisation An/Aus (Programmneustart notwendig)
 Vertikale Bildsynchronisation
