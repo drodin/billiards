@@ -3006,11 +3006,6 @@ void Key1( int key )
 {
   Key(key,0);
   b1_hold=0;
-#ifdef USE_SOUND
-  if(key !=13) {
-      PLAY_NOISE(cue_sound,options_snd_volume);
-  }
-#endif
 }
 
 /***********************************************************************
@@ -3035,7 +3030,7 @@ void MouseEvent(MouseButtonEnum button,MouseButtonState state, int x, int y)
 #else
         if ( button==MOUSE_LEFT_BUTTON && state==MOUSE_UP && menu_choose_by_coord(g_act_menu, x-win_width/2, -y+win_height/2 )) {
 #endif
-        	  PLAY_NOISE(cue_sound,options_snd_volume);
+        	  PLAY_NOISE(ball_sound,options_snd_volume);
            menu_choose(&g_act_menu);
          }
     } else {
@@ -5948,7 +5943,7 @@ void Key( int key, int modifiers ) {
            menu_select_next(g_act_menu);
            break;
        case 13:
-       	   PLAY_NOISE(cue_sound,options_snd_volume);
+       	   PLAY_NOISE(ball_sound,options_snd_volume);
            menu_choose( &g_act_menu );
            break;
        case 27:
@@ -7801,7 +7796,7 @@ int main( int argc, char *argv[] )
    init_menu();
 
    // Things for the Intro
-   PLAY_NOISE(wave_intro,options_snd_volume);
+   PLAY_NOISE(wave_shuffle,options_snd_volume);
    fprintf(stderr,"Play sound-intro\n");
    InitMesh();
    fprintf(stderr,"Graphic meshes initialized\nRun into game loop\n");

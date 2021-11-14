@@ -981,10 +981,6 @@ int proceed_dt(BallsType *balls, BordersType *borders, VMfloat dt, struct Player
                } else {
                	  PLAY_NOISE(ball_hole,options_snd_volume-5);
                   balls->ball[i].soundplayed = 1;
-                  if(balls->ball[i].nr == 0) { //white ball
-                  	 PLAY_NOISE(wave_smack,options_snd_volume-10);
-                    balls->ball[i].soundplayed = 1;
-                  }
                }
             }
 #endif

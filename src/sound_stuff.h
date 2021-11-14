@@ -1,4 +1,4 @@
-﻿/* sound_stuff.h
+/* sound_stuff.h
 **
 **    code for sound sample data
 **    Copyright (C) 2001  Florian Berger
@@ -34,15 +34,6 @@
 #include <SDL/SDL_mixer.h>
 #include "vmath.h"
 
-extern struct SoundStruct{
-    short int * data;
-    int len;  /* length in bytes */
-} TSound;
-
-extern struct TSound ball_ball_snd;
-extern struct TSound ball_wall_snd;
-extern struct TSound ball_cue_snd;
-
 /* Mix_Music actually holds the music information. */
 
 extern Mix_Music *music;
@@ -51,10 +42,8 @@ extern Mix_Music *music;
 
 extern Mix_Chunk *ball_hole;
 extern Mix_Chunk *wave_applause;
-extern Mix_Chunk *wave_intro;
 extern Mix_Chunk *wave_shuffle;
-extern Mix_Chunk *wave_smack;
-extern Mix_Chunk *wave_bomb;
+extern Mix_Chunk *wave_error;
 extern Mix_Chunk *wave_oneball;
 extern Mix_Chunk *wave_outball;
 extern Mix_Chunk *wave_ooh;

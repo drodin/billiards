@@ -1,4 +1,4 @@
-﻿/* sound_stuff.c
+/* sound_stuff.c
 **
 **    code for sound sample data
 **    Copyright (C) 2001  Florian Berger
@@ -39,15 +39,6 @@
 
 /***********************************************************************/
 
-typedef struct SoundStruct{
-  short int * data;
-  int len;  /* length in bytes */
-} TSound;
-
-TSound ball_ball_snd;
-TSound ball_wall_snd;
-TSound ball_cue_snd;
-
 // Placeholder for max. 500 Songs (that's hopefully enough, I think)
 
 char musicfile[500][255];
@@ -67,10 +58,8 @@ Mix_Music *music = NULL;
 
 Mix_Chunk *ball_hole = NULL;
 Mix_Chunk *wave_applause = NULL;
-Mix_Chunk *wave_intro = NULL;
 Mix_Chunk *wave_shuffle = NULL;
-Mix_Chunk *wave_smack = NULL;
-Mix_Chunk *wave_bomb = NULL;
+Mix_Chunk *wave_error = NULL;
 Mix_Chunk *wave_oneball = NULL;
 Mix_Chunk *wave_outball = NULL;
 Mix_Chunk *wave_ooh = NULL;
@@ -86,8 +75,6 @@ void init_sound(void);
 void exit_sound(void);
 Mix_Chunk* loadsound (char *filename);
 void PlayNoise(Mix_Chunk *chunkdata, int volume);
-void create_cue_sound(short int ** data, int * len, int length, VMfloat randmul, VMfloat maxrand, VMfloat sinfloat, VMfloat expfloat );
-void create_wall_sound(short int ** data, int * len );
 
 /***********************************************************************
  *              Check the given string extension mp3 or ogg            *
@@ -195,34 +182,9 @@ Mix_Chunk* loadsound (char *filename) {
 
 void init_sound(void)
 {
-    FILE * f;
     DIR * d;
     struct dirent * dp;
     int i,j,k,dummy;
-    /* ball-ball sounds from samuele catuzzi's kbilliards - thanx */
-    if((f=fopen("ball_ball.raw", "rb"))==NULL){
-        error_print("Couldn't open ball_ball.raw. Terminating!",NULL);
-        sys_exit(1);
-    }
-    fseek(f, 0L, SEEK_END);
-    ball_ball_snd.len = ftell(f)+1;
-    fseek(f, 0L, SEEK_SET);
-    ball_ball_snd.data = malloc(ball_ball_snd.len);
-    fread(&ball_ball_snd.data[0], 1, ball_ball_snd.len,f );
-    fclose(f);
-
-    // Manipulate the ballsounds a little bit (for better sound)
-    for(i=0;i<ball_ball_snd.len/2/2;i++){
-        ball_ball_snd.data[(i)*2]*=exp(-(VMfloat)i/(VMfloat)(ball_ball_snd.len/2/4));
-        ball_ball_snd.data[(i)*2+1]*=exp(-(VMfloat)i/(VMfloat)(ball_ball_snd.len/2/4));
-    }
-    for(i=0;i<ball_ball_snd.len/2/2-1;i++){
-        ball_ball_snd.data[i*2]=ball_ball_snd.data[i*2]*0.7+ball_ball_snd.data[(i+1)*2]*0.3;
-        ball_ball_snd.data[i*2+1]=ball_ball_snd.data[i*2+1]*0.7+ball_ball_snd.data[(i+1)*2+1]*0.3;
-    }
-
-    create_wall_sound(&ball_wall_snd.data, &ball_wall_snd.len);
-    create_cue_sound(&ball_cue_snd.data, &ball_cue_snd.len,2640,0.6,0.4,20.0,220.0); //length 2*2*3*220
 
     if(Mix_OpenAudio(22050, AUDIO_S16, 2, 1024)) {
       error_print("Unable to open audio!",NULL);
@@ -252,25 +214,14 @@ void init_sound(void)
    	  /* Actually loads up the sounds */
     	 ball_hole = loadsound ("ballinhole.wav");
     	 wave_applause = loadsound ("applause.wav");
-    	 wave_intro = loadsound ("intro.wav");
     	 wave_shuffle = loadsound ("shuffleballs.wav");
-    	 wave_smack = loadsound ("smack.wav");
-    	 wave_bomb = loadsound ("bomb.wav");
+    	 wave_error = loadsound ("error.wav");
     	 wave_oneball = loadsound ("oneballontable.wav");
     	 wave_outball = loadsound ("balloutoftable.wav");
     	 wave_ooh = loadsound ("ooh.wav");
-    	 if(!(ball_sound = Mix_QuickLoad_RAW((Uint8*)ball_ball_snd.data,ball_ball_snd.len))) {
-    	    error_print("Initializing internal ball-sound failed. No sound in game",NULL);
-    	 	options_use_sound=0;
-    	 }
-    	 if(!(wall_sound = Mix_QuickLoad_RAW((Uint8*)ball_wall_snd.data,ball_wall_snd.len))) {
-    	    error_print("Initializing internal wall-sound failed. No sound in game",NULL);
-    	 	options_use_sound=0;
-    	 }
-    	 if(!(cue_sound = Mix_QuickLoad_RAW((Uint8*)ball_cue_snd.data,ball_cue_snd.len))) {
-    	    error_print("Initializing internal cue-sound failed. No sound in game",NULL);
-    	 	options_use_sound=0;
-    	 }
+    	 ball_sound = loadsound ("ball.wav");
+    	 wall_sound = loadsound ("wall.wav");
+    	 cue_sound = loadsound ("cue.wav");
 
    	  /* Actually loads up the music */
 #if SDL_MIXER_MAJOR_VERSION > 2 || (SDL_MIXER_MINOR_VERSION == 2 && SDL_MIXER_PATCHLEVEL > 9)
@@ -357,43 +308,6 @@ void exit_sound(void)
 	   Mix_Quit();
 #endif
 */
-}
-
-/***********************************************************************
- *      Generates the sound for the cue. There is no file for it!      *
- ***********************************************************************/
-
-void create_cue_sound(short int ** data, int * len, int length, VMfloat randmul, VMfloat maxrand, VMfloat sinfloat, VMfloat expfloat )
-{
-    int i;
-    *len=length;
-    *data=(short int *)malloc(*len);
-    for(i=0;i<(*len)/2/2;i++){
-        (*data)[i*2]=32000.0*(randmul*(VMfloat)rand()/(VMfloat)RAND_MAX+(maxrand)*sin((VMfloat)i/sinfloat*2.0*M_PI))*exp(-(VMfloat)i/expfloat);
-        (*data)[i*2+1]=(*data)[i*2];
-    }
-    for(i=1;i<(*len)/2/2;i++){
-        (*data)[i*2]=0.5*(*data)[i*2]+0.5*(*data)[(i-1)*2];
-        (*data)[i*2+1]=(*data)[i*2];
-    }
-    for(i=30;i<(*len)/2/2;i++){
-        (*data)[i*2]=0.7*(*data)[i*2]+0.3*(*data)[(i-30)*2];
-        (*data)[i*2+1]=(*data)[i*2];
-    }
-}
-
-/***********************************************************************
-*   Generates the sound for the ball-wall. There is no file for it!    *
-************************************************************************/
-
-void create_wall_sound(short int ** data, int * len)
-{
-    int i;
-    create_cue_sound(data,len,5584,0.1,0.9,220.0,465.0); // length 2*2*3*465+2*2
-    for(i=0;i<(*len)/2/2;i++){
-        (*data)[i*2]*=exp(-(VMfloat)(i)/40.0*(VMfloat)(i)/40.0);
-        (*data)[i*2+1]*=exp(-(VMfloat)(i)/40.0*(VMfloat)(i)/40.0);
-    }
 }
 
 #endif  /* #ifdef USE_SOUND */
