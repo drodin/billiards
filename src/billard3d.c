@@ -200,7 +200,6 @@ static GLuint lightflaretexbind;
 static GLuint halfsymboltexbind;
 static GLuint fullsymboltexbind;
 static GLuint fullhalfsymboltexbind;
-static GLuint fblogotexbind;
 static GLuint btexbind;
 static GLuint ntexbind;
 static GLuint stexbind;
@@ -4007,15 +4006,8 @@ void Display_tournament_tree( struct TournamentState_ * ts )
       glVertexPointer(3, GL_FLOAT, 0, VertexData1);
       glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-      glBindTexture(GL_TEXTURE_2D,fblogotexbind);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-      glEnable(GL_TEXTURE_2D);
       static const GLfloat VertexData2[] = {-1.0,0.8,0.0,1.0,0.8,0.0,-1.0,-0.8,0.0,1.0,-0.8,0.0};
-      static const GLfloat TexData2[] = {-0.3-0.15,0.06-0.15,1.3-0.15,0.06-0.15,-0.3+0.15,0.94+0.15,1.3+0.15,0.94+0.15};
       static const GLfloat ColorData2[] = {0.6,0.6,0.6,0.85,0.6,0.6,0.6,0.85,0.6,0.6,0.6,0.85,0.6,0.6,0.6,0.85};
-      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-      glTexCoordPointer(2,GL_FLOAT, 0, TexData2);
       glVertexPointer(3, GL_FLOAT, 0, VertexData2);
       glColorPointer(4, GL_FLOAT, 0, ColorData2);
       glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -7766,11 +7758,6 @@ static void Init( void )
     glEnable(GL_TEXTURE_2D);
     fprintf(stderr,"Load 2D Graphics start\n");
     create_png_texbind("sphere_map_128x128.png", &spheretexbind, 3, GL_RGB);
-#ifdef WETAB
-    create_png_texbind("tabletex_wetab_128x128.png", &fblogotexbind, 1, GL_LUMINANCE);
-#else
-    create_png_texbind("tabletex_fB_128x128.png", &fblogotexbind, 1, GL_LUMINANCE);
-#endif
 
     create_png_texbind("place_cue_ball.png", &placecueballtexbind, 3, GL_RGB);
     create_png_texbind("blende.png", &blendetexbind, 1, GL_LUMINANCE);
