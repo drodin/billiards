@@ -128,6 +128,9 @@ int scaling_start, scaling_start2;
 int b2_b1_hold = 0;
 
 MATH_ALIGN16 GLfloat cam_dist_aim = 2.5;
+#ifdef ALT_CONTROLS
+MATH_ALIGN16 GLfloat old_cam_dist_aim = 2.5;
+#endif
 MATH_ALIGN16 GLfloat cam_dist;
 MATH_ALIGN16 GLfloat cam_FOV=40.0;
 
@@ -2767,6 +2770,11 @@ void queue_shot(void) {
         /* reset offset parameters */
         queue_point_x=0.0;
         queue_point_y=0.0;
+#ifdef ALT_CONTROLS
+        queue_strength=0.0;
+        queue_offs = 0.06;
+        Xque = -87.0;
+#endif
         hitcounter++;
     }
 }
@@ -3276,12 +3284,27 @@ void MouseEvent(MouseButtonEnum button,MouseButtonState state, int x, int y)
                 button_anim = 0.7;
                 step = 0.03; // Keys Accelerator back to start
                 freeview_step = 0.03; // Keys Accelerator back to start
-#ifndef TOUCH
+#if !defined(TOUCH) || defined(ALT_CONTROLS)
+#ifdef ALT_CONTROLS
+                if(control__english) {
+                  control_unset(&control__english);
+                  cam_dist_aim = old_cam_dist_aim;
+                }
+#else
                 if(control__english) control_unset(&control__english);
+#endif
                 if(control__place_cue_ball) control_unset(&control__place_cue_ball);
                 if(control__cue_butt_updown) control_unset(&control__cue_butt_updown);
                 if(control__fov) control_unset(&control__fov);
+#ifdef ALT_CONTROLS
+                if(control__mouse_shoot) {
+                  control_unset(&control__mouse_shoot);
+                  if(queue_strength > 0)
+                    shoot(0);
+                }
+#else
                 if(control__mouse_shoot) control_unset(&control__mouse_shoot);
+#endif
 #endif
                 b1_hold = 0;
                 b2_b1_hold = 0;
@@ -3431,6 +3454,16 @@ void MouseMotion(int x, int y)
             }
         } else if ( control__mouse_shoot ){
             if( (!queue_view) && (!balls_moving) && !player[act_player].is_AI && !player[act_player].is_net ) {  /* dynamic cue shot */
+#ifdef ALT_CONTROLS
+              queue_offs+=(VMfloat)(y-start_y)*0.002;
+              if(queue_offs > 1.06) {
+                queue_offs = 1.06;
+              } else if( queue_offs < 0.06 ) {
+                queue_offs=0.06;
+              }
+              queue_strength=queue_offs-0.06;
+              start_y = y;
+#else
              abspos = angle_pm360(angle_pm360(Zrot+Zrot_offs)-angle_pm360(Zque));
              //fprintf(stderr,"Abspos: %f cue: %f\n",abspos,queue_offs);
              //fprintf(stderr,"x: %i y: %i\n",x,y);
@@ -3471,6 +3504,7 @@ void MouseMotion(int x, int y)
                 }
               start_x = x;
               start_y = y;
+#endif
             }
         } else if ( control__english ){
             setenglish((x-scaling_start2)*0.0005, (y-scaling_start)*0.0005);
@@ -3507,9 +3541,11 @@ void MouseMotion(int x, int y)
             if(!FREE_VIEW) {
                Xoffs += (VMfloat)(y-start_y)*fabs(y-start_y)*0.01*acc;
                Zoffs += (VMfloat)(x-start_x)*fabs(x-start_x)*0.01*acc;
+#ifndef ALT_CONTROLS
                if(!options_oldmove && y <= win_height/2) {
                  Zoffs = -Zoffs;
                }
+#endif
                //fprintf(stderr,"Z %f w %f\n",Zoffs,whatoffs);
             } else {
                Xoffs -=  (VMfloat)(y-start_y)*fabs(y-start_y)*0.01*acc;
@@ -3521,10 +3557,16 @@ void MouseMotion(int x, int y)
             Zrot = angle_pm360(Zrot+Zoffs);
             Xrot_offs -= Xoffs;
             Zrot_offs -= Zoffs;
+#ifdef ALT_CONTROLS
+            if(!balls_moving && !player[act_player].is_AI && !player[act_player].is_net) {
+                Zque=Zrot;
+            }
+#else
             if( queue_view ){
                 Xque=Xrot;
                 Zque=Zrot;
             }
+#endif
           } else if (!balls_moving && !player[act_player].is_AI && !player[act_player].is_net ){
             // in birdview on, the cue is moving
             Zoffs = (VMfloat)(x-start_x)/2;
@@ -4097,6 +4139,10 @@ void DisplayFunc( void )
   static GLfloat introblendxanimate = 0.0; //dto.
   static GLfloat introblendyanimate = 0.0; //dto.
 
+#ifdef ALT_CONTROLS
+  queue_view=0;
+#endif
+
 #ifdef NETWORKING
    // Network Game
    network_game();
@@ -4229,6 +4275,9 @@ void DisplayFunc( void )
       *************************************************************/
 
      if(!balls_moving && balls_were_moving ){
+#ifdef ALT_CONTROLS
+         Zque = Zrot;
+#endif
          /* allways a shot to be due when balls just stopped moving */
          g_shot_due=1;
          balls_were_moving=0;
@@ -4280,6 +4329,7 @@ void DisplayFunc( void )
 
          set_players_score_text();
 
+#ifndef ALT_CONTROLS
          // after shoot switch back to freeview if set
          if(options_auto_freemove && !queue_view && !balls_moving && !(player[act_player].is_net || player[act_player].is_AI)) {
                if(options_birdview_on) {
@@ -4288,6 +4338,7 @@ void DisplayFunc( void )
                   toggle_queue_view();
                }
             }
+#endif
 
          // bird-view for AI or net player
          if(options_ai_birdview && (player[act_player].is_AI || player[act_player].is_net) && !(player[0].winner || player[1].winner) && !options_birdview_on) {
@@ -4602,6 +4653,11 @@ void DisplayFunc( void )
 
 #endif
    if( !queue_view && !balls_moving ) {  /* draw queue */
+#ifdef ALT_CONTROLS
+       if(!player[act_player].is_AI && !player[act_player].is_net)
+         draw_queue( balls.ball[cue_ball].r, Xque, Zque+Zrot_offs, queue_offs, queue_point_x, queue_point_y, spheretexbind, lightpos, lightnr );
+       else
+#endif
        draw_queue( balls.ball[cue_ball].r, Xque, Zque, queue_offs, queue_point_x, queue_point_y, spheretexbind, lightpos, lightnr );
    }
 
@@ -4785,7 +4841,12 @@ void DisplayFunc( void )
        glDisable(GL_DEPTH_TEST);
 #if !defined(WETAB) || defined(__MOBILE__)
        // the WeTab is to slow for this !!
+#ifdef ALT_CONTROLS
+       if((vline_on || (control__active && control__english)) && !balls_moving
+          && !player[act_player].is_AI && !player[act_player].is_net) {
+#else
        if((vline_on || (control__active && control__english)) && queue_view && !balls_moving){
+#endif
            bz=vec_unit(vec_diff(cam_pos,balls.ball[cue_ball].r));
            bx=vec_unit(vec_xyz(-bz.y, bz.x, 0));
            by=vec_cross(bz,bx);
@@ -5293,7 +5354,12 @@ void DisplayFunc( void )
        }
 #endif
        // show the helpline
+#ifdef ALT_CONTROLS
+       if (vline_on && !balls_moving
+           && !player[act_player].is_AI && !player[act_player].is_net) {
+#else
        if (vline_on && queue_view && !balls_moving ) {
+#endif
     	    if(vline_id == -1) {
            vline_id = glGenLists(1);
     	   glNewList(vline_id, GL_COMPILE_AND_EXECUTE);
@@ -6128,6 +6194,9 @@ void Key( int key, int modifiers ) {
             }
             if(!FREE_VIEW) {
               Zrot = angle_pm360(Zrot+step);
+#ifdef ALT_CONTROLS
+              Zque = Zrot;
+#endif
               step += STEP1;
               if (step > STEPMAX) step = STEPMAX;
             } else {
@@ -6150,6 +6219,9 @@ void Key( int key, int modifiers ) {
          }
          if(!FREE_VIEW){
              Zrot = angle_pm360(Zrot-step);
+#ifdef ALT_CONTROLS
+             Zque = Zrot;
+#endif
              step += STEP1;
              if (step > STEPMAX) step = STEPMAX;
          } else {
@@ -6366,6 +6438,7 @@ void Key( int key, int modifiers ) {
       case ' ':
       case 13:
           if(modifiers == 0){
+            if (queue_strength > 0 && queue_anim <= 0.0)
             enter_mousemiddle();
           }
 #ifndef TOUCH
@@ -6479,6 +6552,10 @@ void KeyUp(int key)
         switch (key) {
         case 's':
            control_unset(&control__mouse_shoot);
+#ifdef ALT_CONTROLS
+           if(queue_strength > 0)
+             shoot(0);
+#endif
            break;
         case 'b':
            control_unset(&control__cue_butt_updown);

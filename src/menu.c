@@ -755,9 +755,11 @@ void init_menu(void)
 #ifdef TOURNAMENT
     static menuType * tourfast_menu;
 #endif
+#ifndef ALT_CONTROLS
     static menuType * mshoot_menu;
     static menuType * mmove_menu;
     static menuType * freemove_menu;
+#endif
     char str[256];
     int neuwert = 0;       // for the localeText variables inside some loops
 
@@ -771,6 +773,7 @@ void init_menu(void)
 
     /* Building the Menus */
 
+#ifndef ALT_CONTROLS
     /*
      MShoot Menu comes from Game Options
      */
@@ -792,6 +795,7 @@ void init_menu(void)
     menu_add_entry( mmove_menu, localeText[235], MENU_ID_OLDMOVE_ON,localeText[466]);
     //< back
     menu_add_exit ( mmove_menu, localeText[63],localeText[266]);
+#endif
 #ifdef TOURNAMENT
     /*
      Tourfast Menu comes from Game Options
@@ -1163,6 +1167,7 @@ void init_menu(void)
     //< back
     menu_add_exit (balltrace_menu, localeText[63],localeText[266]);
 
+#ifndef ALT_CONTROLS
     /*
      freemove menu come from Game Menu
     */
@@ -1173,6 +1178,7 @@ void init_menu(void)
     menu_add_entry(freemove_menu, localeText[65], MENU_ID_AUTOFREEMOVE_OFF,localeText[329]);
     //< back
     menu_add_exit (freemove_menu, localeText[63],localeText[266]);
+#endif
 
     /*
      birdview_ai come from Game Menu
@@ -1597,12 +1603,14 @@ void init_menu(void)
     menu_add_submenu(game_menu, localeText[98], helpline_menu, 1, localeText[65-vline_on],localeText[376]);
     //jump shots
     menu_add_submenu(game_menu, localeText[216], jump_shot_menu, 1, localeText[65-options_jump_shots],localeText[366]);
+#ifndef ALT_CONTROLS
     //Mouse shots
     menu_add_submenu(game_menu, localeText[233], mshoot_menu, 1, localeText[235-options_mouseshoot],localeText[367]);
     //Mouse movement changes
     menu_add_submenu(game_menu, localeText[467], mmove_menu, 1, localeText[234+options_oldmove],localeText[468]);
     //Auto free move view
     menu_add_submenu(game_menu, localeText[236], freemove_menu, 1, localeText[65-options_auto_freemove],localeText[368]);
+#endif
 #ifdef TOURNAMENT
     //Tournament timelapse
     switch((int)options_tourfast) {
