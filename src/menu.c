@@ -740,7 +740,9 @@ void init_menu(void)
     static menuType * player2_skill_menu;
     static menuType * player1_type_menu;
     static menuType * player2_type_menu;
+#ifdef TOURNAMENT
     static menuType * tourfast_menu;
+#endif
     static menuType * anisotrop_menu;
     static menuType * mshoot_menu;
     static menuType * mmove_menu;
@@ -771,6 +773,7 @@ void init_menu(void)
     menu_add_entry( mmove_menu, localeText[235], MENU_ID_OLDMOVE_ON,localeText[466]);
     //< back
     menu_add_exit ( mmove_menu, localeText[63],localeText[266]);
+#ifdef TOURNAMENT
     /*
      Tourfast Menu comes from Game Options
      */
@@ -787,6 +790,7 @@ void init_menu(void)
     menu_add_entry( tourfast_menu, localeText[72], MENU_ID_TOURFAST_ULTRA,localeText[276]);
     //< back
     menu_add_exit ( tourfast_menu, localeText[63],localeText[266]);
+#endif
 
     /*
      Resolution Menu comes from Graphics/Reflections, Resolution of Antialiasing
@@ -1304,8 +1308,10 @@ void init_menu(void)
     ball8_menu = menu_new( menu_cb );
     //One Player
     menu_add_entry(ball8_menu, localeText[212], MENU_ID_GAMETYPE_8BALL,localeText[354]);
+#ifdef TOURNAMENT
     //Tournament
     menu_add_entry(ball8_menu, localeText[120], MENU_ID_8BALL_TOURN,localeText[355]);
+#endif
     //Network
 #ifdef NETWORKING
     menu_add_submenu(ball8_menu, localeText[135], net8ball_menu, 0, NULL,localeText[356]);
@@ -1372,8 +1378,10 @@ void init_menu(void)
     ball9_menu = menu_new( menu_cb );
     //One Player
     menu_add_entry(ball9_menu, localeText[212], MENU_ID_GAMETYPE_9BALL,localeText[354]);
+#ifdef TOURNAMENT
     //Tournament
     menu_add_entry(ball9_menu, localeText[120], MENU_ID_9BALL_TOURN,localeText[355]);
+#endif
 #ifdef NETWORKING
     //Network
     menu_add_submenu(ball9_menu, localeText[135], net9ball_menu, 0, NULL,localeText[356]);
@@ -1442,8 +1450,10 @@ void init_menu(void)
     menu_add_textfield( carambol_menu, str, MENU_ID_MAXP_CARAMBOL, utf8count(localeText[213])-2,KEY_TYPE_NUM,1,100,3,localeText[358]);
     //One Player
     menu_add_entry(carambol_menu, localeText[212], MENU_ID_GAMETYPE_CARAMBOL,localeText[354]);
+#ifdef TOURNAMENT
     //Tournament
     menu_add_entry(carambol_menu, localeText[120], MENU_ID_CARAMBOL_TOURN,localeText[355]);
+#endif
 #ifdef NETWORKING
     //Network
     menu_add_submenu(carambol_menu, localeText[135], netcarambol_menu, 0, NULL,localeText[356]);
@@ -1509,8 +1519,10 @@ void init_menu(void)
     snooker_menu = menu_new( menu_cb );
     //One Player
     menu_add_entry(snooker_menu, localeText[212], MENU_ID_GAMETYPE_SNOOKER,localeText[354]);
+#ifdef TOURNAMENT
     //Tournament
     menu_add_entry(snooker_menu, localeText[120], MENU_ID_SNOOKER_TOURN,localeText[355]);
+#endif
 #ifdef NETWORKING
     //Network
     menu_add_submenu(snooker_menu, localeText[135], netsnooker_menu, 0, NULL,localeText[356]);
@@ -1576,6 +1588,7 @@ void init_menu(void)
 #endif
     //birdview_ai_menu - shows birdview on AI or Net-Player (on/off)
     menu_add_submenu(game_menu, localeText[227], birdview_ai_menu, 1, localeText[65-options_ai_birdview],localeText[370]);
+#ifdef TOURNAMENT
     //Tournament timelapse
     switch((int)options_tourfast) {
       case 2:
@@ -1594,6 +1607,7 @@ void init_menu(void)
         neuwert = 230;
       }
     menu_add_submenu(game_menu, localeText[229], tourfast_menu, 1, localeText[neuwert],localeText[371]);
+#endif
     //< back
     menu_add_exit (game_menu, localeText[63],localeText[266]);
 
