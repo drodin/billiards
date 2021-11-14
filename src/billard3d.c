@@ -7099,32 +7099,6 @@ void menu_cb( int id, void * arg , VMfloat value)
            options_maxp_carambol = 10;
         }
         break;
-    case MENU_ID_MANUAL:
-        if(manual_available()) {
-#ifndef WETAB
-          fullscreen = sys_get_fullscreen();
-          if(fullscreen) {
-#endif
-          sys_fullscreen(0);
-          SDL_Delay(20);
-#ifndef WETAB
-          }
-#endif
-         launch_manual();
-
-#ifndef WETAB
-          if(fullscreen) {
-          set_checkkey();
-          //wait for sdl_event to transform the window back to fullscreen
-          while(checkkey()) { SDL_Delay(100); }
-#endif
-          sys_fullscreen(1);
-          SDL_Delay(20);
-#ifndef WETAB
-          }
-#endif
-        }
-        break;
 
     case MENU_RES_REND_LOW:
         options_cuberef_res = 16;

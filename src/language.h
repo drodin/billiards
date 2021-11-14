@@ -1,4 +1,4 @@
-﻿/* language.h
+/* language.h
 **
 **    code for Localisation
 **    Version foobillard++ started at 12/2010
@@ -28,7 +28,5 @@
 extern char localeText[MAX_TEXT_ENTRIES][MAX_TEXT_ENTRY_LEN];
 
 void init_language();
-int manual_available();
-void launch_manual();
 
 #endif // language.h

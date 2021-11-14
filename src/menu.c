@@ -1945,10 +1945,6 @@ void init_menu(void)
 #endif
     //Help
     menu_add_entry(g_main_menu, localeText[142], MENU_ID_MAIN_HELP,localeText[408]);
-    //Manual
-    if(manual_available()) {
-       menu_add_entry(g_main_menu, localeText[224], MENU_ID_MANUAL,localeText[409]);
-    }
     //Quit
     menu_add_submenu(g_main_menu,localeText[143], quit_menu, 0, NULL,localeText[410]);
 

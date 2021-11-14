@@ -34,7 +34,6 @@
 
 char localeText[MAX_TEXT_ENTRIES][MAX_TEXT_ENTRY_LEN];
 
-static int saved_manual_available = 0;
 static char charlang[3]; // system locale code
 
 /***********************************************************************
@@ -140,73 +139,6 @@ static void load_language_file()
 }
 
 /***********************************************************************
- *       return the manual file, if there is on, otherwise 0           *
- ***********************************************************************/
-
-int manual_available()
-{
-    return saved_manual_available;
-}
-
-/***********************************************************************
- *               Find the program's localized manual file              *
- ***********************************************************************/
-
-static char *find_manual_file()
-{
-    return find_localized_file(
-    		(arch == ARCH_WETAB) ? "index.html" : "index_a.html");
-}
-
-/***********************************************************************
- *               Launch the manual in the internet browser             *
- ***********************************************************************/
-
-void launch_manual()
-{
-    char command[512];
-    char *manual_file = find_manual_file();
-
-    if (!manual_file) {
-        fprintf(stderr, "No manual found.\n");
-        return;
-    }
-
-#ifdef __APPLE__
-    snprintf(command, sizeof(command), "%s/%s", get_data_dir(), manual_file);
-
-    void open_file_with_browser_mac(char *file);
-
-    open_file_with_browser_mac(command);
-#else
-    	switch (arch) {
-        case ARCH_WETAB:
-            snprintf(command, sizeof(command),
-                "tiitoo-browser-bin -t file://%s/%s",
-                get_data_dir(), manual_file);
-            break;
-
-        case ARCH_WIN32:
-        case ARCH_WIN64:
-            snprintf(command, sizeof(command),
-                "%s", manual_file);
-            break;
-
-        default:
-            if (!strcmp(options_browser, "browser")) {
-                strcpy(options_browser, "./browser.sh");
-            }
-            snprintf(command, sizeof(command),
-                "%s file://%s/%s",
-                options_browser, get_data_dir(), manual_file);
-            break;
-    }
-
-    launch_command(command);
-#endif
-}
-
-/***********************************************************************
  *                   init the language locale system                   *
  ***********************************************************************/
 
@@ -214,5 +146,4 @@ void init_language()
 {
     find_system_locale();
     load_language_file();
-    saved_manual_available = (find_manual_file() != NULL);
 }

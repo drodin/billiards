@@ -1,4 +1,4 @@
-﻿/* menu.h
+/* menu.h
 **
 **    code for Menu-Handling
 **    Copyright (C) 2001  Florian Berger
@@ -129,7 +129,6 @@ enum menu_ID {
     MENU_ID_MUSIC_ON,
     MENU_ID_MUSIC_OFF,
 #endif
-    MENU_ID_MANUAL,
     MENU_ID_RESTART,
     MENU_ID_CONTROL_KIND_ON,
     MENU_ID_CONTROL_KIND_OFF,
