@@ -32,7 +32,6 @@
 #include "bartable.h"
 #include "burlap_sofa.h"
 #include "fireplace.h"
-#include "Ceiling_light.h"
 #include "png_loader.h"
 #include "fire.h"
 
@@ -52,7 +51,6 @@
   int chair_id= -1;        // glcompile-id chair
   int bartable_id= -1;     // glcompile-id bar-table
   int camin_id= -1;        // glcompile-id camin
-  int lamp_id= -1;         // glcompile-id lamp
 
 /***********************************************************************
  *          drawing of the meshes (array_buffer)                       *
@@ -199,54 +197,6 @@ void MakeCamin(void)
    glEndList();
 }
 
-void MakeLamp(void)
-{
-   static GLfloat ambient_torus[3] = {	0.2125, 	0.1275, 	0.054};		// Torus
-   static GLfloat diffuse_torus[3] = {0.714, 0.4284, 	0.18144};
-   static GLfloat specular_torus[3]= {	0.393548, 	0.271906, 0.166721};
-	  if(lamp_id != -1) {
-	    glDeleteLists(lamp_id,1);
-	  }
-   lamp_id = glGenLists(1);
-   glNewList(lamp_id, GL_COMPILE);
-     glDisable(GL_TEXTURE_2D);
-     glDepthMask (GL_FALSE);
- 		  glMaterialfv(GL_FRONT,GL_AMBIENT, ambient_torus);
- 		  glMaterialfv(GL_FRONT,GL_DIFFUSE, diffuse_torus);
- 		  glMaterialfv(GL_FRONT,GL_SPECULAR, specular_torus);
- 		  glMaterialf (GL_FRONT, GL_SHININESS, 76.8);
-
-#ifdef USE_BINDBUFFER
-     DrawMesh(vbo4, vinx4, FACES4_COUNT);
-#else
-     DrawMesh(FACES4_COUNT, (char *)&vertexs4, (char *)&indexes4);
-#endif
-     glDisable(GL_CULL_FACE);
-     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-     glRotatef(90.0,1.0,0.0,0.0);
-     glTranslatef(-1.0,0.7,0.7);
-     static const GLshort Vertices1[] = {0,0,0,0,12,0,2,0,0,2,12,0};
-     static const GLshort ColorData1[] = {1,1,1,1,1,1,1,1,1,1,1,1};
-     glEnableClientState(GL_VERTEX_ARRAY);
-     glEnableClientState(GL_COLOR_ARRAY);
-     glPushMatrix();
-     glVertexPointer(3, GL_SHORT, 0, Vertices1);
-     glColorPointer(3, GL_SHORT, 0, ColorData1);
-     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-     glPopMatrix();
-     glPushMatrix();
-     glTranslatef(0.0,0.0,-1.4);
-     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-     glPopMatrix();
-     glDisableClientState(GL_VERTEX_ARRAY);
-     glDisableClientState(GL_COLOR_ARRAY);
-     glPolygonMode(GL_FRONT,GL_FILL);
-     glDepthMask (GL_TRUE);
-     glEnable(GL_CULL_FACE);
-     glEnable(GL_TEXTURE_2D);
-   glEndList();
-}
-
 /***********************************************************************
  *                    Initialization for the meshes                    *
  ***********************************************************************/
@@ -324,18 +274,6 @@ void InitMesh(void) {
    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof (indexes3[0]) * FACES3_COUNT * 3, indexes3, GL_STATIC_DRAW);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #endif
-   //ceiling lamp
-#ifdef USE_BINDBUFFER
-   glGenBuffers(1, &vbo4);
-   glBindBuffer(GL_ARRAY_BUFFER, vbo4);
-   glBufferData(GL_ARRAY_BUFFER, sizeof (struct vertex_struct) * VERTEX4_COUNT, vertexs4, GL_STATIC_DRAW);
-   glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-   glGenBuffers(1, &vinx4);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vinx4);
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof (indexes4[0]) * FACES4_COUNT * 3, indexes4, GL_STATIC_DRAW);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-#endif
   fprintf(stderr,"Initialize default Sofa object\n");
   MakeSofa();
   fprintf(stderr,"Initialize default Chair object\n");
@@ -344,8 +282,6 @@ void InitMesh(void) {
   MakeTable();
   fprintf(stderr,"Initialize default Fireplace object\n");
   MakeCamin();
-  fprintf(stderr,"Initialize default ceiling-lamp object\n");
-  MakeLamp();
   fprintf(stderr,"Initialize fire object\n");
   init_fire();  //initialize the fireflame for the fireplace
 }

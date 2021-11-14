@@ -53,7 +53,6 @@ foobillardplus_SOURCES = \
    room.h \
    mesh.h \
    mesh.c \
-   Ceiling_light.h \
    barchair.h \
    bartable.h \
    burlap_sofa.h \
@@ -128,7 +127,6 @@ foobillardplus_SOURCES = \
    room.h \
    mesh.h \
    mesh.c \
-   Ceiling_light.h \
    barchair.h \
    bartable.h \
    burlap_sofa.h \

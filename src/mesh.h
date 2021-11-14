@@ -29,6 +29,5 @@
   extern int chair_id;        // glcompile-id chair
   extern int bartable_id;     // glcompile-id bar-table
   extern int camin_id;        // glcompile-id camin
-  extern int lamp_id;         // glcompile-id lamp
 
 #endif /* MESHES_H */

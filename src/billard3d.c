@@ -4657,13 +4657,6 @@ void DisplayFunc( void )
          }
         display_fire(flame_frame);
         }
-        if(!options_birdview_on) {
-          glPopMatrix();
-          glPushMatrix();
-          glScalef(0.1,0.7,0.05);
-          glTranslatef(0.0,0.0,20.0);
-          glCallList(lamp_id);  // ceiling lamp
-        }
      } else {
        //higher extra-textures
        glPopMatrix();
