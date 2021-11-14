@@ -50,7 +50,6 @@
 #include <sys/stat.h>
 #include "options.h"
 #include "sys_stuff.h"
-#include "history.h"
 
 /***********************************************************************
  *                 Loads a png Graphics file into mem                  *

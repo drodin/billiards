@@ -72,7 +72,6 @@
 #include "menu.h"
 #include "room.h"
 #include "mesh.h"
-#include "history.h"
 #include "vmath.h"
 #include "billard3d.h"
 #include "fire.h"
@@ -236,8 +235,8 @@ static int  act_player=0;   /* 0 or 1 */
 // sprintf(str,"%s - %s",player[act_player].name,half_full_names
 // static char * half_full_names[]={localeText[4],localeText[5],localeText[6]}; /* "any","full","half" */
 static int  b1_b2_hold=0;
-static int  hitcounter = 0; // counts all hits in one play for history function(all players)
-static int  roundcounter=0; // count the rounds in a game for history function
+static int  hitcounter = 0; // counts all hits in one play
+static int  roundcounter=0; // count the rounds in a game
 
 struct Player player[2];
 
@@ -2823,7 +2822,7 @@ void queue_shot(void) {
         /* reset offset parameters */
         queue_point_x=0.0;
         queue_point_y=0.0;
-        hitcounter++; //for the history count all shots
+        hitcounter++;
     }
 }
 
@@ -4288,7 +4287,7 @@ void DisplayFunc( void )
          g_shot_due=1;
          balls_were_moving=0;
          if(options_gamemode!=options_gamemode_training){
-             old_actplayer = act_player; // save the state of the actual player for network game and history function
+             old_actplayer = act_player; // save the state of the actual player for network game
              //fprintf(stderr,"evaluate_last_move is called\n");
              evaluate_last_move( player, &act_player, &balls, &queue_view);
              Xque = -87.0;  // reset the cue-pos
@@ -4729,30 +4728,6 @@ void DisplayFunc( void )
    }
 
    if( (player[0].winner || player[1].winner) ) {
-   	   if(!history_free()) { // only one time for update xml-data
-   	   	  history_set();
-          control_unset(&control__cue_butt_updown);
-          control_unset(&control__english);
-          control_unset(&control__place_cue_ball);
-          control_unset(&control__fov);
-          control_unset(&control__mouse_shoot);
-          if(options_gamemode==options_gamemode_tournament) {
-          	 if(tournament_state.overall_winner>=0) {
-              if(player[0].winner) {
-              	  file_tournament_history(&tournament_state, player[0].name, gametype );
-              } else {
-              	  file_tournament_history(&tournament_state, player[1].name, gametype );
-              }
-            }
-          } else {
-              if(player[0].winner) {
-                file_history(player[0].name, player[1].name, player[0].name, hitcounter, (roundcounter+1)/2, gametype);
-             } else {
-                file_history(player[0].name, player[1].name, player[1].name, hitcounter, (roundcounter+1)/2, gametype);
-             }
-
-          }
-   	   }
        if(options_3D_winnertext){
            if(options_gamemode==options_gamemode_tournament && tournament_state.overall_winner>=0) {
               draw_3D_winner_tourn_text();
@@ -5802,7 +5777,6 @@ void restart_game_common(void)
     if(options_birdview_on) { // ### FIXME ### not so good code here (ugly)
      birdview();
     }
-    history_clear(); //a game is free for history xml-file
     hitcounter = 0;
     roundcounter = 0;
 }
@@ -7151,56 +7125,7 @@ void menu_cb( int id, void * arg , VMfloat value)
 #endif
         }
         break;
-    case MENU_ID_HISTORY:
-    	     if(check_xml("history.xml")) {
-#ifndef WETAB
-          fullscreen = sys_get_fullscreen();
-          if(fullscreen) {
-#endif
-          sys_fullscreen(0);
-          SDL_Delay(20);
-#ifndef WETAB
-          }
-#endif
-          show_history("history.xml");
-#ifndef WETAB
-        if(fullscreen) {
-          set_checkkey();
-          //wait for sdl_event to transform the window back to fullscreen
-          while(checkkey()) { SDL_Delay(100); }
-#endif
-          sys_fullscreen(1);
-          SDL_Delay(20);
-#ifndef WETAB
-        }
-#endif
-    	   }
-        break;
-    case MENU_ID_TOURN_HISTORY:
-        if(check_xml("tournament.xml")) {
-#ifndef WETAB
-          fullscreen = sys_get_fullscreen();
-          if(fullscreen) {
-#endif
-            sys_fullscreen(0);
-            SDL_Delay(20);
-#ifndef WETAB
-          }
-#endif
-          show_history("tournament.xml");
-#ifndef WETAB
-          if(fullscreen) {
-            set_checkkey();
-            //wait for sdl_event to transform the window back to fullscreen
-            while(checkkey()) { SDL_Delay(100); }
-#endif
-            sys_fullscreen(1);
-            SDL_Delay(20);
-#ifndef WETAB
-          }
-#endif
-        }
-        break;
+
     case MENU_RES_REND_LOW:
         options_cuberef_res = 16;
         reassign_and_gen_cuberef_tex();
@@ -7921,9 +7846,6 @@ int main( int argc, char *argv[] )
      exit(1);
    }
    fprintf(stderr,"Language initialized\n");
-   /* Initialize history system */
-   init_history();
-   fprintf(stderr,"History system initialized\n");
 #ifdef WETAB
    sys_create_display(win_width, win_height, 1);
 #else

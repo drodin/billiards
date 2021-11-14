@@ -57,8 +57,6 @@ foobillardplus_SOURCES = \
    bartable.h \
    burlap_sofa.h \
    fireplace.h \
-   history.h \
-   history.c \
    fire.h \
    fire.c \
    getopt_long.h \
@@ -117,8 +115,6 @@ foobillardplus_SOURCES = \
    bartable.h \
    burlap_sofa.h \
    fireplace.h \
-   history.h \
-   history.c \
    fire.h \
    fire.c \
    getopt_long.h \

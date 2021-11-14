@@ -1,7 +1,5 @@
 /* billard3d.h
 **
-**    code for game history
-**
 **    Version foobillard++ started at 12/2010
 **    Copyright (C) 2010 - 2013 Holger Schaekel (foobillardplus@go4more.de)
 **
@@ -19,8 +17,6 @@
 **    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
 */
-
-// don't use functions of history unless the language is initialized!
 
 #ifndef BILLARD3D_H
 #define BILLARD3D_H
