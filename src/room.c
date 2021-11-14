@@ -114,9 +114,7 @@ void create_room(int *floor_obj, int *wall1_2_obj, int *wall3_obj, int *wall4_c_
   static GLuint graffity2texbind=-1;
   static GLuint closewindowtexbind=-1;
   static GLuint doortexbind=-1;
-  static GLuint boardtexbind=-1;
   static GLuint ceilingtexbind=-1;
-  static GLuint pricetexbind=-1;
   static GLuint floortexbind=-1;
   static GLuint cabinetbacktexbind=-1;
   static GLuint cabinetframetexbind=-1;
@@ -170,14 +168,8 @@ void create_room(int *floor_obj, int *wall1_2_obj, int *wall3_obj, int *wall4_c_
   if( winbacktexbind > 0 ) glDeleteTextures( 1, &winbacktexbind );
   create_png_texbind("skyline.png", &winbacktexbind, 3, GL_RGB);
 
-  if( boardtexbind > 0 ) glDeleteTextures( 1, &boardtexbind );
-  create_png_texbind("board.png", &boardtexbind, 4, GL_RGBA);
-
   if( ceilingtexbind > 0 ) glDeleteTextures( 1, &ceilingtexbind );
   create_png_texbind("ceiling.png", &ceilingtexbind, 3, GL_RGB);
-
-  if( pricetexbind > 0 ) glDeleteTextures( 1, &pricetexbind );
-  create_png_texbind("price.png", &pricetexbind, 4, GL_RGBA);
 
 // room walls and floor
 
@@ -322,11 +314,8 @@ void create_room(int *floor_obj, int *wall1_2_obj, int *wall3_obj, int *wall4_c_
     // skyline behind window
     glBindTexture(GL_TEXTURE_2D,winbacktexbind);
     my_rect_most(1.0,5.6,2.3,4.5,5.6,2.3,4.5,5.6,0.5,1.0,5.6,0.5);
-    // chalk board
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-    glBindTexture(GL_TEXTURE_2D,boardtexbind);
-    my_rect_most(-2.0,4.999,2.0,0.0,4.999,2.0,0.0,4.999,0.7,-2.0,4.999,0.7);
     // big dark wood window
     glBindTexture(GL_TEXTURE_2D,winbig1texbind);
     my_rect_most(1.0,5.2,2.3,4.0,5.2,2.3,4.0,5.2,0.5,1.0,5.2,0.5);
@@ -342,12 +331,6 @@ void create_room(int *floor_obj, int *wall1_2_obj, int *wall3_obj, int *wall4_c_
     glBindTexture(GL_TEXTURE_2D,corr1texbind);
     my_rect_wall();
     // price list
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBindTexture(GL_TEXTURE_2D,pricetexbind);
-    glEnable(GL_BLEND);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    my_rect_most(3.0,4.999,2.3,4.0,4.999,2.3,4.0,4.999,0.7,3.0,4.999,0.7);
     my_rect_strip(cabinetframetexbind); // carpet strip
     // closed window
     glBindTexture(GL_TEXTURE_2D,closewindowtexbind);
@@ -357,7 +340,6 @@ void create_room(int *floor_obj, int *wall1_2_obj, int *wall3_obj, int *wall4_c_
     // door
     glBindTexture(GL_TEXTURE_2D,doortexbind);
     my_rect_most(-2.0,4.997,2.3,-1.0,4.997,2.3,-1.0,4.997,0.0,-2.0,4.997,0.0);
-    glDisable(GL_BLEND);
     // ceiling
     glBindTexture(GL_TEXTURE_2D,ceilingtexbind);
     static const GLfloat VertexData1[] = {-5.0,-5.0,2.5,5.0,-5.0,2.5,-5.0,5.0,2.5,5.0,5.0,2.5};
