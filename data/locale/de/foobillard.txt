@@ -148,7 +148,7 @@ Spieler 1 Typ
 Spieler 1 Geschick
 Hilfe und Datenschutzerklärung
  (ESC) ... Anzeige Popup Menü
- (F1)  ... Hilfsbildschirm an/aus
+ (H) ... Hilfsbildschirm an/aus
  (F2)  ... Vogelperspektive an/aus
  (F3)  ... wechselt zwischen Queue und externer Ansicht
  (F4)  ... wechselt zwischen freier Bewegung in externer Ansicht
@@ -160,15 +160,15 @@ Hilfe und Datenschutzerklärung
  (F10) ... Neues Spiel starten
  (M)+(◀ ▶ ▲▼) bzw. (M)+(Mausbewegung) ... Queueball setzen
  (E)+(◀ ▶ ▲▼) bzw. (E)+(Mausbewegung) ... Englische Ausrichtung
- (F)+(▲▼) bzw. (F)+(Mausbewegung ▲▼)... setzt Sichtpunkt (FOV)
- (S)+(Mausbewegung ▲▼)  ... Direkter Schuss am Bildschirm
- (B)+(Mausbewegung ▲▼) oder (B)+(◀ ▶ ▲▼) ... Queue hoch/runter
+ (F)+(▲▼) bzw. (F)+(Mausbewegung ▲▼) ... setzt Sichtpunkt (FOV)
+ (B)+(▲▼) bzw. (B)+(Mausbewegung ▲▼) ... Queue hoch/runter
+ (S)+(Mausbewegung ▲▼) ... Direkter Schuss am Bildschirm
  (U) ... Letzten Schlag zurücknehmen (im Trainingmodus)
  (TAB) ... Spielball ändern (im Trainingmodus)
- (◀ ▶ ▲▼) oder (Mausbewegung) ... Rotieren
- (◀)(▶) ... Schussstärke einstellen
- (Gelb/weiß ▲)(Gelb/weiß ▼) ... Zoom +/-
- (Roter Schalter) oder (Gelber Schalter) ... Schuss
+ (◀ ▶ ▲▼) oder (Mausbewegung) ... Rotieren queue/kamerа
+ (Q)/(A) ... Schussstärke einstellen
+ (1)/(2) ... Zoom +/-
+ (Leertaste) oder (Enter) ... Schuss
  © 2001 F. Berger, FB++ 2011 H. Schäkel, 2021 Dmitry Rodin.
  GPLv2-Lizenz. Quellcode verfügbar unter drodin.com/billards
  Wir erheben keine personenbezogenen Daten von unseren Apps.

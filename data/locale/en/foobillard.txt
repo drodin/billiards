@@ -148,7 +148,7 @@ P1 Type
 P1 Skill
 Help and Privacy Policy
  (ESC) ... Popup Menu
- (F1)  ... Toggle this help screen
+ (H) ... Toggle this help screen
  (F2)  ... Toggle birdview
  (F3)  ... Toggle cue/external view
  (F4)  ... Toggle free move mode in ext view
@@ -160,15 +160,15 @@ Help and Privacy Policy
  (F10) ... Start a new game
  (M)+(◀ ▶ ▲▼) or (M)+(Mousemove) ... Place cueball
  (E)+(◀ ▶ ▲▼) or (E)+(Mousemove) ... English adj.
- (F)+(▲▼) bzw. (F)+(Mousemove ▲▼)... Front of view (FOV)
- (S)+(Mousemove ▲▼)  ... Direct Mouseshoot
- (B)+(Mousemove ▲▼) or (B)+(◀ ▶ ▲▼) ... Queue hoch/runter
+ (F)+(▲▼) or (F)+(Mousemove ▲▼) ... Field of view (FOV)
+ (B)+(▲▼) or (B)+(Mousemove ▲▼) ... Cue angle
+ (S)+(Mousemove ▲▼) ... Direct Mouseshoot
  (U) ... Undo last move (training mode)
  (TAB) ... Change cueball (training mode)
- (◀ ▶ ▲▼) or (Mousemove ... Rotate
- (◀)(▶) ... Strength adj.
- (yellow/white ▲)(yellow/white ▼) ... Zoom +/-
- (Red button) or (yellow button) ... Shoot
+ (◀ ▶ ▲▼) or (Mousemove) ... Rotate cue/camera
+ (Q)/(A) ... Strength adj.
+ (1)/(2) ... Zoom +/-
+ (Space) or (Enter) ... Shoot
  © 2001 F. Berger, FB++ 2011 H. Schaekel, 2021 Dmitry Rodin.
  GPLv2 license. Source code available at drodin.com/billiards
  Privacy policy: We don't collect any personal data from our apps.

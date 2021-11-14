@@ -6231,19 +6231,32 @@ void Key( int key, int modifiers ) {
              if(freeview_step > FREEVIEW_STEPMAX) freeview_step = FREEVIEW_STEPMAX;
          }
          break;
+#ifdef ALT_CONTROLS
+      case 'q':
+#else
       case KSYM_PAGE_DOWN:
+#endif
          if(!player[act_player].is_AI && !balls_moving)
              queue_strength = strength01( queue_strength-0.01 );
          break;
+#ifdef ALT_CONTROLS
+      case 'a':
+#else
       case KSYM_PAGE_UP:
+#endif
          if(!player[act_player].is_AI && !balls_moving)
             queue_strength = strength01( queue_strength+0.01 );
          break;
+#ifdef ALT_CONTROLS
+      case 'h':
+#else
       case KSYM_F1:
+#endif
          if(g_act_menu==(menuType *)0){
               helpscreen_on = !helpscreen_on;
              }
          break;
+#ifndef ALT_CONTROLS
       case KSYM_F2:
          if(!old_birdview_ai) {
              birdview();
@@ -6330,6 +6343,7 @@ void Key( int key, int modifiers ) {
           }
 #endif
          break;
+#endif
       case 27:
           helpscreen_on=0;
 #ifdef NETWORKING

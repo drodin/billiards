@@ -47,6 +47,7 @@ void create_help_screen(int win_width, int win_height)
         text++;
         *text = textObj_new( localeText[150], options_help_fontname, 16);
         text++;
+#ifndef ALT_CONTROLS
         *text = textObj_new( localeText[151], options_help_fontname, 16);
         text++;
         *text = textObj_new( localeText[152], options_help_fontname, 16);
@@ -65,6 +66,7 @@ void create_help_screen(int win_width, int win_height)
         text++;
         *text = textObj_new( localeText[159], options_help_fontname, 16);
         text++;
+#endif
         *text = textObj_new( localeText[160], options_help_fontname, 16);
         text++;
         *text = textObj_new( localeText[161], options_help_fontname, 16);
