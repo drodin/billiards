@@ -708,8 +708,6 @@ void init_menu(void)
     static menuType * reflection_menu;
     static menuType * render_menu;
     static menuType * resolution_menu;
-    static menuType * bumpref_menu;
-    static menuType * bumpwood_menu;
     static menuType * light_menu;
     static menuType * view_menu;
     static menuType * game_menu;
@@ -791,28 +789,6 @@ void init_menu(void)
     menu_add_exit ( tourfast_menu, localeText[63],localeText[266]);
 
     /*
-     Bumpwood Menu comes from Graphics/Reflections
-     */
-    bumpwood_menu = menu_new( menu_cb );
-    //on
-    menu_add_entry( bumpwood_menu, localeText[64], MENU_ID_BUMPWOOD_ON,localeText[277]);
-    //off
-    menu_add_entry( bumpwood_menu, localeText[65], MENU_ID_BUMPWOOD_OFF,localeText[278]);
-    //< back
-    menu_add_exit ( bumpwood_menu, localeText[63],localeText[266]);
-
-    /*
-     Bumpref Menu comes from Graphics/Reflections
-     */
-    bumpref_menu = menu_new( menu_cb );
-    //on
-    menu_add_entry( bumpref_menu, localeText[64], MENU_ID_BUMPREF_ON,localeText[279]);
-    //off
-    menu_add_entry( bumpref_menu, localeText[65], MENU_ID_BUMPREF_OFF,localeText[280]);
-    //< back
-    menu_add_exit ( bumpref_menu, localeText[63],localeText[266]);
-
-    /*
      Resolution Menu comes from Graphics/Reflections, Resolution of Antialiasing
      */
      resolution_menu = menu_new( menu_cb );
@@ -863,12 +839,6 @@ void init_menu(void)
         neuwert = 72;
       }
     menu_add_submenu(reflection_menu, localeText[209],resolution_menu, 1, localeText[neuwert],localeText[289]);
-#ifndef WETAB
-    //bump reflections
-    menu_add_submenu(reflection_menu, localeText[106], bumpref_menu, 1, localeText[65-options_bumpref],localeText[290]);
-    //bumpy wood frame
-    menu_add_submenu(reflection_menu, localeText[107], bumpwood_menu, 1, localeText[65-options_bumpwood],localeText[291]);
-#endif
     //< back
     menu_add_exit(reflection_menu, localeText[63],localeText[266]);
 

@@ -38,7 +38,6 @@
 #include "table.h"
 #include "options.h"
 #include "png_loader.h"
-#include "bumpref.h"
 #include "vmath.h"
 
 /***********************************************************************/
@@ -1098,10 +1097,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
 
 	   //VMfloat cm  =  0.01;  // cm (for debugging in function my_glBox)
 
-    static int bumpref_init = 0;
-    static int bump_init = 0;
-    static BumpRefType bumpref;
-    static BumpRefType bumponly;
     static int table_obj=-1;
     static GLuint frametexbind=-1;
     static GLuint clothtexbind=-1;
@@ -1190,33 +1185,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
        wood_col_amb3[i]=0.0;
        //dia_col_spec[i]=dia_col_diff[i]*1.0;
        }
-
-   /* initialize bumpref setup */
-   if(!carambol){
-   if( options_bumpref        &&
-       extension_multitexture &&
-       extension_cubemap      &&
-       !bumpref_init )
-   {
-       bumpref = bumpref_setup_vp_ts_rc(
-                              "bumpref.png", 0.008,  /* bump map */
-                              "posx.png", "posy.png", "posz.png", "negx.png", "negy.png", "negz.png", /* cube map */
-                              0.00001f  /* z-shift */
-                             );
-       bumpref_init = 1;
-   }
-   }
-
-   if(options_bumpwood       &&
-      extension_multitexture &&
-      extension_rc_NV        &&
-      extension_vp_NV        &&
-      !bump_init ){
-       fprintf(stderr,"setting up wood frame bumpmaps\n");
-       bumponly = bump_setup_vp_rc("cloth-col.png",0.007,0);
-       //bumponly = bump_setup_vp_rc("table-frame.png",0.007,0);
-       bump_init = 1;
-   }
 
    if( table_obj != -1 ) glDeleteLists( table_obj, 1 );
    fprintf(stderr,"Initialize new table GL object\n");
@@ -1646,15 +1614,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
    if(!carambol){
  	     fprintf(stderr,"Generate gold/silver edges and cover objects\n");
-       if( options_bumpref        &&
-           extension_multitexture &&
-           extension_cubemap
-           )
-       {
-           //fprintf(stderr,"%f %f %f \n",dia_col_diff[0]*0.8, dia_col_diff[1]*0.8, dia_col_diff[2]*0.8);
-           glColor4f(dia_col_diff[0]*0.8, dia_col_diff[1]*0.8, dia_col_diff[2]*0.8,1.0);
-           bumpref_use(&bumpref);
-       }
 
        glPushMatrix();
        glTranslatef( tablew/2.0-edge_xyoffs, tablel/2.0-edge_xyoffs, 0.0 );
@@ -1686,13 +1645,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
          glTranslatef( tablew/2.0+bande_d, 0.0, 0.0 );
          my_Cover( 9, r1coverfunc, 2.0*HOLE2_R, 1, 0.0, 1.0, 1.0 );
        glPopMatrix();
-       if( options_bumpref        &&
-           extension_multitexture &&
-           extension_cubemap
-           )
-       {
-           bumpref_restore();
-       }
 
        /* bumpers for gold edges and covers */
        fprintf(stderr,"Generate bumpers for gold/silver edges and covers\n");
@@ -1853,30 +1805,11 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
            glMaterialfv(GL_FRONT, GL_SPECULAR,  wood_col_spec);
            glEnable(GL_BLEND);
            glBlendFunc(GL_ONE,GL_ONE);
-           if(options_bumpwood       &&
-              extension_multitexture &&
-              extension_rc_NV        &&
-              extension_vp_NV        &&
-              bump_init )
-           {
-               fprintf(stderr,"applying wood frame bumpmaps\n");
-               bump_set_diff(&bumponly,0.0,0.0,0.0);
-               bump_set_spec(&bumponly,0.5,0.5,0.5);
-               bump_use(&bumponly);
-           }
        }
        if(!carambol){
            lwood   = TABLE_L/2.0-HOLE1_R*sqrt(2.0)+BANDE_D-HOLE2_R;
            woodpos = HOLE2_R+lwood/2;
 
-           if(options_bumpwood       &&
-              extension_multitexture &&
-              extension_rc_NV        &&
-              extension_vp_NV        &&
-              bump_init )
-           {
-               bump_set_light( &bumponly, -(tablew/2.0+bande_d), -woodpos, 0.7 );
-           }
            /* upper right */
            glPushMatrix();
            glTranslatef( tablew/2.0+bande_d, woodpos, 0.0 );
@@ -1901,14 +1834,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
            my_Cover( 1, r1coverfunc_zero, lwood, 0, 0.0, 2.0, 2.0 );
            glPopMatrix();
 
-           if(options_bumpwood       &&
-              extension_multitexture &&
-              extension_rc_NV        &&
-              extension_vp_NV        &&
-              bump_init )
-           {
-               bump_set_light( &bumponly, -(tablel/2.0+bande_d), 0.0, 0.7 );
-           }
            /* upper */
            glPushMatrix();
            glTranslatef( 0.0, tablel/2.0+bande_d, 0.0 );
@@ -1922,14 +1847,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
            my_Cover( 1, r1coverfunc_zero, tablew-2.0*hole_r1+2.0*bande_d*HOLE1_TAN, 0, 0.0, 2.0, 2.0 );
            glPopMatrix();
        } else {
-           if(options_bumpwood       &&
-              extension_multitexture &&
-              extension_rc_NV        &&
-              extension_vp_NV        &&
-              bump_init )
-           {
-               bump_set_light( &bumponly, -(tablel/2.0+bande_d), 0.0, 0.7 );
-           }
            /* upper */
            glPushMatrix();
            glTranslatef( 0.0, tablel/2.0+bande_d, 0.0 );
@@ -1942,14 +1859,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
            glRotatef( -90.0, 0.0,0.0,1.0 );
            my_Cover2func( 32, r1coverfunc_zero, r2cover_caram, tablew+2.0*bande_d, 0, 1.0 );
            glPopMatrix();
-           if(options_bumpwood       &&
-              extension_multitexture &&
-              extension_rc_NV        &&
-              extension_vp_NV        &&
-              bump_init )
-           {
-               bump_set_light( &bumponly, -(tablew/2.0+bande_d), 0.0, 0.7 );
-           }
            /* left */
            glPushMatrix();
            glScalef( -1.0, +1.0, +1.0 );
@@ -1961,16 +1870,6 @@ int create_table( int reflect_bind, BordersType *borders, int carambol ) {
            glTranslatef( tablew/2.0+bande_d, 0.0, 0.0 );
            my_Cover2func( 32, r1coverfunc_zero, r2cover_caram, tablel+2.0*bande_d, 0, 1.0 );
            glPopMatrix();
-       }
-       if(i==1){
-           if(options_bumpwood       &&
-              extension_multitexture &&
-              extension_rc_NV        &&
-              extension_vp_NV        &&
-              bump_init )
-           {
-               bump_restore();
-           }
        }
    } /* 2 turns (textured and highlight) */
 

@@ -129,8 +129,6 @@ extern int     options_cuberef;
 extern int     options_cuberef_res;
 extern int     options_ball_sphere;      // standard sphere (0) or special (1) sphere blending on balls
 extern int     options_rgaim;
-extern int     options_bumpref;  /* bump reflection of chrome edges */
-extern int     options_bumpwood; /* bumpmaps on wood frame */
 extern int     options_balltrace;
 extern int     options_use_sound;   /* for taking care of non-sound systems */
 extern int     options_use_music;
@@ -168,10 +166,6 @@ extern int extension_multitexture;
 extern int extension_combine;
 extern int extension_dot3;
 extern int extension_vp_ARB;
-
-extern int extension_rc_NV;   /* NVIDIA register combiners */
-extern int extension_ts_NV;   /* NVIDIA texture shader */
-extern int extension_vp_NV;   /* NVIDIA vertex program */
 
 /* compatibility defines */
 

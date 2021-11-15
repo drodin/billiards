@@ -132,8 +132,6 @@ int    options_net_compatible = 0;   // network very slow compatibility mode
 int    options_net_compatible_bak = 0;   // network very slow compatibility mode restoring after network play
 int    options_ball_sphere = 0;      // standard sphere (0) or special (1) sphere blending on balls
 int    options_rgaim = 0;            /* 0=middle 1=right 2=left */
-int    options_bumpref   = 0;  /* bump reflection of chrome edges */
-int    options_bumpwood  = 0;  /* bump maps on wood frame */
 int    options_balltrace = 0;
 int    options_use_sound = 1;
 int    options_use_music = 1;
@@ -186,8 +184,3 @@ int extension_multitexture = 0;
 int extension_combine      = 0;
 int extension_dot3         = 0;
 int extension_vp_ARB       = 0;
-
-int extension_rc_NV        = 0;   /* NVIDIA register combiners */
-int extension_ts_NV        = 0;   /* NVIDIA texture shader */
-int extension_vp_NV        = 0;   /* NVIDIA vertex program */
-

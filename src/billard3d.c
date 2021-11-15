@@ -345,8 +345,6 @@ static struct option long_options[] = {
     {"cuberef",      required_argument, NULL, OPT_CUBEREF},
     {"cuberes",      required_argument, NULL, OPT_CUBERES},
     {"ballsphere",   required_argument, NULL, OPT_SPHEREREF},
-    {"bumpref",      required_argument, NULL, OPT_BUMPREF},
-    {"bumpwood",     required_argument, NULL, OPT_BUMPWOOD},
     {"balltraces",   required_argument, NULL, OPT_BALLTRACE},
     {"gamemode",     required_argument, NULL, OPT_GAMEMODE},
     {"tourfast",     required_argument, NULL, OPT_TOURFAST},
@@ -1497,26 +1495,6 @@ void process_option(enum optionType act_option)
        case OPT_CUBERES:
           sscanf(optarg,"%d", &options_cuberef_res);
           break;
-       case OPT_BUMPREF:
-          switch(optarg[1]){
-             case 'f': /* off */
-                options_bumpref=0;
-                break;
-             case 'n': /* on  */
-                options_bumpref=1;
-                break;
-            }
-          break;
-       case OPT_BUMPWOOD:
-          switch(optarg[1]){
-             case 'f': /* off */
-                options_bumpwood=0;
-                break;
-             case 'n': /* on  */
-                options_bumpwood=1;
-                break;
-            }
-          break;
        case OPT_BALLTRACE:
           switch(optarg[1]){
              case 'f': /* off */
@@ -2077,12 +2055,6 @@ void save_config(void)
              break;
         case OPT_SPHEREREF:
              write_rc(f,opt, options_ball_sphere?"on":"off");
-             break;
-        case OPT_BUMPREF:
-             write_rc(f,opt, options_bumpref?"on":"off");
-             break;
-        case OPT_BUMPWOOD:
-             write_rc(f,opt, options_bumpwood?"on":"off");
              break;
         case OPT_BALLTRACE:
              write_rc(f,opt, options_balltrace?"on":"off");
@@ -7515,22 +7487,6 @@ void menu_cb( int id, void * arg , VMfloat value)
     case MENU_ID_BALLTRACE_OFF:
         options_balltrace = 0;
         break;
-    case MENU_ID_BUMPREF_ON:
-        options_bumpref = 1;
-        table_obj = create_table( spheretexbind, &walls, gametype==GAME_CARAMBOL );
-        break;
-    case MENU_ID_BUMPREF_OFF:
-        options_bumpref = 0;
-        table_obj = create_table( spheretexbind, &walls, gametype==GAME_CARAMBOL );
-        break;
-    case MENU_ID_BUMPWOOD_ON:
-        options_bumpwood = 1;
-        table_obj = create_table( spheretexbind, &walls, gametype==GAME_CARAMBOL );
-        break;
-    case MENU_ID_BUMPWOOD_OFF:
-        options_bumpwood = 0;
-        table_obj = create_table( spheretexbind, &walls, gametype==GAME_CARAMBOL );
-        break;
     case MENU_ID_AUTOFREEMOVE_ON:
         options_auto_freemove = 1;
         break;
@@ -7586,15 +7542,6 @@ void parse_gl_extensions_string( void )
 
     extension_vp_ARB       = (str_contains(str,"GL_ARB_vertex_program" )) ? 1 : 0 ;
     fprintf(stderr,"extension_vp_ARB: %i\n",extension_vp_ARB);
-
-    extension_ts_NV        = (str_contains(str,"GL_NV_texture_shader"))     ? 1 : 0 ;
-    fprintf(stderr,"extension_ts_NV=%d\n",extension_ts_NV);
-
-    extension_rc_NV        = (str_contains(str,"GL_NV_register_combiners")) ? 1 : 0 ;
-    fprintf(stderr,"extension_rc_NV=%d\n",extension_rc_NV);
-
-    extension_vp_NV        = (str_contains(str,"GL_NV_vertex_program"))     ? 1 : 0 ;
-    fprintf(stderr,"extension_vp_NV=%d\n",extension_vp_NV);
 
     options_fsaa           = (str_contains(str,"GL_ARB_multisample" ))      ? 1 : 0 ;
     fprintf(stderr,"options_multisample: %i\n",options_fsaa);

@@ -47,8 +47,6 @@ foobillardplus_SOURCES = \
    menu.c \
    menu.h \
    player.h \
-   bumpref.c \
-   bumpref.h \
    room.c \
    room.h \
    mesh.h \
@@ -105,8 +103,6 @@ foobillardplus_SOURCES = \
    menu.c \
    menu.h \
    player.h \
-   bumpref.c \
-   bumpref.h \
    room.c \
    room.h \
    mesh.h \
@@ -161,12 +157,6 @@ else
 WETAB_CFLAGS =
 endif
 
-if USE_NVIDIA
-NVIDIA_CFLAGS =
-else
-NVIDIA_CFLAGS = -DNO_NV_BUMPREF -DNO_NV_FRESNEL
-endif
-
 if USE_SOUND
 SOUND_MIXER = -lSDL_mixer
 SOUND_CFLAGS = -DUSE_SOUND
@@ -195,7 +185,7 @@ USEWIN_CFLAGS =
 LDADD_FLAGS = -lGL -lGLU -lpng -lfreetype ${NET_LIB} ${SOUND_MIXER}
 endif
 
-AM_CFLAGS = -Wall ${FREETYPE_CFLAGS} ${SDL_CFLAGS} ${NVIDIA_CFLAGS} ${SOUND_CFLAGS} ${DEBUG_CFLAGS} ${WETAB_CFLAGS} ${TOUCH_CFLAGS} ${NET_CFLAGS} ${MATH_CFLAGS} \
+AM_CFLAGS = -Wall ${FREETYPE_CFLAGS} ${SDL_CFLAGS} ${SOUND_CFLAGS} ${DEBUG_CFLAGS} ${WETAB_CFLAGS} ${TOUCH_CFLAGS} ${NET_CFLAGS} ${MATH_CFLAGS} \
             ${OPTIMIZATION_CFLAGS} ${USESSE_CFLAGS} ${USEWIN_CFLAGS} ${FASTMATH_CFLAGS} ${DEBIAN_CFLAGS} -lm
 
 AM_LDFLAGS = ${all_libraries} ${FREETYPE_LIBS} ${SDL_LIBS}
