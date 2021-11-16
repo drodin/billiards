@@ -1,4 +1,4 @@
-﻿/* billard3d.c
+/* billard3d.c
 **
 **    drawing all with OpenGL
 **    Copyright (C) 2001  Florian Berger
@@ -2477,7 +2477,7 @@ void init_player(struct Player * player, int ai)
     //player->Zque=0.0;
     player->cue_x=0.0;
     player->cue_y=0.0;
-    player->strength=0.7;
+    player->strength=0.0;
     player->queue_view=ai?0:1;
     player->place_cue_ball=0;
     player->winner=0;
@@ -2835,6 +2835,7 @@ void do_computer_move( int doit )
     Zque = atan2(dir.x,dir.y)/M_PI*180.0;  // don't change the atan2 here to fastmath
     check_cue();
     if(doit){
+        player[act_player].strength = 0.7;
         shoot( !queue_view );
     }
     comp_dir=dir;
