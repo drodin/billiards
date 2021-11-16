@@ -475,3 +475,5 @@ Russian
 Game paused
 Pause next move on
 Pause next move off
+Special Effects
+Audio Settings

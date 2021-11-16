@@ -701,22 +701,25 @@ void init_menu(void)
 #ifdef USE_SOUND
     static menuType * sound_menu;
     static menuType * music_menu;
+    static menuType * audio_menu;
 #endif
+    static menuType * anisotrop_menu;
     static menuType * antialias_menu;
     static menuType * antialias_max;
     static menuType * fullscreen_menu;
+    static menuType * resolution_menu;
     static menuType * reflection_menu;
     static menuType * render_menu;
-    static menuType * resolution_menu;
     static menuType * light_menu;
     static menuType * view_menu;
     static menuType * game_menu;
     static menuType * player_menu;
     static menuType * language_menu;
-    static menuType * rgstereo_menu;
     static menuType * vsync_menu;
+    static menuType * rgstereo_menu;
     static menuType * rgenable_menu;
     static menuType * rgaim_menu;
+    static menuType * effects_menu;
     static menuType * lensflare_menu;
     static menuType * balldetail_menu;
     static menuType * tabletheme_menu;
@@ -743,12 +746,19 @@ void init_menu(void)
 #ifdef TOURNAMENT
     static menuType * tourfast_menu;
 #endif
-    static menuType * anisotrop_menu;
     static menuType * mshoot_menu;
     static menuType * mmove_menu;
     static menuType * freemove_menu;
     char str[256];
     int neuwert = 0;       // for the localeText variables inside some loops
+
+    int render_type;
+    if(options_cuberef)
+      render_type = 67;
+    else if(options_ball_sphere)
+      render_type = 66;
+    else
+      render_type = 448;
 
     /* Building the Menus */
 
@@ -817,8 +827,6 @@ void init_menu(void)
     menu_add_entry(render_menu, localeText[66], MENU_ID_REFLECTION_SPHERE,localeText[285]);
     //rendered
     menu_add_entry(render_menu, localeText[67], MENU_ID_REFLECTION_RENDERED,localeText[286]);
-    // Glass balls
-    menu_add_entry(render_menu, localeText[68], MENU_ID_GLASSBALLS,localeText[287]);
     //< back
     menu_add_exit(render_menu, localeText[63],localeText[266]);
 
@@ -827,7 +835,7 @@ void init_menu(void)
      */
     reflection_menu = menu_new( menu_cb );
     //Rendering
-    menu_add_submenu(reflection_menu, localeText[208],render_menu, 1, NULL,localeText[288]);
+    menu_add_submenu(reflection_menu, localeText[208],render_menu, 1, localeText[render_type],localeText[288]);
     //Resolution
     switch(options_cuberef_res) {
       case 16:
@@ -1013,6 +1021,18 @@ void init_menu(void)
     //< back
     menu_add_exit (lensflare_menu, localeText[63],localeText[266]);
 
+    effects_menu = menu_new( menu_cb );
+    //red/green stereo
+    menu_add_submenu(effects_menu, localeText[102], rgstereo_menu, 0, NULL,localeText[372]);
+    //lensflare
+    menu_add_submenu(effects_menu, localeText[103], lensflare_menu, 1, localeText[65-options_lensflare],localeText[373]);
+    // Tron mode
+    menu_add_entry(effects_menu, localeText[237], MENU_ID_TABLETHEME_TRON,localeText[315]);
+    // Glass balls
+    menu_add_entry(effects_menu, localeText[68], MENU_ID_GLASSBALLS,localeText[287]);
+    //< back
+    menu_add_exit (effects_menu, localeText[63],localeText[266]);
+
     /*
     Balldetail come from View Options
     */
@@ -1040,8 +1060,6 @@ void init_menu(void)
     menu_add_entry(tabletheme_menu, localeText[90], MENU_ID_TABLETHEME_CHROMEBLUE,localeText[313]);
     //black-beige
     menu_add_entry(tabletheme_menu, localeText[92], MENU_ID_TABLETHEME_BLACKBEIGE,localeText[314]);
-    //black-beige
-    menu_add_entry(tabletheme_menu, localeText[237], MENU_ID_TABLETHEME_TRON,localeText[315]);
     //< back
     menu_add_exit (tabletheme_menu, localeText[63],localeText[266]);
 
@@ -1552,8 +1570,6 @@ void init_menu(void)
      Game Menu come from Main Menu
     */
     game_menu = menu_new( menu_cb );
-    //game type
-    menu_add_submenu(game_menu, localeText[99], gametype_menu, 0, NULL,localeText[363]);
     //table size
     //fprintf(stderr,"table menu: %f\n",options_table_size);
     switch((int)(options_table_size/0.3048)) {
@@ -1572,8 +1588,8 @@ void init_menu(void)
         break;
       }
     menu_add_submenu(game_menu, localeText[97], tablesize_menu, 1, localeText[neuwert],localeText[364]);
-    //Show Control bar
-    menu_add_submenu(game_menu, localeText[228], control_menu, 1, localeText[65-options_show_buttons],localeText[365]);
+    //help line
+    menu_add_submenu(game_menu, localeText[98], helpline_menu, 1, localeText[65-vline_on],localeText[376]);
     //jump shots
     menu_add_submenu(game_menu, localeText[216], jump_shot_menu, 1, localeText[65-options_jump_shots],localeText[366]);
     //Mouse shots
@@ -1582,12 +1598,6 @@ void init_menu(void)
     menu_add_submenu(game_menu, localeText[467], mmove_menu, 1, localeText[234+options_oldmove],localeText[468]);
     //Auto free move view
     menu_add_submenu(game_menu, localeText[236], freemove_menu, 1, localeText[65-options_auto_freemove],localeText[368]);
-#ifndef TOUCH
-    //keypressed behaviour for special keys (MENU_ID_CONTROL_KIND_ON/MENU_ID_CONTROL_KIND_OFF)
-    menu_add_submenu(game_menu, localeText[226], keypressed_menu, 1, localeText[65-options_control_kind],localeText[369]);
-#endif
-    //birdview_ai_menu - shows birdview on AI or Net-Player (on/off)
-    menu_add_submenu(game_menu, localeText[227], birdview_ai_menu, 1, localeText[65-options_ai_birdview],localeText[370]);
 #ifdef TOURNAMENT
     //Tournament timelapse
     switch((int)options_tourfast) {
@@ -1616,25 +1626,6 @@ void init_menu(void)
      View Options come from Main Menu
     */
     view_menu = menu_new( menu_cb );
-    //red/green stereo
-    menu_add_submenu(view_menu, localeText[102], rgstereo_menu, 0, NULL,localeText[372]);
-    //lensflare
-    menu_add_submenu(view_menu, localeText[103], lensflare_menu, 1, localeText[65-options_lensflare],localeText[373]);
-    //ball detail
-    switch(options_max_ball_detail) {
-      case options_max_ball_detail_LOW:
-        neuwert = 69;
-        break;
-      case options_max_ball_detail_MED:
-        neuwert = 70;
-        break;
-      case options_max_ball_detail_HIGH:
-        neuwert = 71;
-        break;
-      default:
-        neuwert = 72;
-      }
-    menu_add_submenu(view_menu, localeText[104], balldetail_menu, 1, localeText[neuwert],localeText[374]);
     //table theme
     switch(options_table_color) {
       case options_table_color_red:
@@ -1657,12 +1648,18 @@ void init_menu(void)
     menu_add_submenu(view_menu, localeText[417], roomtexture_menu, 1, localeText[65-options_deco],localeText[418]);
     //furniture textures on/off
     menu_add_submenu(view_menu, localeText[419], furnituretex_menu, 1, localeText[65-options_furniture],localeText[420]);
-    //help line
-    menu_add_submenu(view_menu, localeText[98], helpline_menu, 1, localeText[65-vline_on],localeText[376]);
-    //ball traces
-    menu_add_submenu(view_menu, localeText[109], balltrace_menu, 1, localeText[65-options_balltrace],localeText[377]);
+#ifndef TOUCH
+    //keypressed behaviour for special keys (MENU_ID_CONTROL_KIND_ON/MENU_ID_CONTROL_KIND_OFF)
+    menu_add_submenu(view_menu, localeText[226], keypressed_menu, 1, localeText[65-options_control_kind],localeText[369]);
+#endif
+    //Show Control bar
+    menu_add_submenu(view_menu, localeText[228], control_menu, 1, localeText[65-options_show_buttons],localeText[365]);
     //Statustext
     menu_add_submenu(view_menu, localeText[214], status_menu, 1, localeText[65-options_status_text],localeText[378]);
+    //birdview_ai_menu - shows birdview on AI or Net-Player (on/off)
+    menu_add_submenu(view_menu, localeText[227], birdview_ai_menu, 1, localeText[65-options_ai_birdview],localeText[370]);
+    //ball traces
+    menu_add_submenu(view_menu, localeText[109], balltrace_menu, 1, localeText[65-options_balltrace],localeText[377]);
     //< back
     menu_add_exit (view_menu, localeText[63],localeText[266]);
 
@@ -1701,10 +1698,27 @@ void init_menu(void)
 #endif
     //reflections
     menu_add_submenu(g_options_menu, localeText[105], reflection_menu, 0, NULL,localeText[385]);
+    //ball detail
+    switch(options_max_ball_detail) {
+      case options_max_ball_detail_LOW:
+        neuwert = 69;
+        break;
+      case options_max_ball_detail_MED:
+        neuwert = 70;
+        break;
+      case options_max_ball_detail_HIGH:
+        neuwert = 71;
+        break;
+      default:
+        neuwert = 72;
+      }
+    menu_add_submenu(g_options_menu, localeText[104], balldetail_menu, 1, localeText[neuwert],localeText[374]);
     //Light Options
     menu_add_submenu(g_options_menu, localeText[219], light_menu, 1, localeText[211-options_positional_light],localeText[386]);
     //Vsync Options
     menu_add_submenu(g_options_menu, localeText[451], vsync_menu, 1, localeText[65-options_vsync],localeText[450]);
+    //special effects
+    menu_add_submenu(g_options_menu, localeText[477], effects_menu, 0, NULL,localeText[477]);
     //Back
     menu_add_exit(g_options_menu, localeText[63],localeText[266]);
 #ifdef USE_SOUND
@@ -1730,6 +1744,14 @@ void init_menu(void)
     menu_add_entry(music_menu, localeText[65], MENU_ID_MUSIC_OFF,localeText[388]);
     //Back
     menu_add_exit(music_menu, localeText[63],localeText[266]);
+
+    audio_menu = menu_new( menu_cb );
+    //Sound
+    menu_add_submenu(audio_menu, localeText[223], sound_menu, 1, localeText[65-options_use_sound],localeText[407]);
+    //Music
+    menu_add_submenu(audio_menu, localeText[422], music_menu, 1, localeText[65-options_use_music],localeText[407]);
+    //Back
+    menu_add_exit(audio_menu, localeText[63],localeText[266]);
 #endif
     /*
       P1 Skill come from Player1
@@ -1864,12 +1886,12 @@ void init_menu(void)
       Language Menu come from Main Menu
     */
     language_menu = menu_new( menu_cb );
-    //German
-    menu_add_entry(language_menu, localeText[471] , MENU_ID_LANG_DE,localeText[470]);
     //English
     menu_add_entry(language_menu, localeText[472], MENU_ID_LANG_EN,localeText[470]);
     //Russian
     menu_add_entry(language_menu, localeText[473], MENU_ID_LANG_RU,localeText[470]);
+    //German
+    menu_add_entry(language_menu, localeText[471] , MENU_ID_LANG_DE,localeText[470]);
     //Back
     menu_add_exit(language_menu, localeText[63],localeText[266]);
     /********************************************************/
@@ -1892,22 +1914,22 @@ void init_menu(void)
     menu_add_exit(g_main_menu, localeText[139],localeText[401]);
     //Restart Game
     menu_add_entry(g_main_menu, localeText[220], MENU_ID_RESTART,localeText[402]);
-    //Language Menu
-    menu_add_submenu(g_main_menu, localeText[469], language_menu, 0, NULL,localeText[470]);
-    //Player Menu
-    menu_add_submenu(g_main_menu, localeText[221], player_menu, 0, NULL,localeText[403]);
+    //game type
+    menu_add_submenu(g_main_menu, localeText[99], gametype_menu, 0, NULL,localeText[363]);
     //Game Options
     menu_add_submenu(g_main_menu, localeText[140], game_menu, 0, NULL,localeText[404]);
+    //Player Menu
+    menu_add_submenu(g_main_menu, localeText[221], player_menu, 0, NULL,localeText[403]);
     //View Options
     menu_add_submenu(g_main_menu, localeText[222], view_menu, 0, NULL,localeText[405]);
     //Graphic Options
     menu_add_submenu(g_main_menu, localeText[141], g_options_menu, 0, NULL,localeText[406]);
 #ifdef USE_SOUND
-    //Sound
-    menu_add_submenu(g_main_menu, localeText[223], sound_menu, 1, localeText[65-options_use_sound],localeText[407]);
-    //Music
-    menu_add_submenu(g_main_menu, localeText[422], music_menu, 1, localeText[65-options_use_music],localeText[407]);
+    //Audio
+    menu_add_submenu(g_main_menu, localeText[478], audio_menu, 0, NULL,localeText[478]);
 #endif
+    //Language Menu
+    menu_add_submenu(g_main_menu, localeText[469], language_menu, 0, NULL,localeText[470]);
     //Help
     menu_add_entry(g_main_menu, localeText[142], MENU_ID_MAIN_HELP,localeText[408]);
     //Quit
