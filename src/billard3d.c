@@ -85,7 +85,6 @@
 #include "chess.h"
 #include "getopt_long.h"
 
-static struct PlayerRoster human_player_roster;
 static struct TournamentState_ tournament_state;
 
 int printhelp_val = 0; //set != 0, if help wanted
@@ -1319,20 +1318,18 @@ void process_option(enum optionType act_option)
        	   strncpy(options_language,optarg,sizeof(options_language));
            break;
        case OPT_PLAYER1:
-           human_player_roster.player[0].is_AI=(optarg[0]=='a')?1:0;
-           human_player_roster.player[0].queue_view=(optarg[0]=='a')?0:1;
-           queue_view=human_player_roster.player[0].queue_view;
+           player[0].is_AI=(optarg[0]=='a')?1:0;
+           player[0].queue_view=(optarg[0]=='a')?0:1;
+           queue_view=player[0].queue_view;
            break;
        case OPT_PLAYER2:
-           human_player_roster.player[1].is_AI=(optarg[0]=='a')?1:0;
-           human_player_roster.player[1].queue_view=(optarg[0]=='a')?0:1;
+           player[1].is_AI=(optarg[0]=='a')?1:0;
+           player[1].queue_view=(optarg[0]=='a')?0:1;
            break;
        case OPT_NAME1:
-           strcpy_uscore_2_whtspace(human_player_roster.player[0].name,optarg);
            strcpy_uscore_2_whtspace(player[0].name,optarg);
            break;
        case OPT_NAME2:
-           strcpy_uscore_2_whtspace(human_player_roster.player[1].name,optarg);
            strcpy_uscore_2_whtspace(player[1].name,optarg);
            break;
        case OPT_8BALL:
@@ -1394,16 +1391,16 @@ void process_option(enum optionType act_option)
            break;
        case OPT_AI1ERR:
 #ifdef VMATH_SINGLE_PRECISION
-           sscanf(optarg,"%f",&(human_player_roster.player[0].err));
+           sscanf(optarg,"%f",&(player[0].err));
 #else
-           sscanf(optarg,"%lf",&(human_player_roster.player[0].err));
+           sscanf(optarg,"%lf",&(player[0].err));
 #endif
            break;
        case OPT_AI2ERR:
 #ifdef VMATH_SINGLE_PRECISION
-           sscanf(optarg,"%f",&(human_player_roster.player[1].err));
+           sscanf(optarg,"%f",&(player[1].err));
 #else
-           sscanf(optarg,"%lf",&(human_player_roster.player[1].err));
+           sscanf(optarg,"%lf",&(player[1].err));
 #endif
            break;
        case OPT_VSYNC:
@@ -1940,16 +1937,16 @@ void save_config(void)
              write_rc(f,opt,options_language);
              break;
        case OPT_PLAYER1:
-             write_rc(f,opt,(human_player_roster.player[0].is_AI)?"ai":"human");
+             write_rc(f,opt,(player[0].is_AI)?"ai":"human");
              break;
         case OPT_PLAYER2:
-             write_rc(f,opt,(human_player_roster.player[1].is_AI)?"ai":"human");
+             write_rc(f,opt,(player[1].is_AI)?"ai":"human");
              break;
         case OPT_NAME1:
-             write_rc(f,opt,human_player_roster.player[0].name);
+             write_rc(f,opt,player[0].name);
              break;
         case OPT_NAME2:
-             write_rc(f,opt,human_player_roster.player[1].name);
+             write_rc(f,opt,player[1].name);
              break;
         case OPT_8BALL:
              if(gametype==GAME_8BALL) {
@@ -2014,11 +2011,11 @@ void save_config(void)
              }
              break;
         case OPT_AI1ERR:
-             sprintf(str,"%f",human_player_roster.player[0].err);
+             sprintf(str,"%f",player[0].err);
              write_rc(f,opt,str);
              break;
         case OPT_AI2ERR:
-             sprintf(str,"%f",human_player_roster.player[1].err);
+             sprintf(str,"%f",player[1].err);
              write_rc(f,opt,str);
              break;
         case OPT_GLASSBALL:
@@ -2222,9 +2219,6 @@ void set_gametype( int gtype )
           player[0].cue_ball=0;
           player[1].cue_ball=0;
           player[act_player].place_cue_ball=1;
-          human_player_roster.player[0].cue_ball=0;
-          human_player_roster.player[1].cue_ball=0;
-          human_player_roster.player[act_player].place_cue_ball=1;
           break;
         case GAME_CARAMBOL:
           setfunc_evaluate_last_move( evaluate_last_move_carambol );
@@ -2234,9 +2228,6 @@ void set_gametype( int gtype )
           player[0].cue_ball=0;
           player[1].cue_ball=1;
           player[act_player].place_cue_ball=0;
-          human_player_roster.player[0].cue_ball=0;
-          human_player_roster.player[1].cue_ball=1;
-          human_player_roster.player[act_player].place_cue_ball=0;
           break;
         case GAME_SNOOKER:
           setfunc_evaluate_last_move( evaluate_last_move_snooker );
@@ -2246,9 +2237,6 @@ void set_gametype( int gtype )
           player[0].cue_ball=0;
           player[1].cue_ball=0;
           player[act_player].place_cue_ball=1;
-          human_player_roster.player[0].cue_ball=0;
-          human_player_roster.player[1].cue_ball=0;
-          human_player_roster.player[act_player].place_cue_ball=1;
           break;
         default:
           // Standard 8Ball
@@ -2260,9 +2248,6 @@ void set_gametype( int gtype )
           player[0].cue_ball=0;
           player[1].cue_ball=0;
           player[act_player].place_cue_ball=1;
-          human_player_roster.player[0].cue_ball=0;
-          human_player_roster.player[1].cue_ball=0;
-          human_player_roster.player[act_player].place_cue_ball=1;        
        }
 }
 
@@ -2456,11 +2441,19 @@ void player_copy(struct Player * player, struct Player src)
     player->place_cue_ball = src.place_cue_ball;
     player->winner         = src.winner;
     player->err            = src.err;
-    if(player->text) textObj_setText(player->text, player->name);
-    if(player->score_text) textObj_setText(player->score_text, "0");
     player->snooker_on_red = src.snooker_on_red;
     player->score          = src.score;
     player->cue_ball       = src.cue_ball;
+
+    if(!player->text) {
+      player->text = malloc(sizeof(textObj));
+    }
+    memcpy(player->text, src.text, sizeof(textObj));
+
+    if(!player->score_text) {
+      player->score_text = malloc(sizeof(textObj));
+    }
+    memcpy(player->score_text, src.score_text, sizeof(textObj));
 }
 
 /***********************************************************************
@@ -2481,7 +2474,7 @@ void init_player(struct Player * player, int ai)
     player->queue_view=ai?0:1;
     player->place_cue_ball=0;
     player->winner=0;
-    player->err=0;
+    player->err=0.3; //medium
     player->text = 0;
     player->score_text = 0;
     player->snooker_on_red=1;
@@ -2539,7 +2532,7 @@ void init_ai_player_roster(struct PlayerRoster * roster)
        init_player(&(roster->player[i]),1);
 
        if (i==roster->nr-1) { /* human player */
-          roster->player[i]=human_player_roster.player[0];
+          roster->player[i]=player[0];
        } else {
           if (i >14) {
             //sprintf(str,"dumb for %d",i-13);
@@ -2559,44 +2552,17 @@ void init_ai_player_roster(struct PlayerRoster * roster)
  *         Initialize variables for two players on startup             *
  ***********************************************************************/
 
-void init_player_roster(struct PlayerRoster * roster)
+void init_players()
 {
-    roster->nr=2;
-    init_player(&(roster->player[0]),0);
-    init_player(&(roster->player[1]),1);
-    init_player(&player[0],0);
-    init_player(&player[1],1);
+    init_player(&(player[0]),0);
+    init_player(&(player[1]),1);
 #ifdef USE_WIN
     if(getenv("USERNAME"))
-        strcpy(roster->player[0].name,getenv("USERNAME"));
         strcpy(player[0].name,getenv("USERNAME"));
 #else
     if(getenv("USER"))
-        strcpy(roster->player[0].name,getenv("USER"));
         strcpy(player[0].name,getenv("USER"));
 #endif
-    roster->player[0].err=(VMfloat)0/10.0;
-    roster->player[1].err=(VMfloat)0.30; //now medium
-    roster->player[0].text = 0;
-    roster->player[1].text = 0;
-
-}
-
-/***********************************************************************
- *        Set the Name textobject for two players on startup           *
- ***********************************************************************/
-
-void create_human_player_roster_text(struct PlayerRoster * roster)
-{
-    int i;
-
-    for(i=0;i<roster->nr;i++){
-        if(roster->player[i].text == 0){
-            roster->player[i].text = textObj_new(roster->player[i].name, options_roster_fontname, 28);
-        } else {
-            textObj_setText(roster->player[i].text, roster->player[i].name);
-        }
-    }
 }
 
 /***********************************************************************
@@ -2734,6 +2700,11 @@ void tournament_state_setup_next_match( struct TournamentState_ * ts )
 
 void create_players_text(void)
 {
+    if(strlen(player[0].name) <1)
+        strcpy(player[0].name,localeText[56]);
+    if(strlen(player[1].name) <1)
+        strcpy(player[1].name,localeText[55]);
+
     player[0].text = textObj_new(player[0].name, options_player_fontname, 28);
     player[1].text = textObj_new(player[1].name, options_player_fontname, 28);
     player[0].score_text = textObj_new("0", options_score_fontname, 20);
@@ -5968,10 +5939,6 @@ void restart_game_training(void)
 {
     restart_game_common();
     g_motion_ratio=1.0;
-    human_player_roster.player[0].winner=0;
-    human_player_roster.player[0].score=0;
-    player_copy(&player[0],human_player_roster.player[0]);
-    player_copy(&player[1],human_player_roster.player[0]);
     act_player=0;
     queue_view=player[act_player].queue_view;
     copy_balls(&balls,&bakballs); //for undo problem if someone pick undo at startup
@@ -5986,13 +5953,6 @@ void restart_game_match(void)
 {
     restart_game_common();
     g_motion_ratio=1.0;
-
-    human_player_roster.player[0].winner=0;
-    human_player_roster.player[1].winner=0;
-    human_player_roster.player[0].score=0;
-    human_player_roster.player[1].score=0;
-    player_copy(&player[0],human_player_roster.player[0]);
-    player_copy(&player[1],human_player_roster.player[1]);
     act_player=0;
     queue_view=player[act_player].queue_view;
     close_screen();
@@ -7610,60 +7570,46 @@ void menu_cb( int id, void * arg , VMfloat value)
     case MENU_ID_PLAYER1_NAME:
         strcpy(player[0].name,(char *)arg);
         textObj_setText(player[0].text,player[0].name);
-        player_copy(&human_player_roster.player[0],player[0]);
         break;
     case MENU_ID_PLAYER2_NAME:
         strcpy(player[1].name,(char *)arg);
         textObj_setText(player[1].text,player[1].name);
-        player_copy(&human_player_roster.player[1],player[1]);
         break;
     case MENU_ID_PLAYER1_SKILL_EXCEL:
         player[0].err=0.0;
-        player_copy(&human_player_roster.player[0],player[0]);
         break;
     case MENU_ID_PLAYER1_SKILL_GOOD:
         player[0].err=0.1;
-        player_copy(&human_player_roster.player[0],player[0]);
         break;
     case MENU_ID_PLAYER1_SKILL_MEDIUM:
         player[0].err=0.3;
-        player_copy(&human_player_roster.player[0],player[0]);
         break;
     case MENU_ID_PLAYER1_SKILL_BAD:
         player[0].err=0.6;
-        player_copy(&human_player_roster.player[0],player[0]);
         break;
     case MENU_ID_PLAYER1_SKILL_WORSE:
         player[0].err=1.0;
-        player_copy(&human_player_roster.player[0],player[0]);
         break;
     case MENU_ID_PLAYER2_SKILL_EXCEL:
         player[1].err=0.0;
-        player_copy(&human_player_roster.player[1],player[1]);
         break;
     case MENU_ID_PLAYER2_SKILL_GOOD:
         player[1].err=0.1;
-        player_copy(&human_player_roster.player[1],player[1]);
         break;
     case MENU_ID_PLAYER2_SKILL_MEDIUM:
         player[1].err=0.3;
-        player_copy(&human_player_roster.player[1],player[1]);
         break;
     case MENU_ID_PLAYER2_SKILL_BAD:
         player[1].err=0.6;
-        player_copy(&human_player_roster.player[1],player[1]);
         break;
     case MENU_ID_PLAYER2_SKILL_WORSE:
         player[1].err=1.0;
-        player_copy(&human_player_roster.player[1],player[1]);
         break;
     case MENU_ID_PLAYER1_TYPE_HUMAN:
         player[0].is_AI=0;
-        player_copy(&human_player_roster.player[0],player[0]);
         break;
     case MENU_ID_PLAYER2_TYPE_HUMAN:
         player[1].is_AI=0;
-        player_copy(&human_player_roster.player[1],player[1]);
         break;
     case MENU_ID_PLAYER1_TYPE_AI:
         if(act_player==0){
@@ -7675,7 +7621,6 @@ void menu_cb( int id, void * arg , VMfloat value)
             player[0].is_AI=1;
             player[0].queue_view=1;
         }
-        player_copy(&human_player_roster.player[0],player[0]);
         break;
     case MENU_ID_PLAYER2_TYPE_AI:
         if(act_player==1){
@@ -7687,7 +7632,6 @@ void menu_cb( int id, void * arg , VMfloat value)
             player[1].is_AI=1;
             player[1].queue_view=1;
         }
-        player_copy(&human_player_roster.player[1],player[1]);
         break;
     case MENU_ID_BALL_DETAIL_LOW:
         options_max_ball_detail     = options_max_ball_detail_LOW;
@@ -8086,7 +8030,7 @@ int main( int argc, char *argv[] )
    init_browser();
    fprintf(stderr,"Browser initialized for history-functions\n");
    /* Initialize all player variables for two players */
-   init_player_roster(&human_player_roster);
+   init_players();
    fprintf(stderr,"Player variables initialized\n");
    /* config file */
    load_config( &confv, &confc, argv, argc );
@@ -8103,14 +8047,6 @@ int main( int argc, char *argv[] )
      exit(1);
    }
    fprintf(stderr,"Language initialized\n");
-   if(strlen(human_player_roster.player[1].name) <1) {
-       strcpy(human_player_roster.player[1].name,localeText[1]);
-       strcpy(human_player_roster.player[1].name,localeText[1]);
-   }
-   if(strlen(human_player_roster.player[0].name) <1) {
-       strcpy(human_player_roster.player[0].name,localeText[0]);
-       strcpy(human_player_roster.player[0].name,localeText[0]);
-   }
    /* Initialize history system */
    init_history();
    fprintf(stderr,"History system initialized\n");
@@ -8135,8 +8071,6 @@ int main( int argc, char *argv[] )
    initstatustext();
    fprintf(stderr,"Status-line initialized\n");
 
-   create_human_player_roster_text(&human_player_roster);
-   fprintf(stderr,"Player initialized\n");
    create_players_text();
    fprintf(stderr,"Players text initialized\n");
 
