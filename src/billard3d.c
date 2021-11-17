@@ -5043,6 +5043,7 @@ void DisplayFunc( void )
        }
        glPopMatrix();
        /* 2nd player */
+     if(options_gamemode != options_gamemode_training) {
        glPushMatrix();
        glColor3f(0.0,0.0,1.0);
        glTranslatef(0.94,-0.94,-1.0);
@@ -5055,6 +5056,7 @@ void DisplayFunc( void )
     	    textObj_draw_bound( player[act_player?0:1].score_text, HBOUND_RIGHT, VBOUND_BOTTOM );
        }
        glPopMatrix();
+     }
 
        if(show_disc) { // save config was choosen
          glPushMatrix();
