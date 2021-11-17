@@ -116,8 +116,8 @@ mittel
 ausreichend
 schlecht
 Spieler 2 Typ
-Spieler 2 Geschick
-Einzelspiel + Spieleroptionen
+Computer Geschick
+2 Spieler Spiel
 Turnier
 Training
 Spieler 1 Name: %s
@@ -210,7 +210,7 @@ Rendering
 Dynamische Auflösung
 positionslicht
 direkt
-1-2 Spieler Start
+Gegen Computer
 Punkte: %i
 Statustext
 Avatar
@@ -352,7 +352,7 @@ Ein Netzwerkspiel erstellen
 Einem bestehenden Netzwerkspiel beitreten
 Netzwerk Paketgeschwindigkeit bzw. -größe einstellen
 Netzwerkkompatibilitätsmodus ein- bzw. ausschalten
-Ein lokales normales Spiel für 1-2 Spieler beginnen
+Ein lokales normales Spiel gegen гomputer beginnen
 Ein lokales 1 Spieler Turnier starten
 Weitere Einstellungen zum Netzwerkspiel und Start
 Den Trainingsmodus starten

@@ -116,12 +116,12 @@ medium
 bad
 worse
 P2 Type
-P2 Skill
-Single match + Player options
+Computer Skill
+2 Player Game
 Tournament
 Training
-P1 Name: %s
-P2 Name: %s
+Player 1 Name: %s
+Player 2 Name: %s
 Port: %d
 Start Game
 IP: %s
@@ -210,7 +210,7 @@ Rendering
 Dynamic Resolution
 positional
 direct
-1-2 Player Game
+Against Computer
 Points: %i
 Status Text
 Avatar
@@ -352,7 +352,7 @@ A network game
 Join to an existing network game
 Network packet size, speed or adjust
 Network compatibility mode on or off
-A local normal game for 1-2 players start
+A local normal game against computer start
 A local one player tournament start
 Other settings for network play and start
 Start the training mode

@@ -1313,10 +1313,10 @@ void process_option(enum optionType act_option)
            player[1].queue_view=(optarg[0]=='a')?0:1;
            break;
        case OPT_NAME1:
-           strcpy_uscore_2_whtspace(player[0].name,optarg);
+           strcpy_uscore_2_whtspace(player0_name,optarg);
            break;
        case OPT_NAME2:
-           strcpy_uscore_2_whtspace(player[1].name,optarg);
+           strcpy_uscore_2_whtspace(player1_name,optarg);
            break;
        case OPT_8BALL:
            set_gametype( GAME_8BALL );
@@ -1905,10 +1905,10 @@ void save_config(void)
              write_rc(f,opt,(player[1].is_AI)?"ai":"human");
              break;
         case OPT_NAME1:
-             write_rc(f,opt,player[0].name);
+             write_rc(f,opt,player0_name);
              break;
         case OPT_NAME2:
-             write_rc(f,opt,player[1].name);
+             write_rc(f,opt,player1_name);
              break;
         case OPT_8BALL:
              if(gametype==GAME_8BALL) {
@@ -2422,8 +2422,7 @@ void init_player(struct Player * player, int ai)
     player->is_AI=ai;
     player->is_net=0;
     player->half_full=BALL_ANY;
-    //ai?"AI-Player":"Human"
-    strcpy(player->name,ai?localeText[55]:localeText[56]);
+    strcpy(player->name,"");
     //player->Zque=0.0;
     player->cue_x=0.0;
     player->cue_y=0.0;
@@ -2513,13 +2512,6 @@ void init_players()
 {
     init_player(&(player[0]),0);
     init_player(&(player[1]),1);
-#ifdef USE_WIN
-    if(getenv("USERNAME"))
-        strcpy(player[0].name,getenv("USERNAME"));
-#else
-    if(getenv("USER"))
-        strcpy(player[0].name,getenv("USER"));
-#endif
 }
 
 /***********************************************************************
@@ -2657,15 +2649,33 @@ void tournament_state_setup_next_match( struct TournamentState_ * ts )
 
 void create_players_text(void)
 {
-    if(strlen(player[0].name) <1)
-        strcpy(player[0].name,localeText[56]);
-    if(strlen(player[1].name) <1)
-        strcpy(player[1].name,localeText[55]);
+    int i;
 
-    player[0].text = textObj_new(player[0].name, options_player_fontname, 28);
-    player[1].text = textObj_new(player[1].name, options_player_fontname, 28);
-    player[0].score_text = textObj_new("0", options_score_fontname, 20);
-    player[1].score_text = textObj_new("0", options_score_fontname, 20);
+    if(strlen(player0_name) <1) {
+      strcpy(player0_name,localeText[0]);
+#ifdef USE_WIN
+      if(getenv("USERNAME"))
+          strcpy(player0_name,getenv("USERNAME"));
+#elif
+      if(getenv("USER"))
+          strcpy(player0_name,getenv("USER"));
+#endif
+    }
+    if(strlen(player1_name) <1)
+        strcpy(player1_name,localeText[2]);
+
+    strcpy(player[0].name,player[0].is_AI?localeText[55]:player0_name);
+    strcpy(player[1].name,player[1].is_AI?localeText[55]:player1_name);
+
+    for(i=0;i<2;i++) {
+      if(player[i].text == 0)
+        player[i].text = textObj_new(player[i].name, options_player_fontname, 28);
+      else
+        textObj_setText(player[i].text, player[i].name);
+
+      if(player[i].score_text == 0)
+        player[i].score_text = textObj_new("0", options_score_fontname, 20);
+    }
 }
 
 void set_players_score_text() {
@@ -5708,6 +5718,7 @@ void restart_game_common(void)
       setst_text();
     }
     set_gametype(gametype);
+    create_players_text();
     set_players_score_text();
 
     // switch back to a start position
@@ -6640,8 +6651,8 @@ int host_network_game(void)
     player[1].queue_view=0;
     player[0].queue_view=1;
 
-    strcpy_whtspace_2_uscore(name1,player[0].name);
-    strcpy_whtspace_2_uscore(name2,player[1].name);
+    strcpy_whtspace_2_uscore(name1,player0_name);
+    strcpy_whtspace_2_uscore(name2,player1_name);
 #ifdef VMATH_SINGLE_PRECISION
     sprintf(net_data,"%i %i %f %i %s %s",options_jump_shots,gametype,options_table_size,options_maxp_carambol,name1,name2);
 #else
@@ -7196,28 +7207,36 @@ void menu_cb( int id, void * arg , VMfloat value)
         reassign_and_gen_cuberef_tex();
         break;
     // Local Play
+    case MENU_ID_2PLAYER_8BALL:
     case MENU_ID_GAMETYPE_8BALL:
+        player[1].is_AI = (id==MENU_ID_GAMETYPE_8BALL);
         set_gametype( GAME_8BALL );
         options_gamemode=options_gamemode_match;
         restart_game();
         table_obj = create_table( spheretexbind, &walls, gametype==GAME_CARAMBOL );
         reassign_and_gen_cuberef_tex();
         break;
+    case MENU_ID_2PLAYER_9BALL:
     case MENU_ID_GAMETYPE_9BALL:
+        player[1].is_AI = (id==MENU_ID_GAMETYPE_9BALL);
         set_gametype( GAME_9BALL );
         options_gamemode=options_gamemode_match;
         restart_game();
         table_obj = create_table( spheretexbind, &walls, gametype==GAME_CARAMBOL );
         reassign_and_gen_cuberef_tex();
         break;
+    case MENU_ID_2PLAYER_CARAMBOL:
     case MENU_ID_GAMETYPE_CARAMBOL:
+        player[1].is_AI = (id==MENU_ID_GAMETYPE_CARAMBOL);
         set_gametype( GAME_CARAMBOL );
         options_gamemode=options_gamemode_match;
         restart_game();
         table_obj = create_table( spheretexbind, &walls, gametype==GAME_CARAMBOL );
         reassign_and_gen_cuberef_tex();
         break;
+    case MENU_ID_2PLAYER_SNOOKER:
     case MENU_ID_GAMETYPE_SNOOKER:
+        player[1].is_AI = (id==MENU_ID_GAMETYPE_SNOOKER);
         set_gametype( GAME_SNOOKER );
         options_gamemode=options_gamemode_match;
         restart_game();
@@ -7291,27 +7310,12 @@ void menu_cb( int id, void * arg , VMfloat value)
         options_control_kind = 0;
         break;
     case MENU_ID_PLAYER1_NAME:
-        strcpy(player[0].name,(char *)arg);
-        textObj_setText(player[0].text,player[0].name);
+        strcpy(player0_name,(char *)arg);
+        create_players_text();
         break;
     case MENU_ID_PLAYER2_NAME:
-        strcpy(player[1].name,(char *)arg);
-        textObj_setText(player[1].text,player[1].name);
-        break;
-    case MENU_ID_PLAYER1_SKILL_EXCEL:
-        player[0].err=0.0;
-        break;
-    case MENU_ID_PLAYER1_SKILL_GOOD:
-        player[0].err=0.1;
-        break;
-    case MENU_ID_PLAYER1_SKILL_MEDIUM:
-        player[0].err=0.3;
-        break;
-    case MENU_ID_PLAYER1_SKILL_BAD:
-        player[0].err=0.6;
-        break;
-    case MENU_ID_PLAYER1_SKILL_WORSE:
-        player[0].err=1.0;
+        strcpy(player1_name,(char *)arg);
+        create_players_text();
         break;
     case MENU_ID_PLAYER2_SKILL_EXCEL:
         player[1].err=0.0;
@@ -7327,34 +7331,6 @@ void menu_cb( int id, void * arg , VMfloat value)
         break;
     case MENU_ID_PLAYER2_SKILL_WORSE:
         player[1].err=1.0;
-        break;
-    case MENU_ID_PLAYER1_TYPE_HUMAN:
-        player[0].is_AI=0;
-        break;
-    case MENU_ID_PLAYER2_TYPE_HUMAN:
-        player[1].is_AI=0;
-        break;
-    case MENU_ID_PLAYER1_TYPE_AI:
-        if(act_player==0){
-            player[0].is_AI=1;
-            player[0].queue_view=0;
-            if(queue_view) toggle_queue_view();
-            do_computer_move(1);
-        } else {
-            player[0].is_AI=1;
-            player[0].queue_view=1;
-        }
-        break;
-    case MENU_ID_PLAYER2_TYPE_AI:
-        if(act_player==1){
-            player[1].is_AI=1;
-            player[1].queue_view=0;
-            if(queue_view) toggle_queue_view();
-            do_computer_move(1);
-        } else {
-            player[1].is_AI=1;
-            player[1].queue_view=1;
-        }
         break;
     case MENU_ID_BALL_DETAIL_LOW:
         options_max_ball_detail     = options_max_ball_detail_LOW;

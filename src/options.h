@@ -159,6 +159,9 @@ extern GLfloat   options_maxanisotrop;    // max. of anistropic filters
 extern VMfloat   options_value_anisotrop; // the vaule for anisotropic filtering if supported and < maxanisotrop
 extern VMfloat   options_zoom_speed;    // zoom speed
 
+extern char    player0_name[256];       // human player 1 name
+extern char    player1_name[256];       // human player 2 name
+
 extern int dialog  ;                    // hold the index of the dialog prog, if found with get_dialogprog()
 
 /* queries for OpenGL extensions */

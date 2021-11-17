@@ -713,7 +713,6 @@ void init_menu(void)
     static menuType * light_menu;
     static menuType * view_menu;
     static menuType * game_menu;
-    static menuType * player_menu;
     static menuType * language_menu;
     static menuType * vsync_menu;
     static menuType * rgstereo_menu;
@@ -737,12 +736,7 @@ void init_menu(void)
     static menuType * ball9_menu;
     static menuType * carambol_menu;
     static menuType * snooker_menu;
-    static menuType * player1_menu;
-    static menuType * player2_menu;
-    static menuType * player1_skill_menu;
     static menuType * player2_skill_menu;
-    static menuType * player1_type_menu;
-    static menuType * player2_type_menu;
 #ifdef TOURNAMENT
     static menuType * tourfast_menu;
 #endif
@@ -1275,12 +1269,6 @@ void init_menu(void)
     menu_add_exit (network_speed_menus, localeText[63],localeText[266]);
 
     network_host8_menu = menu_new( menu_cb );
-    //P1 Name:
-    sprintf(str,localeText[122],player[0].name);
-    menu_add_textfield( network_host8_menu, str, MENU_ID_PLAYER1_NAME, utf8count(localeText[122])-2,KEY_TYPE_MIXED,1,0,15,localeText[344]);
-    //P2 Name:
-    sprintf(str,localeText[123],player[1].name);
-    menu_add_textfield( network_host8_menu, str, MENU_ID_PLAYER2_NAME, utf8count(localeText[123])-2,KEY_TYPE_MIXED,1,0,15,localeText[345]);
     //Port:
     sprintf(str,localeText[124],options_net_portnum);
     menu_add_textfield( network_host8_menu, str, MENU_ID_NETWORK_PORTNUM, utf8count(localeText[124])-2,KEY_TYPE_NUM,1024,65535,5,localeText[346]);
@@ -1326,6 +1314,8 @@ void init_menu(void)
     ball8_menu = menu_new( menu_cb );
     //One Player
     menu_add_entry(ball8_menu, localeText[212], MENU_ID_GAMETYPE_8BALL,localeText[354]);
+    //Two Player
+    menu_add_entry(ball8_menu, localeText[119], MENU_ID_2PLAYER_8BALL,localeText[119]);
 #ifdef TOURNAMENT
     //Tournament
     menu_add_entry(ball8_menu, localeText[120], MENU_ID_8BALL_TOURN,localeText[355]);
@@ -1345,12 +1335,6 @@ void init_menu(void)
     */
 #ifdef NETWORKING
     network_host9_menu = menu_new( menu_cb );
-    //P1 Name:
-    sprintf(str,localeText[122],player[0].name);
-    menu_add_textfield( network_host9_menu, str, MENU_ID_PLAYER1_NAME, utf8count(localeText[122])-2,KEY_TYPE_MIXED,1,0,15,localeText[344]);
-    //P2 Name:
-    sprintf(str,localeText[123],player[1].name);
-    menu_add_textfield( network_host9_menu, str, MENU_ID_PLAYER2_NAME, utf8count(localeText[123])-2, KEY_TYPE_MIXED,1,0,15,localeText[345]);
     //Port:
     sprintf(str,localeText[124],options_net_portnum);
     menu_add_textfield( network_host9_menu, str, MENU_ID_NETWORK_PORTNUM, utf8count(localeText[124])-2,KEY_TYPE_NUM,1024,65535,5,localeText[346]);
@@ -1396,6 +1380,8 @@ void init_menu(void)
     ball9_menu = menu_new( menu_cb );
     //One Player
     menu_add_entry(ball9_menu, localeText[212], MENU_ID_GAMETYPE_9BALL,localeText[354]);
+    //Two Player
+    menu_add_entry(ball9_menu, localeText[119], MENU_ID_2PLAYER_9BALL,localeText[119]);
 #ifdef TOURNAMENT
     //Tournament
     menu_add_entry(ball9_menu, localeText[120], MENU_ID_9BALL_TOURN,localeText[355]);
@@ -1414,12 +1400,6 @@ void init_menu(void)
     */
 #ifdef NETWORKING
     network_hostcarambol_menu = menu_new( menu_cb );
-    //P1 Name:
-    sprintf(str,localeText[122],player[0].name);
-    menu_add_textfield( network_hostcarambol_menu, str, MENU_ID_PLAYER1_NAME, utf8count(localeText[122])-2,KEY_TYPE_MIXED,1,0,15,localeText[344]);
-    //P2 Name:
-    sprintf(str,localeText[123],player[1].name);
-    menu_add_textfield( network_hostcarambol_menu, str, MENU_ID_PLAYER2_NAME, utf8count(localeText[123])-2,KEY_TYPE_MIXED,1,0,15,localeText[345]);
     //Port:
     sprintf(str,localeText[124],options_net_portnum);
     menu_add_textfield( network_hostcarambol_menu, str, MENU_ID_NETWORK_PORTNUM, utf8count(localeText[124])-2,KEY_TYPE_NUM,1024,65535,5,localeText[346]);
@@ -1468,6 +1448,8 @@ void init_menu(void)
     menu_add_textfield( carambol_menu, str, MENU_ID_MAXP_CARAMBOL, utf8count(localeText[213])-2,KEY_TYPE_NUM,1,100,3,localeText[358]);
     //One Player
     menu_add_entry(carambol_menu, localeText[212], MENU_ID_GAMETYPE_CARAMBOL,localeText[354]);
+    //Two Player
+    menu_add_entry(carambol_menu, localeText[119], MENU_ID_2PLAYER_CARAMBOL,localeText[119]);
 #ifdef TOURNAMENT
     //Tournament
     menu_add_entry(carambol_menu, localeText[120], MENU_ID_CARAMBOL_TOURN,localeText[355]);
@@ -1486,12 +1468,6 @@ void init_menu(void)
     */
 #ifdef NETWORKING
     network_hostsnooker_menu = menu_new( menu_cb );
-    //P1 Name:
-    sprintf(str,localeText[122],player[0].name);
-    menu_add_textfield( network_hostsnooker_menu, str, MENU_ID_PLAYER1_NAME, utf8count(localeText[122])-2,KEY_TYPE_MIXED,1,0,15,localeText[344]);
-    //P2 Name:
-    sprintf(str,localeText[123],player[1].name);
-    menu_add_textfield( network_hostsnooker_menu, str, MENU_ID_PLAYER2_NAME, utf8count(localeText[123])-2,KEY_TYPE_MIXED,1,0,15,localeText[345]);
     //Port:
     sprintf(str,localeText[124],options_net_portnum);
     menu_add_textfield( network_hostsnooker_menu, str, MENU_ID_NETWORK_PORTNUM, utf8count(localeText[124])-2,KEY_TYPE_NUM,1024,65535,5,localeText[346]);
@@ -1537,6 +1513,8 @@ void init_menu(void)
     snooker_menu = menu_new( menu_cb );
     //One Player
     menu_add_entry(snooker_menu, localeText[212], MENU_ID_GAMETYPE_SNOOKER,localeText[354]);
+    //Two Player
+    menu_add_entry(snooker_menu, localeText[119], MENU_ID_2PLAYER_SNOOKER,localeText[119]);
 #ifdef TOURNAMENT
     //Tournament
     menu_add_entry(snooker_menu, localeText[120], MENU_ID_SNOOKER_TOURN,localeText[355]);
@@ -1618,8 +1596,6 @@ void init_menu(void)
       }
     menu_add_submenu(game_menu, localeText[229], tourfast_menu, 1, localeText[neuwert],localeText[371]);
 #endif
-    //< back
-    menu_add_exit (game_menu, localeText[63],localeText[266]);
 
     /********************************************************/
     /*
@@ -1753,22 +1729,6 @@ void init_menu(void)
     //Back
     menu_add_exit(audio_menu, localeText[63],localeText[266]);
 #endif
-    /*
-      P1 Skill come from Player1
-    */
-    player1_skill_menu = menu_new( menu_cb );
-    //excellent
-    menu_add_entry(player1_skill_menu, localeText[112], MENU_ID_PLAYER1_SKILL_EXCEL,localeText[389]);
-    //good
-    menu_add_entry(player1_skill_menu, localeText[113], MENU_ID_PLAYER1_SKILL_GOOD,localeText[390]);
-    //medium
-    menu_add_entry(player1_skill_menu, localeText[114], MENU_ID_PLAYER1_SKILL_MEDIUM,localeText[391]);
-    //bad
-    menu_add_entry(player1_skill_menu, localeText[115], MENU_ID_PLAYER1_SKILL_BAD,localeText[392]);
-    //worse
-    menu_add_entry(player1_skill_menu, localeText[116], MENU_ID_PLAYER1_SKILL_WORSE,localeText[393]);
-    //< back
-    menu_add_exit (player1_skill_menu, localeText[63],localeText[266]);
 
     /*
       P2 Skill come from Player2
@@ -1787,67 +1747,12 @@ void init_menu(void)
     //< back;
     menu_add_exit (player2_skill_menu, localeText[63],localeText[266]);
 
-    /*
-      P1 Type come from Player1
-    */
-    player1_type_menu = menu_new( menu_cb );
-    //AI
-    menu_add_entry(player1_type_menu, localeText[55], MENU_ID_PLAYER1_TYPE_AI,localeText[394]);
-    //Human
-    menu_add_entry(player1_type_menu, localeText[56], MENU_ID_PLAYER1_TYPE_HUMAN,localeText[395]);
-    //< back
-    menu_add_exit (player1_type_menu, localeText[63],localeText[266]);
-
-    /*
-      P2 Skill come from Player2
-    */
-    player2_type_menu = menu_new( menu_cb );
-    //AI
-    menu_add_entry(player2_type_menu, localeText[55], MENU_ID_PLAYER2_TYPE_AI,localeText[394]);
-    //Human
-    menu_add_entry(player2_type_menu, localeText[56], MENU_ID_PLAYER2_TYPE_HUMAN,localeText[395]);
-    //< back
-    menu_add_exit (player2_type_menu, localeText[63],localeText[266]);
-
-    /*
-      Player1 come from Player Menu
-    */
-    player1_menu = menu_new( menu_cb );
     //P1 Name:
-    sprintf(str,localeText[122],player[0].name);
-    menu_add_textfield( player1_menu, str, MENU_ID_PLAYER1_NAME, utf8count(localeText[122])-2,KEY_TYPE_MIXED,1,0,15,localeText[344]);
-    //P1 Type
-    menu_add_submenu (player1_menu, localeText[146],  player1_type_menu, 1, localeText[56-player[0].is_AI],localeText[396]);
-    //P1 Skill
-    switch((int)(10*player[0].err)) {
-      case 0:
-        neuwert = 112;
-        break;
-      case 1:
-        neuwert = 113;
-        break;
-      case 3:
-        neuwert = 114;
-        break;
-      case 6:
-        neuwert = 115;
-        break;
-      default:
-        neuwert = 116;
-      }
-    menu_add_submenu (player1_menu, localeText[147], player1_skill_menu, 1, localeText[neuwert],localeText[397]);
-    //< back
-    menu_add_exit (player1_menu, localeText[63],localeText[266]);
-
-    /*
-      Player2 come from Player Menu
-    */
-    player2_menu = menu_new( menu_cb );
+    sprintf(str,localeText[122],player0_name);
+    menu_add_textfield( game_menu, str, MENU_ID_PLAYER1_NAME, utf8count(localeText[122])-2,KEY_TYPE_MIXED,1,0,15,localeText[344]);
     //P2 Name:
-    sprintf(str,localeText[123],player[1].name);
-    menu_add_textfield( player2_menu, str,  MENU_ID_PLAYER2_NAME, utf8count(localeText[123])-2,KEY_TYPE_MIXED,1,0,15,localeText[345]);
-    //"P2 Type
-    menu_add_submenu (player2_menu, localeText[117],  player2_type_menu, 1, localeText[56-player[1].is_AI],localeText[396]);
+    sprintf(str,localeText[123],player1_name);
+    menu_add_textfield( game_menu, str,  MENU_ID_PLAYER2_NAME, utf8count(localeText[123])-2,KEY_TYPE_MIXED,1,0,15,localeText[345]);
     //P2 Skill
     switch((int)(10*player[1].err)) {
       case 0:
@@ -1865,21 +1770,9 @@ void init_menu(void)
       default:
         neuwert = 116;
       }
-    menu_add_submenu (player2_menu, localeText[118], player2_skill_menu, 1, localeText[neuwert],localeText[397]);
+    menu_add_submenu (game_menu, localeText[118], player2_skill_menu, 1, localeText[neuwert],localeText[397]);
     //< back
-    menu_add_exit (player2_menu, localeText[63],localeText[266]);
-
-    /********************************************************/
-    /*
-      Player Menu come from Main Menu
-    */
-    player_menu = menu_new( menu_cb );
-    //Player1
-    menu_add_submenu(player_menu, localeText[129], player1_menu, 0, NULL,localeText[398]);
-    //Player2
-    menu_add_submenu(player_menu,localeText[130], player2_menu, 0, NULL,localeText[399]);
-    //< back
-    menu_add_exit (player_menu, localeText[63],localeText[266]);
+    menu_add_exit (game_menu, localeText[63],localeText[266]);
 
     /********************************************************/
     /*
@@ -1918,8 +1811,6 @@ void init_menu(void)
     menu_add_submenu(g_main_menu, localeText[99], gametype_menu, 0, NULL,localeText[363]);
     //Game Options
     menu_add_submenu(g_main_menu, localeText[140], game_menu, 0, NULL,localeText[404]);
-    //Player Menu
-    menu_add_submenu(g_main_menu, localeText[221], player_menu, 0, NULL,localeText[403]);
     //View Options
     menu_add_submenu(g_main_menu, localeText[222], view_menu, 0, NULL,localeText[405]);
     //Graphic Options

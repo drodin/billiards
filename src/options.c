@@ -178,6 +178,9 @@ int    options_pause = 0;          // pause the game with key p (only, if oppone
 GLfloat  options_maxanisotrop = 0.0;   // max. of anistropic filters
 VMfloat  options_value_anisotrop = 0.0;    // the vaule for anisotropic filtering if supported and < maxanisotrop (default 0.0)
 
+char   player0_name[256];          // human player 1 name
+char   player1_name[256];          // human player 2 name
+
 int dialog = -1;                    // hold the index of the dialog prog, if found with get_dialogprog()
 
 /* queries for OpenGL extensions */
