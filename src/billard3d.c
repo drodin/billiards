@@ -363,6 +363,7 @@ static struct option long_options[] = {
     {"avatar",       required_argument, NULL, OPT_AVATAR},
     {"tourfast",     required_argument, NULL, OPT_TOURFAST},
     {"showbuttons",  required_argument, NULL, OPT_SHOW_BUTTONS},
+    {"helpline",     required_argument, NULL, OPT_HELP_LINE},
     {"jumpshots",    required_argument, NULL, OPT_JUMP_SHOTS},
     {"aliasing",     required_argument, NULL, OPT_ANTIALIASING},
     {"aliasmax",     required_argument, NULL, OPT_ANTIALIASMAX},
@@ -1601,6 +1602,16 @@ void process_option(enum optionType act_option)
                 break;
           }
           break;
+       case OPT_HELP_LINE:
+          switch(optarg[1]){
+             case 'f': /* off */
+                vline_on=0;
+                break;
+             case 'n': /* on  */
+                vline_on=1;
+                break;
+          }
+          break;
        case OPT_JUMP_SHOTS:
           switch(optarg[1]){
              case 'f': /* off */
@@ -2134,6 +2145,9 @@ void save_config(void)
              break;
         case OPT_SHOW_BUTTONS:
              write_rc(f,opt, options_show_buttons?"on":"off");
+             break;
+       case OPT_HELP_LINE:
+             write_rc(f,opt, vline_on?"on":"off");
              break;
        case OPT_JUMP_SHOTS:
              write_rc(f,opt, options_jump_shots?"on":"off");
