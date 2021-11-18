@@ -140,13 +140,18 @@ VMvect  free_view_pos;
 static int vline_id= -1;             // helpline glcompile-id
 static int cueball_id= -1;           // place-cueball-tex glcompile-id
 static int english_id= -1;           // english move glcompile-id
+#ifndef ALT_CONTROLS
 static int mleft_id= -1;             // left menu bar glcompile-id (training)
 static int mleftnormal_id= -1;       // left menu bar glcompile-id (normal)
 static int mright_id= -1;            // right menu bar glcompile-id
 static int mupper_id= -1;            // upper menu bar glcompile-id
 static int mscreen_id= -1;           // screenshot button glcompile-id
 static int pscreen_id[2]= {-1,-1};   // pause button glcompile-id
+#endif
 static int breakscreen_id= -1;       // break button glcompile-id
+#ifdef ALT_CONTROLS
+static int training_id= -1;          // undo and tab buttons glcompile-id
+#endif
 static int english1_id= -1;          // english move glcompile-id
 static int shoot_id= -1;             // mouse-shoot glcompile-id
 static int cuebutt_id= -1;           // cue butt up/down glcompile-id
@@ -204,21 +209,31 @@ static GLuint lightflaretexbind;
 static GLuint halfsymboltexbind;
 static GLuint fullsymboltexbind;
 static GLuint fullhalfsymboltexbind;
+#ifndef ALT_CONTROLS
 static GLuint btexbind;
 static GLuint ntexbind;
 static GLuint stexbind;
 static GLuint utexbind;
 static GLuint dtexbind;
+#endif
 static GLuint englishbind;
 static GLuint kreuzbind;
+#ifndef ALT_CONTROLS
 static GLuint mleftbind;
 static GLuint mleftnormalbind;
 static GLuint mrightbind;
 static GLuint volumebind;
 static GLuint screenbind;
+#endif
 static GLuint cancelbind;
+#ifdef ALT_CONTROLS
+static GLuint undobind;
+static GLuint tabbind;
+#endif
+#ifndef ALT_CONTROLS
 static GLuint pausebind;
 static GLuint pausebind1;
+#endif
 static GLuint networkbind;
 static GLuint sbind;
 static GLuint bbind;
@@ -306,6 +321,12 @@ static textObj * ip1_text_obj;          // a little Help Text
 static textObj * ip2_text_obj;          // for the network host name
 static textObj * esc_stop_obj;          // text for cancel
 static textObj * stbar_text_obj;        // for the strength bar %
+#ifdef ALT_CONTROLS
+static textObj * anbar_text_obj;        // for the angle bar
+
+static VMfloat display_strength = 0.0;
+static MATH_ALIGN16 GLfloat display_angle = -87.0;
+#endif
 
 static char stbar_text[6];              // format the value for output to string
 
@@ -3020,6 +3041,9 @@ void MouseEvent(MouseButtonEnum button,MouseButtonState state, int x, int y)
     GLdouble newy;
     int newy_int, newx_int;
 
+    GLdouble xx = 2.0*x/(GLdouble)win_width - 1.0;
+    GLdouble yy = 2.0*y/(GLdouble)win_height - 1.0;
+
     newy = (GLdouble)win_height-y;
     newy_int = win_height-y;
     newx_int = win_width-x;
@@ -3067,6 +3091,7 @@ void MouseEvent(MouseButtonEnum button,MouseButtonState state, int x, int y)
 #endif
                 //check for up/down/back/next/shoot button click or touch on the strengthbar
                 if(!(options_gamemode==options_gamemode_tournament && tournament_state.wait_for_next_match) && !(player[act_player].is_net || player[act_player].is_AI) && !balls_moving) {
+#ifndef ALT_CONTROLS
                    if((GLdouble)x > x_strengthbar && (GLdouble)x < x_strengthbar_end && newy > y_strengthbar && newy < y_strengthbar_end) {
                      //((xMausklick-XBeginn) * ((XEnde-XAnfang)/100))*0.01
                      queue_strength = strength01((((GLdouble)x-x_strengthbar) / ((x_strengthbar_end-x_strengthbar)/100.0))*0.01 ); // set strenghtbar value direct
@@ -3097,10 +3122,26 @@ void MouseEvent(MouseButtonEnum button,MouseButtonState state, int x, int y)
                      Key1(13); // make shoot over the key-routine
                    }
                   } //end, if the control buttons are shown
+#endif
                 }
                     b1_hold = 1;
                     start_x = x;
                     start_y = y;
+#ifdef ALT_CONTROLS
+                    // Break the game (ESC)
+                    if(newx_int > 0 && newx_int < 32+64 && y > 0 && y < 32+32) {
+                      Key1(27); // yes, please
+                    }
+                  
+                    if(options_gamemode == options_gamemode_training){
+                      if(newx_int > 32+64+32 && newx_int < 32+64+32+64 && y > 0 && y < 32+32) {
+                        Key1('u'); //u
+                      }
+                      if(newx_int > 32+64+32+64+32 && newx_int < 32+64+32+64+32+64 && y > 0 && y < 32+32) {
+                        Key1(9); //Tab
+                      }
+                    }
+#else
                     // Take a Screenshot ?
                     if(newx_int > 309 && newx_int < 355 && y > 0 && y < 28) {
                       Key1('0'); // yes, please
@@ -3119,7 +3160,36 @@ void MouseEvent(MouseButtonEnum button,MouseButtonState state, int x, int y)
 #ifdef NETWORKING
                     }
 #endif
+#endif
                     if(!player[act_player].is_net && !balls_moving) {
+#ifdef ALT_CONTROLS
+                      if(!player[act_player].is_AI) {
+                        // english
+                        if(x > 0 && xx < (-0.78 - 0.85 + 256.0/win_width)/2.0  && newy_int > 0 && yy > 0.85 - 256.0/win_height) {
+                            Key1('e'); //e
+                            old_cam_dist_aim = cam_dist_aim;
+                            if (cam_dist_aim > 0.6) {
+                              cam_dist_aim = 0.6  ;
+                            }
+                        }
+                        // angle
+                        if(x > 0 && xx < -0.78 && yy > -0.4 && yy < 0.4) {
+                            Key1('b'); //b
+                        }
+                        // strength
+                        if(newx_int > 0 && xx > 0.78 && yy > -0.6 && yy < 0.6) {
+                            Key1('s'); //s
+                        }
+                        // move
+                        if(player[act_player].place_cue_ball) {
+                          VMfloat ballr = balls.ball[0].d * win_height / cam_dist;
+                          if (x > win_width/2.0 - ballr && x < win_width/2.0 + ballr
+                              && y > win_height/2.0 - ballr && y < win_height/2.0 + ballr) {
+                            Key1('m'); //m
+                          }
+                        }
+                      }
+#else
 #ifdef USE_SOUND
                     switch(uppermenu) {
                          case 0:  // open upper menu
@@ -3274,6 +3344,7 @@ void MouseEvent(MouseButtonEnum button,MouseButtonState state, int x, int y)
                            }
                          break;
                      }
+#endif
                     }
 #ifndef TOUCH
                 }
@@ -4911,14 +4982,25 @@ void DisplayFunc( void )
        if(!(player[0].winner || player[1].winner)) {
          drawstatustext(win_width, win_height);
          }
+#ifdef ALT_CONTROLS
+   if(options_status_text) {
+#endif
        /* act player */
        glPushMatrix();
+#ifdef ALT_CONTROLS
+       glTranslatef(-0.44,-0.94,-1.0);
+#else
        glTranslatef(-0.94,-0.94,-1.0);
+#endif
        glScalef(2.0/win_width,2.0/win_height,1.0);
        if( player[act_player].text != 0 ){
            textObj_draw( player[act_player].text );
        }
+#ifdef ALT_CONTROLS
+       glTranslatef(0,player[act_player].text->height*1.2,0);
+#else
        glTranslatef(0,30,0);
+#endif
        switch(gametype) {
         case GAME_8BALL:
            switch(player[act_player].half_full){
@@ -4953,17 +5035,28 @@ void DisplayFunc( void )
      if(options_gamemode != options_gamemode_training) {
        glPushMatrix();
        glColor3f(0.0,0.0,1.0);
+#ifdef ALT_CONTROLS
+       glTranslatef(0.44,-0.94,-1.0);
+#else
        glTranslatef(0.94,-0.94,-1.0);
+#endif
        glScalef(2.0/win_width,2.0/win_height,1.0);
        if( player[act_player?0:1].text != 0 ){
          textObj_draw_bound( player[act_player?0:1].text, HBOUND_RIGHT, VBOUND_BOTTOM );
        }
        if (gametype==GAME_SNOOKER || gametype==GAME_CARAMBOL){
+#ifdef ALT_CONTROLS
+         glTranslatef(0,player[act_player?0:1].text->height*1.2,0);
+#else
          glTranslatef(0,30,0);
+#endif
     	    textObj_draw_bound( player[act_player?0:1].score_text, HBOUND_RIGHT, VBOUND_BOTTOM );
        }
        glPopMatrix();
      }
+#ifdef ALT_CONTROLS
+   }
+#endif
 
        if(show_disc) { // save config was choosen
          glPushMatrix();
@@ -4975,6 +5068,7 @@ void DisplayFunc( void )
          glPopMatrix();
        }
 
+#ifndef ALT_CONTROLS
        // now, set the menu bar on left, right and upper one
        if(!player[act_player].is_net && !balls_moving) {
        glPushMatrix();
@@ -5219,17 +5313,26 @@ void DisplayFunc( void )
               glEndList();
           }
           glCallList(pscreen_id[options_pause]);
+#endif //ALT_CONTROLS
 
           glPushMatrix();
           glScalef(2.0/win_width,2.0/win_height,1.0);
+#ifdef ALT_CONTROLS
+          glTranslatef((VMfloat)win_width/2-32-64,(VMfloat)win_height/2-32-32,0.0);
+#else
           glTranslatef((VMfloat)win_width/2-358+120,(VMfloat)win_height/2-32,0.0);
+#endif
           if(breakscreen_id == -1) {
               breakscreen_id = glGenLists(1);
               glNewList(breakscreen_id, GL_COMPILE_AND_EXECUTE);
               glEnable(GL_TEXTURE_2D);
               glEnable(GL_BLEND);
               glBindTexture(GL_TEXTURE_2D,cancelbind); // break button
+#ifdef ALT_CONTROLS
+              static const GLshort VertexData12[] = {0,0,0,0,32,0,64,0,0,64,32,0};
+#else
               static const GLshort VertexData12[] = {0,0,0,0,32,0,52,0,0,52,32,0};
+#endif
               static const GLshort TexData12[] = {0,1,0,0,1,1,1,0};
               static const GLfloat ColorData12[] = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
               glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -5248,8 +5351,47 @@ void DisplayFunc( void )
               glCallList(breakscreen_id);
           }
 
+#ifdef ALT_CONTROLS
+            if(options_gamemode == options_gamemode_training) {
+              if(training_id == -1) {
+                  training_id = glGenLists(1);
+                  glNewList(training_id, GL_COMPILE_AND_EXECUTE);
+                  glPushMatrix();
+                  glEnable(GL_TEXTURE_2D);
+                  glEnable(GL_BLEND);
+                  static const GLshort VertexData12[] = {0,0,0,0,32,0,64,0,0,64,32,0};
+                  static const GLshort TexData12[] = {0,1,0,0,1,1,1,0};
+                  static const GLfloat ColorData12[] = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+                  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                  glEnableClientState(GL_VERTEX_ARRAY);
+                  glEnableClientState(GL_COLOR_ARRAY);
+                  glTexCoordPointer(2,GL_SHORT, 0, TexData12);
+                  glVertexPointer(3, GL_SHORT, 0, VertexData12);
+                  glColorPointer(3, GL_FLOAT, 0, ColorData12);
+                  glPushMatrix();
+                  glScalef(2.0/win_width, 2.0/win_height, 1.0);
+                  glTranslatef((VMfloat)win_width/2-32-64-32-64,(VMfloat)win_height/2-32-32,0.0);
+                  glBindTexture(GL_TEXTURE_2D, undobind);
+                  glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+                  glTranslatef(-32-64,0.0,0.0);
+                  glBindTexture(GL_TEXTURE_2D, tabbind);
+                  glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+                  glPopMatrix();
+                  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                  glDisableClientState(GL_VERTEX_ARRAY);
+                  glDisableClientState(GL_COLOR_ARRAY);
+                  glPopMatrix();
+                  glEndList();
+              } else {
+                  glCallList(training_id);
+              }
+            }
+#endif
+
+#ifndef ALT_CONTROLS
 #ifdef NETWORKING
        }
+#endif
 #endif
 #undef MENUSTEP
        glDisable(GL_LIGHTING);
@@ -5257,6 +5399,47 @@ void DisplayFunc( void )
        glEnable(GL_BLEND);
        glBlendFunc(GL_ONE,GL_ONE);
 
+#ifdef ALT_CONTROLS
+       if(!balls_moving && !player[act_player].is_AI && !player[act_player].is_net && options_show_buttons) {
+         //angle
+         myRect2D(-0.85, -0.4, -0.78, 0.4, 0.0, 0.2);
+         myRect2D(-0.85, -0.4, -0.78, 0.4 * (1.0 - 2.0 * (-Xque/90.0)), 0.0, 0.5);
+
+         //strength
+         myRect2D(0.78, -0.6, 0.85, 0.6, 0.0, 0.2);
+         myRect2D(0.78, -0.6 * (-1.0 + 2.0 * queue_strength), 0.85, 0.6, 0.0, 0.5 );
+         
+         glEnable(GL_TEXTURE_2D);
+
+         //degrees on angle bar
+         if(display_angle != Xque) {
+           sprintf(stbar_text,"%03u*",(unsigned)(90+Xque));
+           textObj_setText(anbar_text_obj,stbar_text);
+           display_angle = Xque;
+         }
+         glPushMatrix();
+         glTranslatef(-0.85, 0.4, 0.0);
+         glScalef(2.0/win_width,2.0/win_height,1.0);
+         glColor3f(0.8,0.8,0.8);
+         textObj_draw(anbar_text_obj);    //Draw the angle adjustment
+         glPopMatrix();
+
+         //percent on the strength bar
+         if(display_strength != queue_strength) {
+           sprintf(stbar_text,"%03u%%",(unsigned int)(queue_strength*100));
+           textObj_setText(stbar_text_obj,stbar_text);
+           display_strength = queue_strength;
+         }
+         glPushMatrix();
+         glTranslatef(0.78, 0.6, 0.0);
+         glScalef(2.0/win_width,2.0/win_height,1.0);
+         glColor3f(0.8,0.8,0.8);
+         textObj_draw(stbar_text_obj);    //Draw the strength adjustment percent
+         glPopMatrix();
+
+         glDisable(GL_TEXTURE_2D);
+       }
+#else
        /* strength bar */
        if(!(options_gamemode==options_gamemode_tournament && tournament_state.wait_for_next_match) && !player[act_player].is_AI && !balls_moving) {
        /* disable strength bar if tournament window, player is net or ai is active and no balls where moving */
@@ -5340,6 +5523,7 @@ void DisplayFunc( void )
            }
            glDisable(GL_TEXTURE_2D);
        }
+#endif
 #ifdef NETWORKING
        // show the network game end button if network is active
        if(active_net_game) {
@@ -5388,7 +5572,11 @@ void DisplayFunc( void )
        glEnable(GL_TEXTURE_2D);
 
        //Special Keys are active ?
+#ifdef ALT_CONTROLS
+       if(!balls_moving && !player[act_player].is_AI && !player[act_player].is_net && options_show_buttons) {
+#else
        if(!balls_moving && !player[act_player].is_AI && !player[act_player].is_net) {
+#endif
          //place cue ball - Stipple in almost blue over it
          if (!FREE_VIEW && control__place_cue_ball) {
            if(cueball_id == -1) {
@@ -5421,17 +5609,28 @@ void DisplayFunc( void )
            }
          }
          // english moving (white ball, cross left and special graphic right corner)
+#ifndef ALT_CONTROLS
          if(control__english) {
+#endif
            glPushMatrix();
            if(english_id == -1) {
              english_id = glGenLists(1);
              glNewList(english_id, GL_COMPILE_AND_EXECUTE);
+#ifdef ALT_CONTROLS
+             glTranslatef((-0.78 - 0.85 - 256.0/win_width)/2.0, -0.85, 0);
+             glScalef(1.0/win_width,1.0/win_height,1.0);
+#else
              glTranslatef(-0.95,0.15,0.0);
              glScalef(2.0/win_width,2.0/win_height,1.0);
+#endif
              glBindTexture(GL_TEXTURE_2D,englishbind); //English Control if set
              static const GLshort VertexData8[] = {0,0,0,0,256,0,256,0,0,256,256,0};
              static const GLshort TexData8[] = {0,1,0,0,1,1,1,0};
+#ifdef ALT_CONTROLS
+             static const GLfloat ColorData8[] = {0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3};
+#else
              static const GLfloat ColorData8[] = {0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9};
+#endif
              glEnableClientState(GL_TEXTURE_COORD_ARRAY);
              glEnableClientState(GL_VERTEX_ARRAY);
              glEnableClientState(GL_COLOR_ARRAY);
@@ -5453,6 +5652,9 @@ void DisplayFunc( void )
            glBindTexture(GL_TEXTURE_2D,kreuzbind); //English control cross png texture
            myRect2D_texture();
            glPopMatrix();
+#ifdef ALT_CONTROLS
+         if(control__english) {
+#endif
 #ifndef __MOBILE__
            if(english1_id == -1) {
              english1_id = glGenLists(1);
@@ -5666,8 +5868,15 @@ void DisplayFunc( void )
            glTranslatef(0.0,-21.0,0.0);
            for(m=0;m<9;m++) {
              if(ipptr[m]) {
+#ifdef ALT_CONTROLS
+               glTranslatef(0.0, -ip_text_obj[m]->height, 0.0);
+#endif
                textObj_draw_centered( ip_text_obj[m]);
+#ifdef ALT_CONTROLS
+               glTranslatef(0.0, -ip_text_obj[m]->height, 0.0);
+#else
                glTranslatef(0.0,-21.0,0.0);
+#endif
              }
            }
         }
@@ -6529,6 +6738,7 @@ void Key( int key, int modifiers ) {
              displaystring(localeText[413]);
           }
          break;
+#ifndef ALT_CONTROLS
       case'l':  /* sliding left menu */
          if(!leftmenu) {
            leftmenu = 1;
@@ -6551,6 +6761,7 @@ void Key( int key, int modifiers ) {
            uppermenu = 3;
          }
          break;
+#endif
 #endif
       }
    }  /* no menu active */
@@ -7637,6 +7848,7 @@ static void Init( void )
     create_png_texbind("half_symbol.png", &halfsymboltexbind, 3, GL_RGBA);
     create_png_texbind("fullhalf_symbol.png", &fullhalfsymboltexbind, 3, GL_RGBA);
 
+#ifndef ALT_CONTROLS
 // graphics for the control under the table
 
     create_png_texbind("b.png", &btexbind, 3, GL_RGBA);
@@ -7644,6 +7856,7 @@ static void Init( void )
     create_png_texbind("shot.png", &stexbind, 3, GL_RGBA);
     create_png_texbind("up.png", &utexbind, 3, GL_RGBA);
     create_png_texbind("down.png", &dtexbind, 3, GL_RGBA);
+#endif
 
 // white ball left for English moving
 
@@ -7665,6 +7878,7 @@ static void Init( void )
 
     // Graphics for menubar left, right and upper one
 
+#ifndef ALT_CONTROLS
     create_png_texbind("mleft.png", &mleftbind, 3, GL_RGBA);
     create_png_texbind("mleftnormal.png", &mleftnormalbind, 3, GL_RGBA);
     create_png_texbind("network.png", &networkbind, 3, GL_RGBA);
@@ -7677,6 +7891,11 @@ static void Init( void )
     create_png_texbind("mright-wetab.png", &mrightbind, 3, GL_RGBA);
 #else
     create_png_texbind("mright.png", &mrightbind, 3, GL_RGBA);
+#endif
+#else
+    create_png_texbind("menu.png", &cancelbind, 3, GL_RGBA);
+    create_png_texbind("undo.png", &undobind, 3, GL_RGBA);
+    create_png_texbind("tab.png", &tabbind, 3, GL_RGBA);
 #endif
     fprintf(stderr,"Graphics loaded and initialized\n");
     glEnable(GL_FOG);
@@ -7845,7 +8064,12 @@ int main( int argc, char *argv[] )
        tourn_winner_obj = textObj3D_new(localeText[174], options_winner_fontname, 0.2, 0.05);
    }
 
+#ifdef ALT_CONTROLS
+  stbar_text_obj = textObj_new("000%", options_status_fontname, 18);  // the percent in the strength bar
+  anbar_text_obj = textObj_new("003*", options_status_fontname, 18);  // the percent in the angle bar
+#else
    stbar_text_obj = textObj_new("0", options_status_fontname, 16);  // the percent in the strength bar
+#endif
    seconds_text_obj = textObj_new("0", options_score_fontname, 100);   // show a countdown for network connections
    for(i=0;i<9;i++) {
     ip_text_obj[i] = textObj_new("0", options_help_fontname, 16);   // shows the possible ip-adresses for network play
