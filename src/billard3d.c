@@ -4080,11 +4080,11 @@ void DisplayFunc( void )
   VMfloat eye_offs0, eye_offs1;  //for stereo view
 
   GLfloat light0_position[] = { 0.0, 0.7, 0.7, 1.0 };
-  GLfloat light0_diff[]     = { 0.6, 0.6, 0.6, 1.0 };
-  GLfloat light0_amb[]      = { 0.35, 0.35, 0.35, 1.0 };
+  GLfloat light0_diff[]     = { 0.9, 0.9, 0.9, 1.0 };
+  GLfloat light0_amb[]      = { 0.45, 0.45, 0.45, 1.0 };
   GLfloat light1_position[] = { 0.0, -0.7, 0.7, 1.0 };
-  GLfloat light1_diff[]     = { 0.6, 0.6, 0.6, 1.0 };
-  GLfloat light1_amb[]      = { 0.35, 0.35, 0.35, 1.0 };
+  GLfloat light1_diff[]     = { 0.9, 0.9, 0.9, 1.0 };
+  GLfloat light1_amb[]      = { 0.45, 0.45, 0.45, 1.0 };
 
   GLfloat cam_FOV_tan = tan(cam_FOV*M_PI/360.0); //for quicker computing of the cam_FOV inside this function
   myvec cam_pos;
