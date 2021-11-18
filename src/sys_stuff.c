@@ -60,6 +60,8 @@
 extern void initialize_gl4es();
 #endif
 
+static char * appname_str = PROJECT_DESCRIPTION;
+
 static int fullscreen = 0;
 static int keymodif =0;
 static int vidmode_bpp=0;
@@ -170,7 +172,7 @@ char message[2048];
   }
   fprintf(stderr,"%s\n",message); // print error to stderr every time
 #ifdef USE_WIN
-  MessageBox(0,message,"Foobillard++ Error",MB_OK);
+  MessageBox(0,message,"Error",MB_OK);
 #else
 #if defined(__APPLE__) && !defined(__MOBILE__)
   // needs -framework CoreFoundation
@@ -179,7 +181,7 @@ char message[2048];
   const void* keys[] = { kCFUserNotificationAlertHeaderKey,
   kCFUserNotificationAlertMessageKey };
   const void* vals[] = {
-  CFSTR("Foobillard++ Error"),
+  CFSTR("Error"),
   CFStringCreateWithCString(NULL, message, kCFStringEncodingMacRoman)
   };
   if(!sys_get_fullscreen()) {
@@ -337,7 +339,7 @@ void sys_create_display(int width,int height,int _fullscreen)
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
-  glWindow = SDL_CreateWindow("Foobillard++", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, flags | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN);
+  glWindow = SDL_CreateWindow(appname_str, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN);
 #else
 
   if(options_antialiasing) {
@@ -354,9 +356,9 @@ void sys_create_display(int width,int height,int _fullscreen)
 #else
         flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 #endif
-        glWindow = SDL_CreateWindow("Foobillard++", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+        glWindow = SDL_CreateWindow(appname_str, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
   } else if (fullscreen == 0) { 
-        glWindow = SDL_CreateWindow("Foobillard++", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags | SDL_WINDOW_RESIZABLE);
+        glWindow = SDL_CreateWindow(appname_str, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags | SDL_WINDOW_RESIZABLE);
   };
 
 #endif
@@ -370,7 +372,7 @@ void sys_create_display(int width,int height,int _fullscreen)
   initialize_gl4es();
 #endif
 
-  SDL_SetWindowTitle(glWindow, "Foobillard++");
+  SDL_SetWindowTitle(glWindow, appname_str);
 
 #ifdef ANDROID
   SDL_Rect rect;
@@ -911,7 +913,6 @@ void enter_data_dir() {
         } else {
 #endif
            fprintf(stderr,
-            "Foobillard++ seems not to be correctly installed\n"
             "Cannot find valid data directory\n"
             "(assuming the current directory contains the data)\n");
 #ifdef USE_DEBIAN

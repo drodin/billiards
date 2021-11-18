@@ -113,8 +113,7 @@ static char *find_localized_file(const char *base_name)
 
 static void load_language_file()
 {
-    char *language_file = find_localized_file(
-        (arch == ARCH_WETAB) ? "wetab-foobillard.txt" : "foobillard.txt");
+    char *language_file = find_localized_file("language.txt");
     FILE *fp;
     int index = 0;
     char *cp;

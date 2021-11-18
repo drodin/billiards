@@ -330,7 +330,7 @@ static MATH_ALIGN16 GLfloat display_angle = -87.0;
 
 static char stbar_text[6];              // format the value for output to string
 
-static char * appname_str="foobillardplus";
+static char * appname_str=PROJECT_NAME;
 
 static struct option long_options[] = {
 // don't forget to put new options into the function print_help
@@ -1785,7 +1785,7 @@ void print_help(struct option * opt, char *appname)
         strcat(win_helptext,opt[i].has_arg?"<arg> : ":" : ");
         strcat(win_helptext,helptext[i]);
     }
-    MessageBox(0,win_helptext,"Foobillard++ Command Line Arguments",MB_OK);
+    MessageBox(0,win_helptext,"Command Line Arguments",MB_OK);
 #else
     printf(localeText[51],appname);
     printf("%s",localeText[52]);
@@ -1813,11 +1813,11 @@ void load_config( char *** confv, int * confc, char ** argv, int argc )
     str=allstr;
 
 #ifdef USE_WIN //HS
-    sprintf(filename,"%s\\.foobillardrc",getenv("USERPROFILE"));
+    sprintf(filename,"%s\\.%src",getenv("USERPROFILE"),appname_str);
 #elif ANDROID
-    sprintf(filename,"%s/.foobillardrc",SDL_AndroidGetInternalStoragePath());
+    sprintf(filename,"%s/.%src",SDL_AndroidGetInternalStoragePath(),appname_str);
 #else
-    sprintf(filename,"%s/Documents/.foobillardrc",getenv("HOME"));
+    sprintf(filename,"%s/Documents/.%src",getenv("HOME"),appname_str);
 #endif
     fprintf(stderr,"Use config-file: %s\n",filename);
     if( (f=fopen(filename,"rb")) != NULL ){
@@ -1892,11 +1892,11 @@ void save_config(void)
     char str[256];
 
 #ifdef USE_WIN //HS
-    sprintf(filename,"%s\\.foobillardrc",getenv("USERPROFILE"));
+    sprintf(filename,"%s\\.%src",getenv("USERPROFILE"),appname_str);
 #elif ANDROID
-    sprintf(filename,"%s/.foobillardrc",SDL_AndroidGetInternalStoragePath());
+    sprintf(filename,"%s/.%src",SDL_AndroidGetInternalStoragePath(),appname_str);
 #else
-    sprintf(filename,"%s/Documents/.foobillardrc",getenv("HOME"));
+    sprintf(filename,"%s/Documents/.%src",getenv("HOME"),appname_str);
 #endif
     if((f=fopen(filename,"wb"))==NULL){
         //can't write to %s - check rights\n
