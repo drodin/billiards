@@ -1,4 +1,4 @@
-﻿/* menu.c
+/* menu.c
 **
 **    code for Menu-Handling
 **    Copyright (C) 2001  Florian Berger
@@ -1822,7 +1822,7 @@ void init_menu(void)
     //Language Menu
     menu_add_submenu(g_main_menu, localeText[469], language_menu, 0, NULL,localeText[470]);
     //Help
-    menu_add_entry(g_main_menu, localeText[142], MENU_ID_MAIN_HELP,localeText[408]);
+    menu_add_entry(g_main_menu, localeText[148], MENU_ID_MAIN_HELP,localeText[408]);
     //Quit
     menu_add_submenu(g_main_menu,localeText[143], quit_menu, 0, NULL,localeText[410]);
 

@@ -146,8 +146,7 @@ gewinnt
 Hallo
 Spieler 1 Typ
 Spieler 1 Geschick
-FooBillard++ Hilfe
- 
+Hilfe und Datenschutzerklärung
  (ESC) ... Anzeige Popup Menü
  (F1)  ... Hilfsbildschirm an/aus
  (F2)  ... Vogelperspektive an/aus
@@ -170,8 +169,9 @@ FooBillard++ Hilfe
  (◀)(▶) ... Schussstärke einstellen
  (Gelb/weiß ▲)(Gelb/weiß ▼) ... Zoom +/-
  (Roter Schalter) oder (Gelber Schalter) ... Schuss
- © 2001 F. Berger, FB++ 2011 H. Schäkel. lizensiert unter GPL
- 
+ © 2001 F. Berger, FB++ 2011 H. Schäkel, 2021 Dmitry Rodin.
+ GPLv2-Lizenz. Quellcode verfügbar unter drodin.com/billards
+ Wir erheben keine personenbezogenen Daten von unseren Apps.
 Turniergewinner
 Zu erreichendes Spielziel sind %i Punkte
 Einzulochen: %d

@@ -146,8 +146,7 @@ wins
 Hallo
 P1 Type
 P1 Skill
-FooBillard++ Help
- 
+Help and Privacy Policy
  (ESC) ... Popup Menu
  (F1)  ... Toggle this help screen
  (F2)  ... Toggle birdview
@@ -170,8 +169,9 @@ FooBillard++ Help
  (◀)(▶) ... Strength adj.
  (yellow/white ▲)(yellow/white ▼) ... Zoom +/-
  (Red button) or (yellow button) ... Shoot
- © 2001 F. Berger, FB++ 2011 H. Schaekel. license GPL
- 
+ © 2001 F. Berger, FB++ 2011 H. Schaekel, 2021 Dmitry Rodin.
+ GPLv2 license. Source code available at drodin.com/billiards
+ Privacy policy: We don't collect any personal data from our apps.
 Wins Tournament
 Goal of the game are %i points
 next:%d
