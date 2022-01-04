@@ -788,7 +788,7 @@ sysResolution *sys_list_modes( void ) {
 
         sysmodes = (sysResolution *) malloc((modes_count+1)*sizeof(sysResolution));
 
-        for (mode_index = 0; mode_index <= modes_count; mode_index++)
+        for (mode_index = 0; mode_index < modes_count; mode_index++)
         {
             SDL_DisplayMode mode = { SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
 
