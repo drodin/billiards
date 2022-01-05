@@ -57,6 +57,13 @@
 /***********************************************************************/
 
 #ifdef __MOBILE__
+#if !defined(NDEBUG) && defined(__APPLE__)
+#include <dlfcn.h>
+void *dlsym_rtld_default(const char* fn_name) {
+  return dlsym(RTLD_DEFAULT, fn_name);
+}
+extern void set_getprocaddress(void *(*new_proc_address)(const char *));
+#endif
 extern void initialize_gl4es();
 #endif
 
@@ -368,7 +375,10 @@ void sys_create_display(int width,int height,int _fullscreen)
   try_set_vsync();
 
 #if defined(__MOBILE__) && defined(__APPLE__)
-  //setenv("LIBGL_TEXCOPY", "1", 1);
+#if !defined(NDEBUG)
+  set_getprocaddress(dlsym_rtld_default);
+#endif
+	//setenv("LIBGL_TEXCOPY", "1", 1);
   initialize_gl4es();
 #endif
 
