@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     ndkVersion '18.1.5063045'
 
     defaultConfig {
@@ -14,7 +14,7 @@ android {
         versionName = "3.43.1"
 
         minSdkVersion 24
-        targetSdkVersion 30
+        targetSdkVersion 31
 
         ndk {
             //abiFilters 'armeabi-v7a'
@@ -36,13 +36,15 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         }
     }
 
     externalNativeBuild {
         cmake {
             path file('../../CMakeLists.txt')
+            buildStagingDirectory "${project.buildDir}/../.cxx"
             version "3.18.1"
         }
     }
