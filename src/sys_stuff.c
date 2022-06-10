@@ -736,11 +736,24 @@ static void  process_events( void )
         break ;
 
       case SDL_WINDOWEVENT:
-            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+            switch (event.window.event) {
+                case SDL_WINDOWEVENT_RESIZED:
                     //printf("Window %d resized to %dx%d\n", event.window.windowID, event.window.data1, event.window.data2);
                     handle_reshape_event(event.window.data1,event.window.data2);
+                    break;
+                case SDL_WINDOWEVENT_FOCUS_LOST:
+                    if(Mix_PlayingMusic()) {
+                        Mix_PauseMusic();
+                    }
+                    break;
+                case SDL_WINDOWEVENT_FOCUS_GAINED:
+                    if(Mix_PausedMusic()) {
+                        Mix_ResumeMusic();
+                    }
+                    break;
+                default:
+                    break;
             }
-            break;
         break;
       default:
         //	fprintf( stderr,"EVENT: %d\n", (int) event.type ) ;
