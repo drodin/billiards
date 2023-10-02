@@ -33,6 +33,7 @@
 
 #ifdef USE_WIN //RB
    #include <winsock2.h>
+   #include <iphlpapi.h>
 #else
 	  #include <sys/socket.h>
   	#include <arpa/inet.h>
@@ -174,6 +175,60 @@ char* get_ip_address(void)
    return(ip_adresses);
 }
 
+#else
+char* get_ip_address(void)
+{
+
+ DWORD Err;
+
+ PIP_ADAPTER_INFO pAdapterInfo, pAdapt;
+ DWORD AdapterInfoSize;
+ PIP_ADDR_STRING pAddrStr;
+
+ static char ip_adresses[4096];
+
+ ip_adresses[0] = 0;
+
+ //
+ // Enumerate all of the adapter specific information using the IP_ADAPTER_INFO structure.
+ // Note:  IP_ADAPTER_INFO contains a linked list of adapter entries.
+ //
+ AdapterInfoSize = 0;
+ if ((Err = GetAdaptersInfo(NULL, &AdapterInfoSize)) != 0)
+ {
+     if (Err != ERROR_BUFFER_OVERFLOW)
+     {
+         printf("GetAdaptersInfo sizing failed with error %d\n", Err);
+         return;
+     }
+ }
+
+ // Allocate memory from sizing information
+ if ((pAdapterInfo = (PIP_ADAPTER_INFO) GlobalAlloc(GPTR, AdapterInfoSize)) == NULL)
+ {
+     printf("Memory allocation error\n");
+     return;
+ }
+
+ // Get actual adapter information
+ if ((Err = GetAdaptersInfo(pAdapterInfo, &AdapterInfoSize)) != 0)
+ {
+     printf("GetAdaptersInfo failed with error %d\n", Err);
+     return;
+ }
+
+ pAdapt = pAdapterInfo;
+
+ pAddrStr = &(pAdapt->IpAddressList);
+ while(pAddrStr)
+ {
+     strcat(ip_adresses,pAddrStr->IpAddress.String);
+     strcat(ip_adresses,";");
+     pAddrStr = pAddrStr->Next;
+ }
+
+ return(ip_adresses);
+}
 #endif
 
 /***********************************************************************
