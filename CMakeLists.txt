@@ -189,4 +189,18 @@ set(LIBS
     freetype::freetype
 )
 
+if(MINGW)
+
+add_definitions(-DUSE_WIN=1)
+
+    LIST(PREPEND LIBS
+        mingw32
+        SDL2::SDL2main
+    )
+    LIST(APPEND LIBS
+        wsock32
+        iphlpapi
+    )
+endif()
+
 target_link_libraries(${PROJECT_NAME} ${LIBS})

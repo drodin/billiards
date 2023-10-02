@@ -32,12 +32,14 @@
 #if defined(__APPLE__) && !defined(__MOBILE__)
  #include <OpenGL/glu.h>
  #include <OpenGL/gl.h>
- typedef GLvoid (*_GLUfuncptr)(GLvoid);
 #else
  #include <GL/glu.h>
  #include <GL/gl.h>
 #endif
 
+#if (defined(__APPLE__) && !defined(__MOBILE__)) || defined(USE_WIN)
+ typedef GLvoid (*_GLUfuncptr)(GLvoid);
+#endif
 
 #include "vmath.h"
 #ifdef _MSC_VER
