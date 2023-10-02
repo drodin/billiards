@@ -37,7 +37,7 @@
  #include <GL/glu.h>
  #include <GL/gl.h>
 #endif
-#include <regex.h>
+
 
 #include "vmath.h"
 #ifdef _MSC_VER
